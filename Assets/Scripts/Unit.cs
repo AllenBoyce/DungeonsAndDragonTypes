@@ -7,6 +7,7 @@ public class Unit : MonoBehaviour
     private bool _isMoving = false;
     private string state = "IDLE";
     private float _moveSpeed = 2.0f;
+
     void Start()
     {
         
