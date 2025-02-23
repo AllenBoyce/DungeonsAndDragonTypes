@@ -40,7 +40,148 @@ public class GridManager : MonoBehaviour
 
 
         GenerateGrid();
+
+        //TEMPORARY: Manual tile type setting
+        //Obstacle tiles at: (1,7), (2,3), (5, 7), (6, 2), (11, 1), (12, 3), (14, 6)
+        _grid[new Vector2Int(1, 7)].blocksMovement = true;
+        _grid[new Vector2Int(2, 3)].blocksMovement = true;
+        _grid[new Vector2Int(5, 7)].blocksMovement = true;
+        _grid[new Vector2Int(6, 2)].blocksMovement = true;
+        _grid[new Vector2Int(11, 1)].blocksMovement = true;
+        _grid[new Vector2Int(12, 3)].blocksMovement = true;
+        _grid[new Vector2Int(14, 6)].blocksMovement = true;
+
         SetCamera();
+    }
+
+    public Dictionary<Vector2Int, Tile> Grid {
+        get {
+            return _grid;
+        }
+    }
+
+    public MovementPath GenerateMovementPath(Vector2Int origin, Vector2Int destination)
+    {
+        var path = FindPath(origin, destination);
+        if (path == null) return null;
+
+        var pivots = GetPivotPoints(path);
+
+        var movementPath = new MovementPath(pivots);
+        //movementPath.Pivots = pivots;
+        return movementPath;
+    }
+
+    private List<Vector2Int> FindPath(Vector2Int start, Vector2Int end)
+    {
+        var openSet = new List<Vector2Int>();
+        var closedSet = new HashSet<Vector2Int>();
+        var cameFrom = new Dictionary<Vector2Int, Vector2Int>();
+        var gScore = new Dictionary<Vector2Int, float>();
+        var fScore = new Dictionary<Vector2Int, float>();
+
+        openSet.Add(start);
+        gScore[start] = 0;
+        fScore[start] = ManhattanDistance(start, end);
+
+        while (openSet.Count > 0)
+        {
+            var current = GetLowestFScore(openSet, fScore);
+            if (current == end)
+            {
+                return ReconstructPath(cameFrom, current);
+            }
+
+            openSet.Remove(current);
+            closedSet.Add(current);
+
+            foreach (var neighbor in GetValidNeighbors(current))
+            {
+                if (closedSet.Contains(neighbor)) continue;
+
+                var tentativeGScore = gScore[current] + 1;
+
+                if (!openSet.Contains(neighbor))
+                    openSet.Add(neighbor);
+                else if (tentativeGScore >= gScore.GetValueOrDefault(neighbor, float.MaxValue))
+                    continue;
+
+                cameFrom[neighbor] = current;
+                gScore[neighbor] = tentativeGScore;
+                fScore[neighbor] = gScore[neighbor] + ManhattanDistance(neighbor, end);
+            }
+        }
+
+        return null;
+    }
+
+    private List<Vector2Int> GetValidNeighbors(Vector2Int pos)
+    {
+        var neighbors = new List<Vector2Int>();
+        var directions = new Vector2Int[] {
+            new Vector2Int(0, 1),
+            new Vector2Int(1, 0),
+            new Vector2Int(0, -1),
+            new Vector2Int(-1, 0)
+        };
+
+        foreach (var dir in directions)
+        {
+            var neighbor = pos + dir;
+            if (_grid.ContainsKey(neighbor) && !_grid[neighbor].blocksMovement)
+            {
+                neighbors.Add(neighbor);
+            }
+        }
+        return neighbors;
+    }
+
+    private float ManhattanDistance(Vector2Int a, Vector2Int b)
+    {
+        return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
+    }
+
+    private Vector2Int GetLowestFScore(List<Vector2Int> openSet, Dictionary<Vector2Int, float> fScore)
+    {
+        var lowest = openSet[0];
+        foreach (var pos in openSet)
+        {
+            if (fScore.GetValueOrDefault(pos, float.MaxValue) < fScore.GetValueOrDefault(lowest, float.MaxValue))
+                lowest = pos;
+        }
+        return lowest;
+    }
+
+    private List<Vector2Int> ReconstructPath(Dictionary<Vector2Int, Vector2Int> cameFrom, Vector2Int current)
+    {
+        var path = new List<Vector2Int> { current };
+        while (cameFrom.ContainsKey(current))
+        {
+            current = cameFrom[current];
+            path.Insert(0, current);
+        }
+        return path;
+    }
+
+    private List<Vector2Int> GetPivotPoints(List<Vector2Int> path)
+    {
+        if (path.Count <= 2) return path;
+
+        var pivots = new List<Vector2Int> { path[0] };
+        var currentDirection = path[1] - path[0];
+
+        for (int i = 1; i < path.Count - 1; i++)
+        {
+            var newDirection = path[i + 1] - path[i];
+            if (newDirection != currentDirection)
+            {
+                pivots.Add(path[i]);
+                currentDirection = newDirection;
+            }
+        }
+
+        pivots.Add(path[path.Count - 1]);
+        return pivots;
     }
 
     //Note: Untested
@@ -48,6 +189,7 @@ public class GridManager : MonoBehaviour
     {
         return _grid[coordinates].transform.position;
     }
+
 
     //public float GridXFromGameX(float x)
     //{
@@ -70,6 +212,7 @@ public class GridManager : MonoBehaviour
         return new Vector2(x, y);
     }
 
+    //Game coordinates, not grid cells
     public float GetWorldX(int x)
     {
         float xOffset = (_width - 1) * (1 + cellGap) / 2;
@@ -80,6 +223,26 @@ public class GridManager : MonoBehaviour
     {
         float yOffset = (_height - 1) * (1 + cellGap) / 2;
         return y * (1 + cellGap) - yOffset;
+    }
+
+    public int GetGridX(float worldX)
+    {
+        float xOffset = (_width - 1) * (1 + cellGap) / 2;
+        return Mathf.RoundToInt((worldX + xOffset) / (1 + cellGap));
+    }
+
+    public int GetGridY(float worldY)
+    {
+        float yOffset = (_height - 1) * (1 + cellGap) / 2;
+        return Mathf.RoundToInt((worldY + yOffset) / (1 + cellGap));
+    }
+
+    public Vector2Int GetGridPosition(Vector2 worldPosition)
+    {
+        return new Vector2Int(
+            GetGridX(worldPosition.x),
+            GetGridY(worldPosition.y)
+        );
     }
 
     private void GenerateGrid()

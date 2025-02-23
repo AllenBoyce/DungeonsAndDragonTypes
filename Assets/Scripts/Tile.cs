@@ -8,7 +8,9 @@ public class Tile : MonoBehaviour
     [SerializeField] private GridManager _gridManager;
     [SerializeField] private GameObject _highlight;
     [SerializeField] private LevelManager _levelManager;
-    private List<string> tags = new List<string>();
+    public List<string> tags = new List<string>();
+
+    public bool blocksMovement = false;
 
     public int x;
     public int y;

@@ -10,14 +10,27 @@ public class MovementController : MonoBehaviour
         _gridManager = Object.FindFirstObjectByType<GridManager>();
     }
 
-
-    public async void MoveUnit(Unit u, int gridX, int gridY)
-    {
-        u.State = "MOVING";
-        await MoveUnitVertical(u, gridY);
-        await MoveUnitHorizontal(u, gridX);
-        u.State = "IDLE";
+    public async void WalkUnit(Unit u, MovementPath path) {
+        if(path.Pivots.Count <= 0){
+            Debug.LogError("MovementPath has no pivots");
+            return;
+        }
+        float unitZ = u.transform.position.z;
+        foreach(Vector2Int point in path.Pivots) {
+            Vector3 destination = getDestination(point.x, point.y, unitZ);
+            await DragUnit(u, destination);
+        }
     }
+
+    
+
+    // public async void MoveUnit(Unit u, int gridX, int gridY)
+    // {
+    //     u.State = "MOVING";
+    //     await MoveUnitVertical(u, gridY);
+    //     await MoveUnitHorizontal(u, gridX);
+    //     u.State = "IDLE";
+    // }
 
     public async Task MoveUnitHorizontal(Unit u, int gridX)
     {
@@ -59,5 +72,11 @@ public class MovementController : MonoBehaviour
     {
         float destY = _gridManager.GetWorldY(gridY);
         return new Vector3(u.transform.position.x, destY, u.transform.position.z);
+    }
+
+    private Vector3 getDestination(int gridX, int gridY, float unitZ) {
+        float destX = _gridManager.GetWorldX(gridX);
+        float destY = _gridManager.GetWorldY(gridY);
+        return new Vector3(destX, destY, unitZ);
     }
 }

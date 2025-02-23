@@ -29,11 +29,15 @@ public class LevelManager: MonoBehaviour
     public void HandleTileClick(Tile t)
     {
         Debug.Log(("Tile clicked @ {0}, {1}", t.x, t.y));
+        Debug.Log(t.blocksMovement);
         if(_isPlayersTurn)
         {
-            if (isValidMove(_player, t.x, t.y))
+            Vector2Int origin = _gridManager.GetGridPosition(new Vector2(_player.transform.position.x, _player.transform.position.y));
+            Vector2Int destination = new Vector2Int(t.x, t.y);
+            MovementPath path = _gridManager.GenerateMovementPath(origin, destination);
+            if (isValidPath(path) && _isPlayersTurn) //rewrite logic when turns are implemented
             {
-                _movementController.MoveUnit(_player, t.x, t.y);
+                _movementController.WalkUnit(_player, path);
                 //_isPlayersTurn = false; Removing this for now for testing
             }
             else {
@@ -45,9 +49,12 @@ public class LevelManager: MonoBehaviour
     //Complete later with checks once paths are implemented
     private bool isValidMove(Unit u, int x, int y)
     {
-        return true;
+        return !_gridManager.Grid[new Vector2Int(x,y)].blocksMovement;
     }
 
+    private bool isValidPath(MovementPath path) {
+        return path.Pivots.Count > 0;
+    }
 
     void Update()
     {
