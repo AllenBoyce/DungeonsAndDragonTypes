@@ -70,6 +70,7 @@
     <Compile Include="Assets/Scripts/GridManager.cs" />
     <Compile Include="Assets/Scripts/Unit.cs" />
     <Compile Include="Assets/Scripts/Player.cs" />
+    <Compile Include="Assets/Scripts/UnitState.cs" />
     <Compile Include="Assets/Scripts/LevelManager.cs" />
     <Compile Include="Assets/Scripts/MovementPath.cs" />
   </ItemGroup>
