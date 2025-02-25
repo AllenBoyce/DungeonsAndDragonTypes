@@ -10,7 +10,8 @@ public class MovementController : MonoBehaviour
         _gridManager = Object.FindFirstObjectByType<GridManager>();
     }
 
-    public async void WalkUnit(Unit u, MovementPath path) {
+    public async Task WalkUnit(Unit u, MovementPath path) {
+        u.IsMoving = true;
         if(path.Pivots.Count <= 0){
             Debug.LogError("MovementPath has no pivots");
             return;
@@ -20,6 +21,7 @@ public class MovementController : MonoBehaviour
             Vector3 destination = getDestination(point.x, point.y, unitZ);
             await DragUnit(u, destination);
         }
+        u.IsMoving = false;
     }
 
     

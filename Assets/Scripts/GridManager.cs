@@ -50,6 +50,20 @@ public class GridManager : MonoBehaviour
         _grid[new Vector2Int(11, 1)].blocksMovement = true;
         _grid[new Vector2Int(12, 3)].blocksMovement = true;
         _grid[new Vector2Int(14, 6)].blocksMovement = true;
+        _grid[new Vector2Int(13, 4)].blocksMovement = true;
+        _grid[new Vector2Int(14, 4)].blocksMovement = true;
+
+        //Now do the outline of the grid
+        for (int i = 0; i < 16; i++)
+        {
+            _grid[new Vector2Int(i, 0)].blocksMovement = true;
+            _grid[new Vector2Int(i, 8)].blocksMovement = true;
+        }
+        for (int i = 0; i < 9; i++)
+        {
+            _grid[new Vector2Int(0,i)].blocksMovement = true;
+            _grid[new Vector2Int(15,i)].blocksMovement = true;
+        }
 
         SetCamera();
     }

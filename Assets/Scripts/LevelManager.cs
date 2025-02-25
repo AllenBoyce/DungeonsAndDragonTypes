@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class LevelManager: MonoBehaviour
@@ -26,18 +27,18 @@ public class LevelManager: MonoBehaviour
         u.enabled = true;
     }
 
-    public void HandleTileClick(Tile t)
+    public async Task HandleTileClick(Tile t)
     {
         Debug.Log(("Tile clicked @ {0}, {1}", t.x, t.y));
         Debug.Log(t.blocksMovement);
-        if(_isPlayersTurn)
+        if(_isPlayersTurn && !_player.IsMoving)
         {
             Vector2Int origin = _gridManager.GetGridPosition(new Vector2(_player.transform.position.x, _player.transform.position.y));
             Vector2Int destination = new Vector2Int(t.x, t.y);
             MovementPath path = _gridManager.GenerateMovementPath(origin, destination);
             if (isValidPath(path) && _isPlayersTurn) //rewrite logic when turns are implemented
             {
-                _movementController.WalkUnit(_player, path);
+                await _movementController.WalkUnit(_player, path);
                 //_isPlayersTurn = false; Removing this for now for testing
             }
             else {

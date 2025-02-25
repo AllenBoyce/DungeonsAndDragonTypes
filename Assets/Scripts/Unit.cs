@@ -25,6 +25,12 @@ public class Unit : MonoBehaviour
         set { _moveSpeed = value; }
     }
 
+    public bool IsMoving
+    {
+        get { return _isMoving; }
+        set { _isMoving = value; }
+    }
+
     // Update is called once per frame
     void Update()
     {
