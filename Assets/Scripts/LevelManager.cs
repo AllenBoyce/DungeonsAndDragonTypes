@@ -6,7 +6,9 @@ public class LevelManager: MonoBehaviour
 
     [SerializeField] private GridManager _gridManager;
     [SerializeField] private MovementController _movementController;
+    [SerializeField] private AnimationController _animationController;
     [SerializeField] private Player _player;
+    
 
     private bool _isPlayersTurn;
 

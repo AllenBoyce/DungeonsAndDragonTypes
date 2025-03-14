@@ -46,11 +46,11 @@ public class PokemonAnimationLoader : MonoBehaviour
         }
     }
     
-    public void PlayAnimation(string animationName)
+    public void PlayAnimation(string animName, string direction)
     {
         if (animator != null)
         {
-            animator.Play(animationName);
+            animator.Play($"{pokemonName}_{animName}_{direction}");
         }
     }
 
