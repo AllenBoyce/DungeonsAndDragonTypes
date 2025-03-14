@@ -1,17 +1,12 @@
 using UnityEngine;
 
-public class Unit : MonoBehaviour
+public interface Unit
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     private bool _isMoving = false;
     private string state = "IDLE";
     private float _moveSpeed = 2.0f;
-
-    void Start()
-    {
-        
-    }
 
     public string State
     {
@@ -29,11 +24,5 @@ public class Unit : MonoBehaviour
     {
         get { return _isMoving; }
         set { _isMoving = value; }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
