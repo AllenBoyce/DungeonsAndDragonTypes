@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public interface Unit
+public abstract Unit
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
