@@ -321,6 +321,7 @@ public class GridManager : MonoBehaviour
 
                 Sprite tileSprite = _tileSprites[_tileSpriteMap[tileTypes[i]]];
                 spawnedTile.SetSprite(tileSprite);
+                if (tileTypes[i].Equals("X")) { spawnedTile.blocksMovement = true; }
                 i++;
 
                 //Make sure these are rendered above the tile sprites
@@ -333,6 +334,7 @@ public class GridManager : MonoBehaviour
                 spawnedTile.y = y;
 
                 _grid[new Vector2Int(x, y)] = spawnedTile;
+                
             }
         }
         //_camera.transform.position = new Vector3(0, 0, -10);

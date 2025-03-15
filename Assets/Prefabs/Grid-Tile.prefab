@@ -105,6 +105,9 @@ MonoBehaviour:
   _gridManager: {fileID: 0}
   _highlight: {fileID: 5224201363581897999}
   _levelManager: {fileID: 0}
+  tags: []
+  _spriteRenderer: {fileID: 9118886482045947703}
+  blocksMovement: 0
   x: 0
   y: 0
 --- !u!61 &9189463232809594031
