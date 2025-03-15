@@ -313,6 +313,7 @@ public class GridManager : MonoBehaviour
             for (int x = 0; x < _width; x++)
             {
                 var spawnedTile = Instantiate(_tilePrefab, new Vector3(x * (1 + cellGap) - xOffset, y * (1 + cellGap) - yOffset), Quaternion.identity);
+                spawnedTile.transform.parent = transform;
                 /*string tileType = tileTypes[i];
                 
                 string tileResourceName = _tileKeyMap[tileType]; // Add this line
