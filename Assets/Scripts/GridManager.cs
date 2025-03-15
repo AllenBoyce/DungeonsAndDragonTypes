@@ -1,7 +1,9 @@
 //Some of this is based on: https://www.youtube.com/watch?v=kkAjpQAM-jE
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class GridManager : MonoBehaviour
 {
@@ -15,12 +17,51 @@ public class GridManager : MonoBehaviour
 
     [SerializeField] private Transform _camera;
 
+    [SerializeField] private List<Sprite> _tileSprites;
+
     private Dictionary<Vector2Int, Tile> _grid = new Dictionary<Vector2Int, Tile>();
+
+    private string _gridMap = "TL T T T T T T T T T T T T T T TR " +
+                               "SL - - - - - - - - - - - - X - SR " +
+                               "SL - - - X - - - - - - - - - - SR " +
+                               "SL - - - - - - - - - - - X - - SR " +
+                               "SL - X - - - - - - - - - - - - SR " +
+                               "SL - - X X - - - - - - - - - - SR " +
+                               "SL - - - X - - - - X - - - - - SR " +
+                               "SL - - - - - - - - X - - - - - SR " +
+                               "BL B B B B B B B B B B B B B B BR";
+    //private Dictionary<string, string> _tileKeyMap = new Dictionary<string, string>();
+    private Dictionary<string, int> _tileSpriteMap = new Dictionary<string, int>();
+    
+    //private Tilemap _tilemap = Resources.Load<Tilemap>("Sprites/Tilesheets");
 
 
     [SerializeField] private GameObject _player;
     void Start()
     {
+        /*//Populate tileKeyMap
+        _tileKeyMap.Add("-", "Apple-Trimmed-Tilesheet-34");
+        _tileKeyMap.Add("X", "Apple-Trimmed-Tilesheet-37");
+        _tileKeyMap.Add("TL", "Apple-Trimmed-Tilesheet-3");
+        _tileKeyMap.Add("TR", "Apple-Trimmed-Tilesheet-5");
+        _tileKeyMap.Add("BL", "Apple-Trimmed-Tilesheet-63");
+        _tileKeyMap.Add("BR", "Apple-Trimmed-Tilesheet-65");
+        _tileKeyMap.Add("B", "Apple-Trimmed-Tilesheet-64");
+        _tileKeyMap.Add("T", "Apple-Trimmed-Tilesheet-4");
+        _tileKeyMap.Add("SL", "Apple-Trimmed-Tilesheet-33");
+        _tileKeyMap.Add("SR", "Apple-Trimmed-Tilesheet-35");*/
+        
+        _tileSpriteMap.Add("-", 4);
+        _tileSpriteMap.Add("X", 6);
+        _tileSpriteMap.Add("TL", 0);
+        _tileSpriteMap.Add("TR", 2);
+        _tileSpriteMap.Add("BL", 8);
+        _tileSpriteMap.Add("BR", 10);
+        _tileSpriteMap.Add("B", 9);
+        _tileSpriteMap.Add("T", 1);
+        _tileSpriteMap.Add("SL", 3);
+        _tileSpriteMap.Add("SR", 5);
+        
 
         var gridComponent = GetComponent<Grid>();
         if(gridComponent != null)
@@ -265,13 +306,24 @@ public class GridManager : MonoBehaviour
         float xOffset = (_width - 1) * (1 + cellGap) / 2;
         float yOffset = (_height - 1) * (1 + cellGap) / 2;
 
-
-        for (int x = 0; x < _width; x++)
+        string[] tileTypes = _gridMap.Split();
+        int i = 0;
+        for (int y = 0; y < _height; y++)
         {
-            for (int y = 0; y < _height; y++)
+            for (int x = 0; x < _width; x++)
             {
-
                 var spawnedTile = Instantiate(_tilePrefab, new Vector3(x * (1 + cellGap) - xOffset, y * (1 + cellGap) - yOffset), Quaternion.identity);
+                /*string tileType = tileTypes[i];
+                
+                string tileResourceName = _tileKeyMap[tileType]; // Add this line
+                var tile = Resources.Load<UnityEngine.Tilemaps.Tile>($"Sprites/Tilesheets/Palette/{tileResourceName}");
+                Sprite tileSprite = tile.sprite;*/
+
+                Sprite tileSprite = _tileSprites[_tileSpriteMap[tileTypes[i]]];
+                Debug.Log(tileSprite.name);
+                Debug.Log(spawnedTile.name);
+                spawnedTile.SetSprite(tileSprite);
+                i++;
 
                 //Make sure these are rendered above the tile sprites
                 Vector3 tilePos = spawnedTile.transform.position;

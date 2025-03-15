@@ -2,6 +2,8 @@
 
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEditor.UI;
+using UnityEngine.PlayerLoop;
 
 public class Tile : MonoBehaviour
 {
@@ -9,6 +11,7 @@ public class Tile : MonoBehaviour
     [SerializeField] private GameObject _highlight;
     [SerializeField] private LevelManager _levelManager;
     public List<string> tags = new List<string>();
+    [SerializeField] private SpriteRenderer _spriteRenderer;
 
     public bool blocksMovement = false;
 
@@ -27,6 +30,17 @@ public class Tile : MonoBehaviour
         {
             Debug.LogError("LevelManager not found in the scene.");
         }
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        if (_spriteRenderer == null)
+        {
+            Debug.LogError("SpriteRenderer not found in the scene.");
+        }
+    }
+
+    public void SetSprite(Sprite sprite)
+    {
+        Debug.Log(sprite.name);
+        _spriteRenderer.sprite = sprite;
     }
     private void OnMouseOver()
     {
