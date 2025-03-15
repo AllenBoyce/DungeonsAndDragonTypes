@@ -39,7 +39,6 @@ public class Tile : MonoBehaviour
 
     public void SetSprite(Sprite sprite)
     {
-        Debug.Log(sprite.name);
         _spriteRenderer.sprite = sprite;
     }
     private void OnMouseOver()

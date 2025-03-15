@@ -84,7 +84,7 @@ public class GridManager : MonoBehaviour
 
         //TEMPORARY: Manual tile type setting
         //Obstacle tiles at: (1,7), (2,3), (5, 7), (6, 2), (11, 1), (12, 3), (14, 6)
-        _grid[new Vector2Int(1, 7)].blocksMovement = true;
+        /*_grid[new Vector2Int(1, 7)].blocksMovement = true;
         _grid[new Vector2Int(2, 3)].blocksMovement = true;
         _grid[new Vector2Int(5, 7)].blocksMovement = true;
         _grid[new Vector2Int(6, 2)].blocksMovement = true;
@@ -92,7 +92,7 @@ public class GridManager : MonoBehaviour
         _grid[new Vector2Int(12, 3)].blocksMovement = true;
         _grid[new Vector2Int(14, 6)].blocksMovement = true;
         _grid[new Vector2Int(13, 4)].blocksMovement = true;
-        _grid[new Vector2Int(14, 4)].blocksMovement = true;
+        _grid[new Vector2Int(14, 4)].blocksMovement = true;*/
 
         //Now do the outline of the grid
         for (int i = 0; i < 16; i++)
@@ -308,7 +308,7 @@ public class GridManager : MonoBehaviour
 
         string[] tileTypes = _gridMap.Split();
         int i = 0;
-        for (int y = 0; y < _height; y++)
+        for (int y = _height - 1; y >= 0; y--)
         {
             for (int x = 0; x < _width; x++)
             {
@@ -320,8 +320,6 @@ public class GridManager : MonoBehaviour
                 Sprite tileSprite = tile.sprite;*/
 
                 Sprite tileSprite = _tileSprites[_tileSpriteMap[tileTypes[i]]];
-                Debug.Log(tileSprite.name);
-                Debug.Log(spawnedTile.name);
                 spawnedTile.SetSprite(tileSprite);
                 i++;
 
