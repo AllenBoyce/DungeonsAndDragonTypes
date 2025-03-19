@@ -9,7 +9,12 @@ public class GridManager : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
-    private float cellGap;
+    /*
+     * cellGap: the distance between the tiles horizontally and vertically.
+     * 1: distance between tiles is equivalent to the length/width of one cell
+     * 0: no distance between tiles
+     */
+    private float _cellGap = 0.015f;
 
     [SerializeField] private int _width, _height;
 
@@ -39,17 +44,6 @@ public class GridManager : MonoBehaviour
     [SerializeField] private GameObject _player;
     void Start()
     {
-        /*//Populate tileKeyMap
-        _tileKeyMap.Add("-", "Apple-Trimmed-Tilesheet-34");
-        _tileKeyMap.Add("X", "Apple-Trimmed-Tilesheet-37");
-        _tileKeyMap.Add("TL", "Apple-Trimmed-Tilesheet-3");
-        _tileKeyMap.Add("TR", "Apple-Trimmed-Tilesheet-5");
-        _tileKeyMap.Add("BL", "Apple-Trimmed-Tilesheet-63");
-        _tileKeyMap.Add("BR", "Apple-Trimmed-Tilesheet-65");
-        _tileKeyMap.Add("B", "Apple-Trimmed-Tilesheet-64");
-        _tileKeyMap.Add("T", "Apple-Trimmed-Tilesheet-4");
-        _tileKeyMap.Add("SL", "Apple-Trimmed-Tilesheet-33");
-        _tileKeyMap.Add("SR", "Apple-Trimmed-Tilesheet-35");*/
         
         _tileSpriteMap.Add("-", 4);
         _tileSpriteMap.Add("X", 6);
@@ -61,38 +55,10 @@ public class GridManager : MonoBehaviour
         _tileSpriteMap.Add("T", 1);
         _tileSpriteMap.Add("SL", 3);
         _tileSpriteMap.Add("SR", 5);
-        
-
-        var gridComponent = GetComponent<Grid>();
-        if(gridComponent != null)
-        {
-            //Assuming cellGap is a Vector2 with x and y being the same
-            cellGap = gridComponent.cellGap.x;
-            if(cellGap != gridComponent.cellGap.y)
-            {
-                Debug.LogError("Grid does not have uniform cell gap");
-            }
-        }
-        else
-        {
-            Debug.LogError("Grid component not found");
-        }
 
 
 
         GenerateGrid();
-
-        //TEMPORARY: Manual tile type setting
-        //Obstacle tiles at: (1,7), (2,3), (5, 7), (6, 2), (11, 1), (12, 3), (14, 6)
-        /*_grid[new Vector2Int(1, 7)].blocksMovement = true;
-        _grid[new Vector2Int(2, 3)].blocksMovement = true;
-        _grid[new Vector2Int(5, 7)].blocksMovement = true;
-        _grid[new Vector2Int(6, 2)].blocksMovement = true;
-        _grid[new Vector2Int(11, 1)].blocksMovement = true;
-        _grid[new Vector2Int(12, 3)].blocksMovement = true;
-        _grid[new Vector2Int(14, 6)].blocksMovement = true;
-        _grid[new Vector2Int(13, 4)].blocksMovement = true;
-        _grid[new Vector2Int(14, 4)].blocksMovement = true;*/
 
         //Now do the outline of the grid
         for (int i = 0; i < 16; i++)
@@ -244,19 +210,7 @@ public class GridManager : MonoBehaviour
     {
         return _grid[coordinates].transform.position;
     }
-
-
-    //public float GridXFromGameX(float x)
-    //{
-    //    float xOffset = (_width - 1) * (1 + cellGap) / 2;
-    //    return (x + xOffset) / (1 + cellGap);
-    //}
-
-    //public float GridYFromGameY(float y)
-    //{
-    //    float yOffset = (_height - 1) * (1 + cellGap) / 2;
-    //    return (y + yOffset) / (1 + cellGap);
-    //}
+    
 
     //Note: Untested
     public Vector2 GetWorldPosition(Vector2Int position)
@@ -270,26 +224,26 @@ public class GridManager : MonoBehaviour
     //Game coordinates, not grid cells
     public float GetWorldX(int x)
     {
-        float xOffset = (_width - 1) * (1 + cellGap) / 2;
-        return x * (1 + cellGap) - xOffset;
+        float xOffset = (_width - 1) * (1 + _cellGap) / 2;
+        return x * (1 + _cellGap) - xOffset;
     }
 
     public float GetWorldY(int y)
     {
-        float yOffset = (_height - 1) * (1 + cellGap) / 2;
-        return y * (1 + cellGap) - yOffset;
+        float yOffset = (_height - 1) * (1 + _cellGap) / 2;
+        return y * (1 + _cellGap) - yOffset;
     }
 
     public int GetGridX(float worldX)
     {
-        float xOffset = (_width - 1) * (1 + cellGap) / 2;
-        return Mathf.RoundToInt((worldX + xOffset) / (1 + cellGap));
+        float xOffset = (_width - 1) * (1 + _cellGap) / 2;
+        return Mathf.RoundToInt((worldX + xOffset) / (1 + _cellGap));
     }
 
     public int GetGridY(float worldY)
     {
-        float yOffset = (_height - 1) * (1 + cellGap) / 2;
-        return Mathf.RoundToInt((worldY + yOffset) / (1 + cellGap));
+        float yOffset = (_height - 1) * (1 + _cellGap) / 2;
+        return Mathf.RoundToInt((worldY + yOffset) / (1 + _cellGap));
     }
 
     public Vector2Int GetGridPosition(Vector2 worldPosition)
@@ -303,8 +257,8 @@ public class GridManager : MonoBehaviour
     private void GenerateGrid()
     {
         _grid = new Dictionary<Vector2Int, Tile>();
-        float xOffset = (_width - 1) * (1 + cellGap) / 2;
-        float yOffset = (_height - 1) * (1 + cellGap) / 2;
+        float xOffset = (_width - 1) * (1 + _cellGap) / 2;
+        float yOffset = (_height - 1) * (1 + _cellGap) / 2;
 
         string[] tileTypes = _gridMap.Split();
         int i = 0;
@@ -312,13 +266,8 @@ public class GridManager : MonoBehaviour
         {
             for (int x = 0; x < _width; x++)
             {
-                var spawnedTile = Instantiate(_tilePrefab, new Vector3(x * (1 + cellGap) - xOffset, y * (1 + cellGap) - yOffset), Quaternion.identity);
+                var spawnedTile = Instantiate(_tilePrefab, new Vector3(x * (1 + _cellGap) - xOffset, y * (1 + _cellGap) - yOffset), Quaternion.identity);
                 spawnedTile.transform.parent = transform;
-                /*string tileType = tileTypes[i];
-                
-                string tileResourceName = _tileKeyMap[tileType]; // Add this line
-                var tile = Resources.Load<UnityEngine.Tilemaps.Tile>($"Sprites/Tilesheets/Palette/{tileResourceName}");
-                Sprite tileSprite = tile.sprite;*/
 
                 Sprite tileSprite = _tileSprites[_tileSpriteMap[tileTypes[i]]];
                 spawnedTile.SetSprite(tileSprite);
@@ -347,8 +296,8 @@ public class GridManager : MonoBehaviour
     void SetCamera()
     {
         // Calculate the width and height of the grid including the cell gap
-        float gridWidth = _width * (1 + cellGap);
-        float gridHeight = _height * (1 + cellGap);
+        float gridWidth = _width * (1 + _cellGap);
+        float gridHeight = _height * (1 + _cellGap);
 
         // Calculate the aspect ratio of the camera
         float aspectRatio = (float)Screen.width / Screen.height;

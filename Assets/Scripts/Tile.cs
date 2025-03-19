@@ -1,9 +1,11 @@
 //Based on: https://www.youtube.com/watch?v=kkAjpQAM-jE
 
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEditor.UI;
 using UnityEngine.PlayerLoop;
+using Object = UnityEngine.Object;
 
 public class Tile : MonoBehaviour
 {
@@ -43,6 +45,7 @@ public class Tile : MonoBehaviour
     }
     private void OnMouseOver()
     {
+        Debug.Log(_highlight.name);
         _highlight.SetActive(true);
 
         if (Input.GetMouseButtonDown(0))

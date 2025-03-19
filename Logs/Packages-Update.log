@@ -42,3 +42,19 @@ The following packages were updated:
   com.unity.collab-proxy from version 2.4.4 to 2.5.2
   com.unity.inputsystem from version 1.9.0 to 1.11.2
   com.unity.visualscripting from version 1.9.4 to 1.9.5
+
+=== Mon Mar 17 18:39:13 2025
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.nuget.newtonsoft-json from version 3.0.0 to 3.2.1
+
+=== Mon Mar 17 18:39:13 2025
+
+Packages were changed.
+Update Mode: mergeDefaultDependencies
+
+The following packages were added:
+  com.unity.nuget.newtonsoft-json@3.2.1
