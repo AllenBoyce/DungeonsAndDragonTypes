@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     private LevelManager _levelManager;
     private GridManager _gridManager;
     private MovementController _movementController;
+    private UIController _uiController;
     
     //Variables pertaining to the game
     private int _activePlayer;
@@ -22,6 +23,7 @@ public class GameManager : MonoBehaviour
         _levelManager = FindFirstObjectByType<LevelManager>();
         _gridManager = FindFirstObjectByType<GridManager>();
         _movementController = FindFirstObjectByType<MovementController>();
+        _uiController = FindFirstObjectByType<UIController>();
 
 
         if (DEMO)
@@ -110,6 +112,7 @@ public class GameManager : MonoBehaviour
                 {
                     //If so, then select it and move on to UnitSelected state.
                     _selectedUnit = u;
+                    _uiController.DisplayUnitControls(_selectedUnit);
                     TransitionState(GameState.UnitSelected);
                 }
                 else
@@ -143,6 +146,11 @@ public class GameManager : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    public void SelectMove(Unit u, string moveName)
+    {
+        Debug.Log("Chosen Move: " + moveName);
     }
 
     private enum GameState

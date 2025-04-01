@@ -195,7 +195,7 @@ public class GridManager : MonoBehaviour
         }
 
         // Center the camera on the grid
-        _camera.position = new Vector3(0, 0, -10);
+        _camera.position = new Vector3(0, 0, Constants.CAMERA_LAYER);
     }
 
 }

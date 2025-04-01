@@ -25,8 +25,6 @@ public class Unit : MonoBehaviour
 
     public void Initialize(ScriptablePokemon pokemon, Vector3 position, int player)
     {
-        Debug.Log(pokemon);
-        Debug.Log(position);
         pokemonData = pokemon;
         _transform = transform;
         //Hiding model behind camera
@@ -38,7 +36,14 @@ public class Unit : MonoBehaviour
         //Temporary:
         _learnedMoves = pokemonData.learnableMoves;
     }
+    
+    public List<ScriptableMove> GetLearnedMoves() { return _learnedMoves;}
 
+    public ScriptablePokemon GetPokemonData()
+    {
+        return pokemonData;
+    }
+    
     public Vector2Int GetGridPosition()
     {
         return _gridPosition;
