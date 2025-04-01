@@ -47,31 +47,53 @@
     <Analyzer Include="/Applications/Unity/Hub/Editor/6000.0.31f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets/Scripts/MovementController.cs" />
-    <Compile Include="Assets/Scripts/Tile.cs" />
-    <Compile Include="Assets/Scripts/AnimationController.cs" />
+    <Compile Include="Assets/_Scripts/Units/Unit.cs" />
     <Compile Include="Assets/Scripts/GridManager.cs" />
-    <Compile Include="Assets/Scripts/PokemonAnimationLoader.cs" />
-    <Compile Include="Assets/Scripts/Unit.cs" />
-    <Compile Include="Assets/Scripts/Player.cs" />
-    <Compile Include="Assets/Scripts/UnitState.cs" />
-    <Compile Include="Assets/Scripts/CombatController.cs" />
+    <Compile Include="Assets/_Scripts/Managers/GridManager.cs" />
+    <Compile Include="Assets/_Scripts/Utilities/Singleton.cs" />
+    <Compile Include="Assets/_Scripts/Managers/GameManager.cs" />
+    <Compile Include="Assets/_Scripts/ObserverPattern/Subject.cs" />
+    <Compile Include="Assets/_Scripts/States/GameBaseState.cs" />
+    <Compile Include="Assets/_Scripts/Scriptables/ScriptableMove.cs" />
+    <Compile Include="Assets/_Scripts/Scriptables/ScriptablePokemon.cs" />
+    <Compile Include="Assets/_Scripts/Utilities/MovementPath.cs" />
+    <Compile Include="Assets/_Scripts/Managers/MovementController.cs" />
+    <Compile Include="Assets/_Scripts/Tile.cs" />
+    <Compile Include="Assets/_Scripts/PokemonModel.cs" />
+    <Compile Include="Assets/_Scripts/Utilities/MovementUtility.cs" />
+    <Compile Include="Assets/_Scripts/Pokemon.cs" />
+    <Compile Include="Assets/_Scripts/Utilities/PokemonAnimationLoader.cs" />
+    <Compile Include="Assets/_Scripts/ObserverPattern/IObserver.cs" />
+    <Compile Include="Assets/_Scripts/Managers/AnimationController.cs" />
     <Compile Include="Assets/Scripts/LevelManager.cs" />
-    <Compile Include="Assets/Scripts/MovementPath.cs" />
-    <None Include="Assets/ScriptTemplates/52-Mirror__Network Authenticator-NewNetworkAuthenticator.cs.txt" />
-    <None Include="Assets/Mirror/version.txt" />
-    <None Include="Assets/ScriptTemplates/56-Mirror__Network Discovery-NewNetworkDiscovery.cs.txt" />
-    <None Include="Assets/ScriptTemplates/51-Mirror__Network Manager With Actions-NewNetworkManagerWithActions.cs.txt" />
-    <None Include="Assets/ScriptTemplates/53-Mirror__Network Behaviour With Actions-NewNetworkBehaviourWithActions.cs.txt" />
-    <None Include="Assets/Mirror/Readme.txt" />
-    <None Include="Assets/ScriptTemplates/57-Mirror__Network Transform-NewNetworkTransform.cs.txt" />
-    <None Include="Assets/ScriptTemplates/52-Mirror__Network Behaviour-NewNetworkBehaviour.cs.txt" />
-    <None Include="Assets/Mirror/Plugins/Mono.Cecil/License.txt" />
-    <None Include="Assets/ScriptTemplates/55-Mirror__Network Room Player-NewNetworkRoomPlayer.cs.txt" />
-    <None Include="Assets/ScriptTemplates/54-Mirror__Custom Interest Management-CustomInterestManagement.cs.txt" />
-    <None Include="Assets/ScriptTemplates/50-Mirror__Network Manager-NewNetworkManager.cs.txt" />
-    <None Include="Assets/ScriptTemplates/54-Mirror__Network Room Manager-NewNetworkRoomManager.cs.txt" />
-    <None Include="Assets/Mirror/Hosting/Readme.txt" />
+    <Compile Include="Assets/_Scripts/Managers/GameStateManager.cs" />
+    <Compile Include="Assets/_Scripts/Managers/UnitManager.cs" />
+    <Compile Include="Assets/_Scripts/Player.cs" />
+    <Compile Include="Assets/_Scripts/Managers/LevelManager.cs" />
+    <None Include="Assets/TextMesh Pro/Shaders/TMPro.cginc" />
+    <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Overlay.shader" />
+    <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile-2-Pass.shader" />
+    <None Include="Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader" />
+    <None Include="Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc" />
+    <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF SSD.shader" />
+    <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Surface-Mobile.shader" />
+    <None Include="Assets/TextMesh Pro/Shaders/SDFFunctions.hlsl" />
+    <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Surface.shader" />
+    <None Include="Assets/TextMesh Pro/Sprites/EmojiOne Attribution.txt" />
+    <None Include="Assets/TextMesh Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader" />
+    <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF.shader" />
+    <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile SSD.shader" />
+    <None Include="Assets/TextMesh Pro/Resources/LineBreaking Leading Characters.txt" />
+    <None Include="Assets/TextMesh Pro/Shaders/TMPro_Properties.cginc" />
+    <None Include="Assets/TextMesh Pro/Shaders/TMPro_Surface.cginc" />
+    <None Include="Assets/TextMesh Pro/Resources/LineBreaking Following Characters.txt" />
+    <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Masking.shader" />
+    <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader" />
+    <None Include="Assets/TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader" />
+    <None Include="Assets/TextMesh Pro/Fonts/LiberationSans - OFL.txt" />
+    <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader" />
+    <None Include="Assets/TextMesh Pro/Sprites/EmojiOne.json" />
+    <None Include="Assets/TextMesh Pro/Shaders/TMP_Sprite.shader" />
     <Reference Include="UnityEngine">
       <HintPath>/Applications/Unity/Hub/Editor/6000.0.31f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>
@@ -420,26 +442,11 @@
     <Reference Include="UnityEditor.XRModule">
       <HintPath>/Applications/Unity/Hub/Editor/6000.0.31f1/Unity.app/Contents/Managed/UnityEngine/UnityEditor.XRModule.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.CecilX">
-      <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Assets/Mirror/Plugins/Mono.Cecil/Mono.CecilX.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.CecilX.Mdb">
-      <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Assets/Mirror/Plugins/Mono.Cecil/Mono.CecilX.Mdb.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.Collections.LowLevel.ILSupport">
       <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Library/PackageCache/com.unity.collections/Unity.Collections.LowLevel.ILSupport/Unity.Collections.LowLevel.ILSupport.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Library/PackageCache/com.unity.ext.nunit/net40/unity-custom/nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="Mirror.BouncyCastle.Cryptography">
-      <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Assets/Mirror/Transports/Encryption/Plugins/BouncyCastle/Mirror.BouncyCastle.Cryptography.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.CecilX.Pdb">
-      <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Assets/Mirror/Plugins/Mono.Cecil/Mono.CecilX.Pdb.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.CecilX.Rocks">
-      <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Assets/Mirror/Plugins/Mono.Cecil/Mono.CecilX.Rocks.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
       <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Library/PackageCache/com.unity.visualscripting/Runtime/VisualScripting.Flow/Dependencies/NCalc/Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
@@ -906,11 +913,11 @@
     <Reference Include="Unity.RenderPipelines.Core.ShaderLibrary">
       <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Library/ScriptAssemblies/Unity.RenderPipelines.Core.ShaderLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.2D.Aseprite.Editor">
-      <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Library/ScriptAssemblies/Unity.2D.Aseprite.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.PlasticSCM.Editor">
       <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Library/ScriptAssemblies/Unity.PlasticSCM.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.Aseprite.Editor">
+      <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Library/ScriptAssemblies/Unity.2D.Aseprite.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Multiplayer.Center.Editor">
       <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Library/ScriptAssemblies/Unity.Multiplayer.Center.Editor.dll</HintPath>
@@ -969,14 +976,14 @@
     <Reference Include="Unity.RenderPipelines.Universal.Config.Runtime">
       <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Config.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.2D.Aseprite.Common">
+      <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Library/ScriptAssemblies/Unity.2D.Aseprite.Common.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Multiplayer.Tools.NetworkProfiler.Editor">
       <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Library/ScriptAssemblies/Unity.Multiplayer.Tools.NetworkProfiler.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Universal.Editor">
       <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.2D.Aseprite.Common">
-      <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Library/ScriptAssemblies/Unity.2D.Aseprite.Common.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Animation.Runtime">
       <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Library/ScriptAssemblies/Unity.2D.Animation.Runtime.dll</HintPath>
@@ -1005,6 +1012,9 @@
     <Reference Include="Unity.2D.Tilemap.Extras.Editor">
       <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Library/ScriptAssemblies/Unity.2D.Tilemap.Extras.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
+      <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Library/ScriptAssemblies/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Multiplayer.Tools.NetworkSimulator.Editor">
       <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Library/ScriptAssemblies/Unity.Multiplayer.Tools.NetworkSimulator.Editor.dll</HintPath>
     </Reference>
@@ -1013,9 +1023,6 @@
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
-      <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Library/ScriptAssemblies/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Tilemap.Extras">
       <HintPath>/Users/allenboyce/Unity/DungeonsAndDragonTypes/Library/ScriptAssemblies/Unity.2D.Tilemap.Extras.dll</HintPath>
@@ -1109,54 +1116,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Mirror.Editor.csproj">
-      <Project>{f4dee25a-1aaf-199a-d275-0fe1c3637f08}</Project>
-      <Name>Mirror.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Edgegap.csproj">
-      <Project>{1abfbc6b-9d07-7b5c-cdae-06977c81d5a6}</Project>
-      <Name>Edgegap</Name>
-    </ProjectReference>
-    <ProjectReference Include="Telepathy.csproj">
-      <Project>{15dd051a-69c7-19ea-1699-1fe1a8d5c8dd}</Project>
-      <Name>Telepathy</Name>
-    </ProjectReference>
-    <ProjectReference Include="Mirror.Components.csproj">
-      <Project>{74c50740-20dd-4cec-4d68-332ffa7eed0e}</Project>
-      <Name>Mirror.Components</Name>
-    </ProjectReference>
-    <ProjectReference Include="EncryptionTransportEditor.csproj">
-      <Project>{03ce9a49-b85c-ec61-cd23-9d5874dddf0e}</Project>
-      <Name>EncryptionTransportEditor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Mirror.CompilerSymbols.csproj">
-      <Project>{7133004d-96b0-6040-bb82-5b434665d2e1}</Project>
-      <Name>Mirror.CompilerSymbols</Name>
-    </ProjectReference>
-    <ProjectReference Include="Mirror.Authenticators.csproj">
-      <Project>{be7f6644-7325-45ec-be41-18567405a270}</Project>
-      <Name>Mirror.Authenticators</Name>
-    </ProjectReference>
-    <ProjectReference Include="Mirror.Examples.csproj">
-      <Project>{a6cd4bf2-2d44-32af-2d69-1c9aa8b57071}</Project>
-      <Name>Mirror.Examples</Name>
-    </ProjectReference>
-    <ProjectReference Include="kcp2k.csproj">
-      <Project>{f022c916-9ee5-0b11-3b84-ac82da861330}</Project>
-      <Name>kcp2k</Name>
-    </ProjectReference>
-    <ProjectReference Include="Mirror.csproj">
-      <Project>{16028adb-f030-b376-7baf-31e944b9c167}</Project>
-      <Name>Mirror</Name>
-    </ProjectReference>
-    <ProjectReference Include="SimpleWebTransport.csproj">
-      <Project>{a70dae35-1157-3fd4-f4bf-8584375cba2b}</Project>
-      <Name>SimpleWebTransport</Name>
-    </ProjectReference>
-    <ProjectReference Include="Mirror.Transports.csproj">
-      <Project>{a1d640ad-17ab-82af-30be-37cba4c63fdc}</Project>
-      <Name>Mirror.Transports</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

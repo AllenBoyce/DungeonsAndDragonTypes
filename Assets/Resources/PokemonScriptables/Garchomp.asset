@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ecc5ad5ec83c4d3789ad1514ff6d82d, type: 3}
+  m_Name: Garchomp
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 8109128916114450586, guid: 46f7e71ff91c948f9ab2917dc5d84460, type: 3}
+  pokemonName: Garchomp
+  _stats:
+    hp: 108
+    atk: 130
+    def: 95
+    spatk: 80
+    spdef: 85
+    speed: 102
+    moveSpeed: 3
+  sprite: {fileID: 21300000, guid: c4691b34a809e40d78c6ec8affb2c46b, type: 3}
+  portrait: {fileID: 76431737926954757, guid: df2e25b31cc964c5e91d18400928c710, type: 3}
+  learnableMoves:
+  - {fileID: 11400000, guid: 1e82ecc76dcd643fc85863302485635b, type: 2}
