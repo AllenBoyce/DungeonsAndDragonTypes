@@ -28,6 +28,7 @@ public class GridManager : MonoBehaviour
 
     [SerializeField] private List<Sprite> _tileSprites;
 
+    //Format: <(x,y), Tile>
     public Dictionary<Vector2Int, Tile> _grid = new Dictionary<Vector2Int, Tile>();
 
     private string _gridMap = "TL T T T T T T T T T T T T T T TR " +

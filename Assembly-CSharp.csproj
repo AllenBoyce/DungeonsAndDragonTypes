@@ -62,6 +62,7 @@
     <Compile Include="Assets/_Scripts/Tile.cs" />
     <Compile Include="Assets/_Scripts/PokemonModel.cs" />
     <Compile Include="Assets/_Scripts/Utilities/MovementUtility.cs" />
+    <Compile Include="Assets/_Scripts/Utilities/TargetingUtility.cs" />
     <Compile Include="Assets/_Scripts/Pokemon.cs" />
     <Compile Include="Assets/_Scripts/Utilities/PokemonAnimationLoader.cs" />
     <Compile Include="Assets/_Scripts/Managers/UIController.cs" />

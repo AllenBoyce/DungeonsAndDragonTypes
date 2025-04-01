@@ -2,13 +2,12 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI; // Add this import for Image component
 using Button = UnityEngine.UI.Button;
 
 public class UIController : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private Canvas _gameCanvas;
+    [SerializeField] private Canvas _gameCanvas;
     private GameObject _portraitObj;
     private Button[] _actionButtons;
     
@@ -16,7 +15,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject _actionButtonPrefab;
     void Start()
     {
-        _gameCanvas = GameObject.Find("GameCanvas").GetComponent<Canvas>();
+
     }
 
     public void Wipe()
@@ -32,7 +31,7 @@ public class UIController : MonoBehaviour
         ScriptablePokemon data = u.GetPokemonData();
         DisplayUnitPortrait(data.portrait);
         List<ScriptableMove> learnedMoves = new List<ScriptableMove>();
-
+        
         DisplayActionButtons(u);
 
     }
@@ -57,45 +56,104 @@ public class UIController : MonoBehaviour
             {
                 Debug.Log(action.name);
                 // Instantiate a button prefab from the UI resources
-                GameObject actionButton = Instantiate(_actionButtonPrefab, _gameCanvas.transform.Find("ActionButtons"));
-                actionButton.SetActive(false);
-                actionButton.name = $"{action.name} Button";
-                // Get the button component
-                Button button = actionButton.GetComponent<Button>();
-            
-                // Set button text to action name
-                TMPro.TextMeshProUGUI buttonText = actionButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
-                if (buttonText != null)
-                {
-                    buttonText.text = action.name;
-                    Debug.Log("71");
-                    Debug.Log(buttonText.text);
-                }
-            
-                // Add onClick listener that will execute the action when clicked
-                button.onClick.AddListener(() => {
-                    Debug.Log($"CLICK {action.name} BTN");
-                    Debug.Log(_gameManager.name);
-                    _gameManager.SelectMove(u, action.name);
-                });
+                
+                GameObject actionButton = GenerateActionButton(u, action.name);
+                
             
                 // Add the button to our list
                 actionButtons.Add(actionButton);
             }
-        }
+        }                
+        actionButtons.Insert(0, GenerateActionButton(u, "Move"));
     
         return actionButtons;
+    }
+
+    private GameObject GenerateActionButton(Unit u, string actionName)
+    {
+        GameObject actionButton = Instantiate(_actionButtonPrefab, _gameCanvas.transform.Find("ActionButtons"));
+        actionButton.SetActive(false);
+        actionButton.name = $"{actionName} Button";
+        // Get the button component
+        Button button = actionButton.GetComponent<Button>();
+            
+        // Set button text to action name
+        TMPro.TextMeshProUGUI buttonText = actionButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
+        if (buttonText != null)
+        {
+            buttonText.text = actionName;
+            Debug.Log("71");
+            Debug.Log(buttonText.text);
+        }
+            
+        // Add onClick listener that will execute the action when clicked
+        button.onClick.AddListener(() => {
+            Debug.Log($"CLICK {actionName} BTN");
+            Debug.Log(_gameManager.name);
+            _gameManager.SelectMove(u, actionName);
+        });
+
+        return actionButton;
     }
 
     
     private void DisplayActionButtons(Unit u)
     {
-        foreach (GameObject button in GenerateActionButtons(u))
+        List<GameObject> actionButtons = GenerateActionButtons(u);
+        // If no buttons to display, return early
+        if (actionButtons == null || actionButtons.Count == 0)
+            return;
+    
+        // Get the canvas rect to help with positioning
+        RectTransform canvasRect = _gameCanvas.GetComponent<RectTransform>();
+        float canvasWidth = canvasRect.rect.width;
+    
+        // Calculate total width needed for all buttons
+        float totalButtonWidth = 0;
+        float maxButtonHeight = 0;
+    
+        // Get button dimensions and calculate total width needed
+        List<float> buttonWidths = new List<float>();
+        foreach (GameObject button in actionButtons)
         {
-            //Place button where it needs to be
+            RectTransform buttonRect = button.GetComponent<RectTransform>();
+            float buttonWidth = buttonRect.rect.width;
+            float buttonHeight = buttonRect.rect.height;
+        
+            buttonWidths.Add(buttonWidth);
+            totalButtonWidth += buttonWidth;
+            maxButtonHeight = Mathf.Max(maxButtonHeight, buttonHeight);
+        }
+    
+        // Calculate spacing between buttons (assuming we want equal spacing)
+        // Let's use a fixed amount of spacing between buttons 
+        float buttonSpacing = 20f;
+        float totalWidth = totalButtonWidth + buttonSpacing * (actionButtons.Count - 1);
+    
+        // Calculate starting X position to center all buttons
+        float startX = -totalWidth / 2;
+        float currentX = startX;
+    
+        // Set Y position as requested
+        float yPosition = -312f;
+    
+        // Position each button
+        for (int i = 0; i < actionButtons.Count; i++)
+        {
+            GameObject button = actionButtons[i];
+            RectTransform buttonRect = button.GetComponent<RectTransform>();
+        
+            // Position the button
+            buttonRect.anchoredPosition = new Vector2(currentX + buttonWidths[i] / 2, yPosition);
+        
+            // Set the button as active
             button.SetActive(true);
+        
+            // Move to the next button position
+            currentX += buttonWidths[i] + buttonSpacing;
         }
     }
+
     
     /**
      * Generates a list of Buttons to place on the canvas.
