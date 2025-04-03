@@ -36,8 +36,18 @@ public class UIController : MonoBehaviour
                 break;
             case GameManager.GameState.UnitSelected:
                 OnUnitSelected(GameManager.Instance.SelectedUnit);
-                break;       
+                break;
+            case GameManager.GameState.MoveSelected:
+                OnMoveSelected();
+                break;
+            case GameManager.GameState.UnitAttacking:
+                OnUnitAttacking();
+                break;
         }
+    }
+
+    void OnUnitAttacking() {
+        ClearHighlightedTiles(GameManager.Instance.Grid);
     }
 
 
@@ -71,6 +81,7 @@ public class UIController : MonoBehaviour
     }
 
     private void OnPlayerNeutral() {
+        Wipe();
     }
 
     private void OnUnitSelected(Unit u) {
@@ -82,7 +93,6 @@ public class UIController : MonoBehaviour
     private void OnMoveSelected() {
         Unit u = GameManager.Instance.SelectedUnit;
         ScriptableMove move = GameManager.Instance.SelectedMove;
-        
     }
 
     public void Wipe()

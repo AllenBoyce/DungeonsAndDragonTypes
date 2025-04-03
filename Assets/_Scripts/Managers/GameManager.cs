@@ -20,8 +20,9 @@ public class GameManager : MonoBehaviour
     private MovementController _movementController;
     private UIController _uiController;
 
-    private GameStateManager _gameStateManager;
-    private GameBaseState _currentGameState;
+    private GameStateManager _stateManager;
+    private GameStateTransitionManager _stateTransitionManager;
+    // private GameBaseState _currentGameState;
     #endregion
     
     /*
@@ -49,6 +50,8 @@ public class GameManager : MonoBehaviour
     public static event Action<GameState> OnGameStateChanged;
     public static event Action<Vector2Int> OnHoveredTileChanged;
     public static event Action<Unit> OnUnitSelected;
+    public static event Action<Unit, ScriptableMove, Vector2Int> OnUnitAttack;
+    public static event Action<Unit, ScriptableMove, Vector2Int> OnUnitHurt; //Unit getting Hurt, Move that damages it, Tile attack originates from
     #endregion
     
     #region Variables
@@ -85,16 +88,26 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        DebugCheck();
         ClickCheck();
         HoverCheck();
     }
 
+    private void DebugCheck() {
+        if (DEBUG) {
+            if (Input.GetKeyDown(KeyCode.Space)) {
+                Debug.Log("Current State: " + _currentState);
+                Debug.Log("Selected Unit: " + _selectedUnit);
+            }
+        }
+    }
+    
     private void TransitionState(GameState nextState)
     {
         Debug.Log("Transitioning State to: " + nextState);
         
-        //TEMPORARY LOGIC MOVE LATER
-        if(_currentState != GameState.UnitSelected && nextState == GameState.UnitSelected) _uiController.DisplayUnitControls(_selectedUnit);
+        // //TEMPORARY LOGIC MOVE LATER
+        // if(_currentState != GameState.UnitSelected && nextState == GameState.UnitSelected) _uiController.DisplayUnitControls(_selectedUnit);
         
         //TEMPORARY LOGIC MOVE LATER
         //if(nextState == GameState.MoveSelected)
@@ -211,6 +224,7 @@ public class GameManager : MonoBehaviour
                 //But if there is, check if it belongs to the active player.
                 if (u.PlayerOwner == _activePlayer)
                 {
+                    Debug.Log("Selected Unit: " + u.name);
                     //If so, then select it and move on to UnitSelected state.
                     _selectedUnit = u;
                     //temp placement
@@ -225,9 +239,9 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.UnitSelected:
                 //If the unit is already selected, deselect it
-                _selectedUnit = null;
-                OnUnitSelected?.Invoke(null);
-                TransitionState(GameState.PlayerNeutral);
+                // _selectedUnit = null;
+                // OnUnitSelected?.Invoke(null);
+                // TransitionState(GameState.PlayerNeutral);
                 break;
             case GameState.WalkSelected:
                 //!!IMPORTANT!!
@@ -296,17 +310,14 @@ public class GameManager : MonoBehaviour
     private void HandleAttack(Unit attacker, ScriptableMove move, Vector2Int mouseTile)
     {
         //Ignoring Validation for now
-        attacker.PlayAnimation(move.animationKey, attacker.GetCurrentDirection(), false);
-        attacker.PlayAnimation("Idle", attacker.GetCurrentDirection());
+        OnUnitAttack?.Invoke(attacker, move, mouseTile);
         List<Tile> targetedTiles =
             TargetingUtility.GetTiles(_gridManager.Grid, mouseTile, attacker.GetCurrentDirection(), move);
-        Debug.Log(targetedTiles.Count);
-        _uiController.ClearHighlightedTiles(_gridManager.Grid);
         foreach (Tile tile in targetedTiles)
         {
             Unit target = _levelManager.GetUnitAt(new Vector2Int(tile.x, tile.y));
             if (target == null) continue;
-            target.Hurt(move.power);
+            OnUnitHurt?.Invoke(target, move, mouseTile);
         }
 
     }
@@ -316,6 +327,7 @@ public class GameManager : MonoBehaviour
     public ScriptableMove SelectedMove { get { return _selectedMove; } }
     public Vector2Int HoveredTile { get { return _hoveredTile; } }
     public GameState CurrentState { get { return _currentState; } }
+    public Dictionary<Vector2Int, Tile> Grid { get { return _gridManager.Grid; } }
     #endregion
 
     public enum GameState
