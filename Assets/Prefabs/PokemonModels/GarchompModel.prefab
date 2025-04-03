@@ -58,7 +58,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8701750829048477276, guid: 504b40bb7a93a44ed92609f11378809c, type: 3}
       propertyPath: m_Name
-      value: GarchompModel Variant
+      value: GarchompModel
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

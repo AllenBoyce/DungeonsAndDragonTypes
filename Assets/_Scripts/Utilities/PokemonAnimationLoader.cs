@@ -96,12 +96,66 @@ public class PokemonAnimationLoaderEditor : Editor
         
         // Assign controller to the GameObject
         //loader.GetComponent<Animator>().runtimeAnimatorController = controller;
+
+        // Generate transitions between animation clips
+        GenerateAnimationTransitions(loader, controller);
         
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
         
-        EditorUtility.DisplayDialog("Success", "Animations generated successfully!", "OK");
+        EditorUtility.DisplayDialog("Success", "Animations generated successfully!\nBe sure to assign the newly generated controller to the PokemonModel Prefab!", "OK");
     }
+
+    /*
+    * <summary> Generates transitions between animation clips. </summary>
+    * <param name="loader"> The PokemonAnimationLoader component. </param>
+    * <param name="controller"> The AnimatorController to which the animation clips will be added. </param>
+    * <remarks> 
+    * This method is called after all animation clips have been generated.
+    * It creates transitions between Hurt animations and Idle animations, as well as Attack animations and Idle animations.
+     </remarks>
+    */
+    private void GenerateAnimationTransitions(PokemonAnimationLoader loader, AnimatorController controller)
+    {
+        string[] directions = {"North", "NorthEast", "East", "SouthEast", "South", "SouthWest", "West", "NorthWest"};
+        foreach(string direction in directions)
+        {
+            //Get Hurt, Attack, and Idle animations for the current direction
+            string hurtAnimationName = $"{loader.pokemonName}_Hurt_{direction}";
+            string attackAnimationName = $"{loader.pokemonName}_Attack_{direction}";
+            string idleAnimationName = $"{loader.pokemonName}_Idle_{direction}";
+
+            //Get the animation clips
+            AnimationClip hurtAnimation = loader.generatedAnimClips.Find(clip => clip.name == hurtAnimationName);
+            AnimationClip attackAnimation = loader.generatedAnimClips.Find(clip => clip.name == attackAnimationName);
+            AnimationClip idleAnimation = loader.generatedAnimClips.Find(clip => clip.name == idleAnimationName);
+
+            //Create a transition between Hurt and Idle animations
+            AnimatorStateTransition transition = new AnimatorStateTransition(); 
+            
+            // Need to find the AnimatorState objects rather than using AnimationClips directly
+            AnimatorState hurtState = FindState(controller, hurtAnimationName);
+            AnimatorState idleState = FindState(controller, idleAnimationName);
+            
+            if (hurtState != null && idleState != null) {
+                // Create transition from hurt to idle
+                transition = hurtState.AddTransition(idleState);
+                transition.hasExitTime = true;
+                transition.exitTime = 0.9f; // Transition near the end of hurt animation
+                transition.duration = 0.1f; // Quick transition
+            }
+            
+            // Create transition from attack to idle similarly
+            AnimatorState attackState = FindState(controller, attackAnimationName);
+            if (attackState != null && idleState != null) {
+                transition = attackState.AddTransition(idleState);
+                transition.hasExitTime = true;
+                transition.exitTime = 0.9f; //0.7540984f
+                transition.duration = 0.1f; //0.25f
+            }
+        }
+    }
+
     
     private void CreateAnimationClip(string folder, string actionName, string direction, PokemonAnimationLoader loader, AnimatorController controller)
     {
@@ -187,6 +241,12 @@ public class PokemonAnimationLoaderEditor : Editor
             // Apply the changes
             importer.SaveAndReimport();
         }
+    }
+
+    private AnimatorState FindState(AnimatorController controller, string stateName)
+    {
+        // Search through all states in the controller to find one with matching name
+        return controller.layers[0].stateMachine.states.FirstOrDefault(s => s.state.name == stateName).state;
     }
 }
 #endif

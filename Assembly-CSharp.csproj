@@ -48,8 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets/_Scripts/Units/Unit.cs" />
-    <Compile Include="Assets/Scripts/GridManager.cs" />
     <Compile Include="Assets/_Scripts/Managers/GridManager.cs" />
+    <Compile Include="Assets/_Scripts/States/PlayerNeutralState.cs" />
     <Compile Include="Assets/_Scripts/Utilities/Constants.cs" />
     <Compile Include="Assets/_Scripts/Utilities/Singleton.cs" />
     <Compile Include="Assets/_Scripts/Managers/GameManager.cs" />
@@ -68,7 +68,7 @@
     <Compile Include="Assets/_Scripts/Managers/UIController.cs" />
     <Compile Include="Assets/_Scripts/ObserverPattern/IObserver.cs" />
     <Compile Include="Assets/_Scripts/Managers/AnimationController.cs" />
-    <Compile Include="Assets/Scripts/LevelManager.cs" />
+    <Compile Include="Assets/_Scripts/States/UnitSelectedState.cs" />
     <Compile Include="Assets/_Scripts/Managers/GameStateManager.cs" />
     <Compile Include="Assets/_Scripts/Managers/UnitManager.cs" />
     <Compile Include="Assets/_Scripts/Player.cs" />
@@ -90,10 +90,13 @@
     <None Include="Assets/TextMesh Pro/Shaders/TMPro_Properties.cginc" />
     <None Include="Assets/TextMesh Pro/Shaders/TMPro_Surface.cginc" />
     <None Include="Assets/TextMesh Pro/Resources/LineBreaking Following Characters.txt" />
+    <None Include="Assets/Resources/Sprites/Pokemon/Flygon/AnimData.xml" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Masking.shader" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader" />
+    <None Include="Assets/Resources/Sprites/Pokemon/Garchomp/AnimData.xml" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader" />
     <None Include="Assets/TextMesh Pro/Fonts/LiberationSans - OFL.txt" />
+    <None Include="Assets/Resources/Sprites/Pokemon/Flapple/AnimData.xml" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader" />
     <None Include="Assets/TextMesh Pro/Sprites/EmojiOne.json" />
     <None Include="Assets/TextMesh Pro/Shaders/TMP_Sprite.shader" />
