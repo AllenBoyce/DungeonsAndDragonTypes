@@ -4,6 +4,7 @@ using UnityEditor;
 using System.Linq;
 using System.IO;
 using UnityEditor.Animations;
+using System.Xml;
 
 public class PokemonAnimationLoader : MonoBehaviour
 {
@@ -18,15 +19,32 @@ public class PokemonAnimationLoader : MonoBehaviour
     [Header("Animation References")]
     [Tooltip("Automatically populated animation clips")]
     public List<AnimationClip> generatedAnimClips = new List<AnimationClip>();
+
+    [Tooltip("The number of game frames per second")]
+    public float gameFramesPerSecond = 60f;
     
 }
 
+// Class to store animation data from AnimData.xml
+public class AnimationFrameData
+{
+    public string Name;
+    public List<float> Durations = new List<float>();
+
+    public AnimationFrameData(string name)
+    {
+        Name = name;
+    }
+}
 
 #if UNITY_EDITOR
 // Editor script for generating animations
 [CustomEditor(typeof(PokemonAnimationLoader))]
 public class PokemonAnimationLoaderEditor : Editor
 {
+    // Dictionary to store animation data by name
+    private Dictionary<string, AnimationFrameData> animationDataByName = new Dictionary<string, AnimationFrameData>();
+
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
@@ -49,6 +67,9 @@ public class PokemonAnimationLoaderEditor : Editor
             return;
         }
         
+        // Clear the generated animation clips list to prevent referencing destroyed objects
+        loader.generatedAnimClips.Clear();
+        
         string path = loader.spriteFolderPath;
         if (!path.StartsWith("Assets/"))
             path = "Assets/" + path;
@@ -57,6 +78,26 @@ public class PokemonAnimationLoaderEditor : Editor
         {
             EditorUtility.DisplayDialog("Error", $"Folder not found: {path}", "OK");
             return;
+        }
+
+        // Try to parse AnimData.xml before proceeding with animation generation
+        string xmlFilePath = Path.Combine(path, loader.pokemonName, "AnimData.xml");
+        if (File.Exists(xmlFilePath))
+        {
+            try
+            {
+                ParseAnimDataXml(xmlFilePath, loader);
+                Debug.Log($"Successfully parsed AnimData.xml for {loader.pokemonName}");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"Error parsing AnimData.xml: {e.Message}. Will use default frame durations.");
+                animationDataByName.Clear(); // Ensure we don't use partial data
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"AnimData.xml not found at {xmlFilePath}. Will use default frame durations.");
         }
         
         // Make sure Pokemon-specific animation folder exists
@@ -104,6 +145,92 @@ public class PokemonAnimationLoaderEditor : Editor
         AssetDatabase.Refresh();
         
         EditorUtility.DisplayDialog("Success", "Animations generated successfully!\nBe sure to assign the newly generated controller to the PokemonModel Prefab!", "OK");
+
+        // Clear animation data after generation is complete
+        animationDataByName.Clear();
+    }
+
+    /*
+    * <summary> Parse the AnimData.xml file to extract animation frame durations. </summary>
+    * <param name="xmlFilePath"> The path to the AnimData.xml file. </param>
+    * <param name="loader"> The PokemonAnimationLoader component. </param>
+    */
+    private void ParseAnimDataXml(string xmlFilePath, PokemonAnimationLoader loader)
+    {
+        // Clear any existing animation data
+        animationDataByName.Clear();
+        
+        XmlDocument xmlDoc = new XmlDocument();
+        xmlDoc.Load(xmlFilePath);
+        
+        // Get all Anim nodes
+        XmlNodeList animNodes = xmlDoc.SelectNodes("//Anim");
+        
+        if (animNodes != null)
+        {
+            foreach (XmlNode animNode in animNodes)
+            {
+                // Get animation name
+                XmlNode nameNode = animNode.SelectSingleNode("Name");
+                if (nameNode == null) continue;
+                
+                string animName = nameNode.InnerText;
+                AnimationFrameData animData = new AnimationFrameData(animName);
+                
+                // Check if this animation copies another animation's data
+                XmlNode copyOfNode = animNode.SelectSingleNode("CopyOf");
+                if (copyOfNode != null)
+                {
+                    string copyOfName = copyOfNode.InnerText;
+                    // We'll handle copied animations later once all original animations are parsed
+                    animData.Durations = null; // Mark as a copied animation
+                    animationDataByName[animName] = animData;
+                    continue;
+                }
+                
+                // Get duration nodes
+                XmlNode durationsNode = animNode.SelectSingleNode("Durations");
+                if (durationsNode == null) continue;
+                
+                XmlNodeList durationNodes = durationsNode.SelectNodes("Duration");
+                if (durationNodes == null) continue;
+                
+                // Parse durations
+                foreach (XmlNode durationNode in durationNodes)
+                {
+                    if (int.TryParse(durationNode.InnerText, out int frameDuration))
+                    {
+                        // Convert from game frames to seconds
+                        float durationInSeconds = frameDuration / loader.gameFramesPerSecond;
+                        animData.Durations.Add(durationInSeconds);
+                    }
+                }
+                
+                animationDataByName[animName] = animData;
+            }
+            
+            // Handle animations that copy from other animations
+            foreach (var animData in animationDataByName.Values.ToList())
+            {
+                if (animData.Durations == null)
+                {
+                    // Find the animation node again to get the CopyOf value
+                    XmlNode animNode = xmlDoc.SelectSingleNode($"//Anim[Name='{animData.Name}']");
+                    if (animNode == null) continue;
+                    
+                    XmlNode copyOfNode = animNode.SelectSingleNode("CopyOf");
+                    if (copyOfNode == null) continue;
+                    
+                    string copyOfName = copyOfNode.InnerText;
+                    if (animationDataByName.TryGetValue(copyOfName, out AnimationFrameData sourceAnimData) && 
+                        sourceAnimData.Durations != null)
+                    {
+                        // Copy durations from the source animation
+                        animData.Durations = new List<float>(sourceAnimData.Durations);
+                    }
+                }
+            }
+        }
     }
 
     /*
@@ -120,38 +247,30 @@ public class PokemonAnimationLoaderEditor : Editor
         string[] directions = {"North", "NorthEast", "East", "SouthEast", "South", "SouthWest", "West", "NorthWest"};
         foreach(string direction in directions)
         {
-            //Get Hurt, Attack, and Idle animations for the current direction
+            //Get state names for the current direction
             string hurtAnimationName = $"{loader.pokemonName}_Hurt_{direction}";
             string attackAnimationName = $"{loader.pokemonName}_Attack_{direction}";
             string idleAnimationName = $"{loader.pokemonName}_Idle_{direction}";
 
-            //Get the animation clips
-            AnimationClip hurtAnimation = loader.generatedAnimClips.Find(clip => clip.name == hurtAnimationName);
-            AnimationClip attackAnimation = loader.generatedAnimClips.Find(clip => clip.name == attackAnimationName);
-            AnimationClip idleAnimation = loader.generatedAnimClips.Find(clip => clip.name == idleAnimationName);
-
-            //Create a transition between Hurt and Idle animations
-            AnimatorStateTransition transition = new AnimatorStateTransition(); 
-            
-            // Need to find the AnimatorState objects rather than using AnimationClips directly
+            // Find states directly from the controller instead of using clip references
             AnimatorState hurtState = FindState(controller, hurtAnimationName);
             AnimatorState idleState = FindState(controller, idleAnimationName);
+            AnimatorState attackState = FindState(controller, attackAnimationName);
             
+            // Create transition from hurt to idle
             if (hurtState != null && idleState != null) {
-                // Create transition from hurt to idle
-                transition = hurtState.AddTransition(idleState);
+                var transition = hurtState.AddTransition(idleState);
                 transition.hasExitTime = true;
                 transition.exitTime = 0.9f; // Transition near the end of hurt animation
                 transition.duration = 0.1f; // Quick transition
             }
             
-            // Create transition from attack to idle similarly
-            AnimatorState attackState = FindState(controller, attackAnimationName);
+            // Create transition from attack to idle
             if (attackState != null && idleState != null) {
-                transition = attackState.AddTransition(idleState);
+                var transition = attackState.AddTransition(idleState);
                 transition.hasExitTime = true;
-                transition.exitTime = 0.9f; //0.7540984f
-                transition.duration = 0.1f; //0.25f
+                transition.exitTime = 0.9f;
+                transition.duration = 0.1f;
             }
         }
     }
@@ -177,8 +296,15 @@ public class PokemonAnimationLoaderEditor : Editor
         spriteBinding.path = "";
         spriteBinding.propertyName = "m_Sprite";
         
+        // Try to get animation data for this action
+        bool useCustomDurations = animationDataByName.TryGetValue(actionName, out AnimationFrameData animData) && 
+                                 animData.Durations != null && 
+                                 animData.Durations.Count > 0;
+        
         // Add sprite keyframes
         ObjectReferenceKeyframe[] keyframes = new ObjectReferenceKeyframe[files.Length];
+        float currentTime = 0f;
+        
         for (int i = 0; i < files.Length; i++)
         {
             string assetPath = files[i].Replace(Application.dataPath, "Assets");
@@ -191,9 +317,18 @@ public class PokemonAnimationLoaderEditor : Editor
             if (sprite != null)
             {
                 ObjectReferenceKeyframe keyframe = new ObjectReferenceKeyframe();
-                keyframe.time = i * 0.1f; // 10 FPS
+                
+                // Use custom duration if available, otherwise use default 0.1s
+                float frameDuration = useCustomDurations && i < animData.Durations.Count 
+                    ? animData.Durations[i] 
+                    : 0.1f; // Default 10 FPS
+                
+                keyframe.time = currentTime;
                 keyframe.value = sprite;
                 keyframes[i] = keyframe;
+                
+                // Add this frame's duration to the current time for the next frame
+                currentTime += frameDuration;
             }
         }
         
@@ -214,6 +349,9 @@ public class PokemonAnimationLoaderEditor : Editor
         {
             controller.layers[0].stateMachine.defaultState = state;
         }
+        
+        // Add to generated clips list
+        loader.generatedAnimClips.Add(clip);
     }
     
     private void SetSpriteImportSettings(string assetPath)
