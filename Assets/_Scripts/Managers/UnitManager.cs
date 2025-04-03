@@ -32,11 +32,25 @@ public class UnitManager : Singleton<UnitManager>
      */
     public Unit GenerateUnit(ScriptablePokemon pokemon, int player)
     {
-        Unit unit = this.AddComponent<Unit>();
+        // Create a new GameObject for the unit
+        GameObject unitObject = new GameObject($"Unit_{pokemon.name}_{player}");
+    
+        // Add the Unit component to the new GameObject
+        Unit unit = unitObject.AddComponent<Unit>();
+    
+        // Initialize the unit
         Vector3 offScreen = new Vector3(-1, -1, -500);
         unit.Initialize(pokemon, offScreen, player);
-        unit.transform.parent = _units;
+    
+        // Set parent to _units if needed
+        if (_units != null)
+        {
+            unitObject.transform.parent = _units;
+        }
+    
+        // Add to level manager
         _levelManager.AddUnit(unit);
+    
         return unit;
     }
     

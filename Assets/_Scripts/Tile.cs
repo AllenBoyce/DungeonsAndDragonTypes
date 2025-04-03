@@ -48,12 +48,6 @@ public class Tile : MonoBehaviour
     private void OnMouseOver()
     {
         _highlight.SetActive(true);
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            HandleMouseClick();
-        }
-
     }
 
     private void OnMouseExit()
@@ -61,8 +55,8 @@ public class Tile : MonoBehaviour
         _highlight.SetActive(false);
     }
 
-    private void HandleMouseClick()
+    public void SetHighLight(bool highlight)
     {
-        onTileClicked?.Invoke();
+        _highlight.SetActive(highlight);
     }
 }

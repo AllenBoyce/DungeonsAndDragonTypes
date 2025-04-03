@@ -9,17 +9,45 @@ public class UIController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] private Canvas _gameCanvas;
     private GameObject _portraitObj;
-    private Button[] _actionButtons;
+    private List<GameObject> _actionButtons;
     
     [SerializeField] private GameManager _gameManager;
     [SerializeField] private GameObject _actionButtonPrefab;
+    [SerializeField] private GameObject _endTurnButton;
     void Start()
     {
+        Initialize();
+    }
 
+    public void Initialize()
+    {
+        InitializeEndTurnButton();
     }
 
     public void Wipe()
     {
+        WipeUnitControls();
+    }
+
+    private void WipeUnitControls()
+    {
+        WipeActionButtons();
+    }
+
+    private void WipeActionButtons()
+    {
+        // Destroy all action buttons
+        if (_actionButtons != null)
+        {
+            foreach(GameObject button in _actionButtons)
+            {
+                if (button != null)
+                {
+                    Destroy(button);
+                }
+            }
+            _actionButtons = null;
+        }
     }
 
     /**
@@ -31,9 +59,9 @@ public class UIController : MonoBehaviour
         ScriptablePokemon data = u.GetPokemonData();
         DisplayUnitPortrait(data.portrait);
         List<ScriptableMove> learnedMoves = new List<ScriptableMove>();
-        
         DisplayActionButtons(u);
-
+        
+        _endTurnButton.SetActive(true);
     }
     
     /**
@@ -65,7 +93,7 @@ public class UIController : MonoBehaviour
             }
         }                
         actionButtons.Insert(0, GenerateActionButton(u, "Move"));
-    
+        _actionButtons = new List<GameObject>(actionButtons);
         return actionButtons;
     }
 
@@ -154,68 +182,14 @@ public class UIController : MonoBehaviour
         }
     }
 
-    
-    /**
-     * Generates a list of Buttons to place on the canvas.
-     * Each Button will correspond to a Unit's Moves, and will call the GameManager's SelectMove function.
-     */
-    private List<GameObject> GetMoveButtons(Unit u)
+    private void InitializeEndTurnButton()
     {
-        List<GameObject> moveButtons = new List<GameObject>();
-        ScriptablePokemon pokemonData = u.GetPokemonData();
-        
-        if (pokemonData == null || pokemonData.learnableMoves == null)
+        _endTurnButton.GetComponent<Button>().onClick.AddListener(() =>
         {
-            Debug.LogWarning("Pokemon data or learnable moves is null");
-            return moveButtons;
-        }
+            Debug.Log("End Turn Button Clicked");
+            _gameManager.EndTurn();
+        });
         
-        // Find the move buttons parent container
-        Transform buttonContainer = _gameCanvas.transform.Find("MoveButtonsContainer");
-        if (buttonContainer == null)
-        {
-            Debug.LogWarning("MoveButtonsContainer not found in canvas");
-            return moveButtons;
-        }
-        
-        // Get the button prefab
-        GameObject buttonPrefab = Resources.Load<GameObject>("Prefabs/UI/MoveButton");
-        if (buttonPrefab == null)
-        {
-            Debug.LogError("Move button prefab not found");
-            return moveButtons;
-        }
-        
-        // Create a button for each move
-        foreach (ScriptableMove move in pokemonData.learnableMoves)
-        {
-            GameObject buttonObj = Instantiate(buttonPrefab, buttonContainer);
-            Button button = buttonObj.GetComponent<Button>();
-            
-            // Set button text
-            TMPro.TextMeshProUGUI buttonText = buttonObj.GetComponentInChildren<TMPro.TextMeshProUGUI>();
-            if (buttonText != null)
-            {
-                buttonText.text = move.moveName;
-                Debug.Log(buttonText.text);
-            }
-            
-            // Set button color based on move type
-            // This could be expanded with a color map for each move type
-            
-            // Add click event
-            button.onClick.AddListener(() => {
-                GameManager gameManager = FindFirstObjectByType<GameManager>();
-                if (gameManager != null)
-                {
-                    gameManager.SelectMove(u, move.moveName);
-                }
-            });
-            
-            moveButtons.Add(buttonObj);
-        }
-        
-        return moveButtons;
     }
 
     private void DisplayUnitPortrait(Sprite portrait)
@@ -245,5 +219,22 @@ public class UIController : MonoBehaviour
         
         portraitImage.sprite = portrait;
         Debug.Log("Portrait updated to: " + portrait.name);
+    }
+
+
+    public void ClearHighlightedTiles(Dictionary<Vector2Int, Tile> grid)
+    {
+        foreach (Tile tile in grid.Values) tile.SetHighLight(false);
+    }
+
+    public void HighlightTargetedTiles(ScriptableMove move, Vector2Int origin, Unit.Direction direction, Dictionary<Vector2Int, Tile> grid)
+    {
+        //sooo rudimentary and please pelase remove later
+        ClearHighlightedTiles(grid);
+        List<Tile> targetedTiles = TargetingUtility.GetTiles(grid, origin, direction, move);
+        foreach (Tile tile in targetedTiles)
+        {
+            tile.SetHighLight(true);
+        }
     }
 }

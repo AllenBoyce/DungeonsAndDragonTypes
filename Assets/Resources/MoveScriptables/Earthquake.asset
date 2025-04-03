@@ -12,5 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d666f12be6e434aaa8e52212e5d50755, type: 3}
   m_Name: Earthquake
   m_EditorClassIdentifier: 
-  name: Earthquake
+  moveName: Earthquake
   power: 100
+  originType: 0
+  primaryRange: 2
+  secondaryRange: 1
+  shape: 0
+  moveType: 8
+  animationKey: Attack

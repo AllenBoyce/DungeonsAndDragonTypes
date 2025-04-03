@@ -5,7 +5,13 @@ public class ScriptableMove : ScriptableObject
 {
     [SerializeField] public string moveName;
     [SerializeField] public int power;
-
+    [SerializeField] public OriginType originType;
+    [SerializeField] public int primaryRange;
+    [SerializeField] public int secondaryRange = -1;
+    [SerializeField] public TargetingUtility.Shape shape;
+    [SerializeField] public MoveType moveType;
+    [SerializeField] public string animationKey = "Attack"; //Later on this will change to keys
+    
     public enum MoveType
     {
         Normal,
@@ -27,4 +33,12 @@ public class ScriptableMove : ScriptableObject
         Steel,
         Fairy
     }
+
+    public enum OriginType
+    {
+        Self,
+        Sight,
+        Any,
+    }
+    
 }

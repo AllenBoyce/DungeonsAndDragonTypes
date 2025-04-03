@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class Unit : MonoBehaviour
 {
@@ -38,10 +39,32 @@ public class Unit : MonoBehaviour
     }
     
     public List<ScriptableMove> GetLearnedMoves() { return _learnedMoves;}
+    public Direction GetCurrentDirection() { return _currentDirection; }
+    public void SetCurrentDirection(Direction direction) { _currentDirection = direction; }
 
     public ScriptablePokemon GetPokemonData()
     {
         return pokemonData;
+    }
+
+    public List<string> GetLearnedMoveNames()
+    {
+        List<string> moveNames = new List<string>();
+        foreach (ScriptableMove move in _learnedMoves)
+        {
+            moveNames.Add(move.name);
+        }
+        return moveNames;
+    }
+
+    public Dictionary<string, ScriptableMove> GetMoveDictionary()
+    {
+        Dictionary<string, ScriptableMove> moveDict = new Dictionary<string, ScriptableMove>();
+        foreach (ScriptableMove move in _learnedMoves)
+        {
+            moveDict.Add(move.name, move);
+        }
+        return moveDict;
     }
     
     public Vector2Int GetGridPosition()
@@ -66,13 +89,35 @@ public class Unit : MonoBehaviour
         _model.PlayAnimation(animationName, _currentDirection);
     }
 
+    public void Hurt(int damage)
+    {
+        _state = UnitState.Hurting;
+        PlayAnimation("Hurt");
+        takeDamage(damage);
+    }
+
+    private void takeDamage(int damage)
+    {
+        _currentHP = Math.Max(0, _currentHP - damage);
+        if (_currentHP <= 0)
+        {
+            Faint();
+        }
+    }
+
+    public void Faint()
+    {
+        //PlayAnimation("Faint");
+        _state = UnitState.Fainted;
+    }
+
     public enum UnitState
     {
         Idle,
         Moving,
         Attacking,
         Hurting,
-        Dead,
+        Fainted,
     }
 
     public enum Direction

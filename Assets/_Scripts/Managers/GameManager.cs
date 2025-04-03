@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,6 +17,7 @@ public class GameManager : MonoBehaviour
     //Variables pertaining to the game
     private int _activePlayer;
     private Unit _selectedUnit;
+    private ScriptableMove _selectedMove;
 
     private bool DEBUG = true;
     private bool DEMO = true;
@@ -31,6 +35,8 @@ public class GameManager : MonoBehaviour
             Unit u = _unitManager.GenerateUnit("Garchomp", 0);
             _levelManager.PutUnit(u, 5, 5);
             _selectedUnit = u;
+            Unit u2 = _unitManager.GenerateUnit("Flapple", 0);
+            _levelManager.PutUnit(u2, 8, 5);
         }
     }
 
@@ -38,11 +44,26 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         ClickCheck();
+        HoverCheck();
     }
 
     private void TransitionState(GameState nextState)
     {
         Debug.Log("Transitioning State to: " + nextState);
+        
+        //TEMPORARY LOGIC MOVE LATER
+        if(_currentState != GameState.UnitSelected && nextState == GameState.UnitSelected) _uiController.DisplayUnitControls(_selectedUnit);
+        
+        //TEMPORARY LOGIC MOVE LATER
+        //if(nextState == GameState.MoveSelected)
+
+        if (_currentState == GameState.UnitAttacking && nextState == GameState.PlayerNeutral)
+        {
+            Debug.Log("Clearing Attacking Unit");
+            _selectedUnit = null;
+            _uiController.Wipe();
+        }
+        
         _currentState = nextState;
     }
 
@@ -58,6 +79,23 @@ public class GameManager : MonoBehaviour
         else if (Input.GetMouseButtonDown(1))
         {
             HandleRightClick();
+        }
+    }
+
+    private void HoverCheck()
+    {
+        Vector2 mousePosition = MousePosition();
+        Vector2Int mouseTile = new Vector2Int(_gridManager.GetGridX(mousePosition.x), _gridManager.GetGridY(mousePosition.y));
+        
+        switch(_currentState)
+        {
+            case GameState.MoveSelected:
+                
+                Unit.Direction direction = MovementUtility.GetDirection(_selectedUnit.GetGridPosition(), mouseTile);
+                _selectedUnit.SetCurrentDirection(direction);
+                _selectedUnit.PlayAnimation("Idle", direction); //temporary bullshit
+                _uiController.HighlightTargetedTiles(_selectedMove, mouseTile, _selectedUnit.GetCurrentDirection(), _gridManager.Grid);
+                break;
         }
     }
 
@@ -86,6 +124,13 @@ public class GameManager : MonoBehaviour
         {
             
         }
+
+        if (_currentState == GameState.MoveSelected)
+        {
+            _selectedMove = null;
+            _uiController.ClearHighlightedTiles(_gridManager.Grid);
+            TransitionState(GameState.UnitSelected);
+        }
     }
 
     private Vector2 MousePosition()
@@ -112,7 +157,7 @@ public class GameManager : MonoBehaviour
                 {
                     //If so, then select it and move on to UnitSelected state.
                     _selectedUnit = u;
-                    _uiController.DisplayUnitControls(_selectedUnit);
+                    //_uiController.DisplayUnitControls(_selectedUnit);
                     TransitionState(GameState.UnitSelected);
                 }
                 else
@@ -121,7 +166,9 @@ public class GameManager : MonoBehaviour
                 }
                 break;
             case GameState.UnitSelected:
-                Debug.Log("Unit Selected");
+                
+                break;
+            case GameState.WalkSelected:
                 //!!IMPORTANT!!
                 //In final version, the move logic here will be a separate state.
                 if (u != null) return;
@@ -130,7 +177,7 @@ public class GameManager : MonoBehaviour
                 MovementPath path = MovementUtility.GenerateMovementPath(_gridManager.Grid, _selectedUnit.GetGridPosition(), mouseTile);
                 if (path != null && path.Pivots != null && path.Pivots.Count > 0)
                 {
-                    Debug.Log($"Moving unit from {_selectedUnit.GetGridPosition()} to {mouseTile} with {path.Pivots.Count} pivot points");
+                    //Debug.Log($"Moving unit from {_selectedUnit.GetGridPosition()} to {mouseTile} with {path.Pivots.Count} pivot points");
                     _movementController.WalkUnit(_selectedUnit, path);
     
                     // Update the unit's grid position after movement
@@ -141,22 +188,75 @@ public class GameManager : MonoBehaviour
                     Debug.LogWarning("Cannot generate a valid path to the destination");
                 }
                 _movementController.WalkUnit(_selectedUnit, path);
-                
+                break;
+            case GameState.MoveSelected:
+                TransitionState(GameState.UnitAttacking);
+                HandleAttack(_selectedUnit, _selectedMove, mouseTile);
+                TransitionState(GameState.PlayerNeutral);
                 break;
             default:
                 break;
         }
     }
 
+    public void EndTurn()
+    {
+        _uiController.Wipe();
+        TransitionState(GameState.PlayerNeutral);
+    }
+
     public void SelectMove(Unit u, string moveName)
     {
-        Debug.Log("Chosen Move: " + moveName);
+        if (u != _selectedUnit)
+        {
+            Debug.LogWarning("Selected unit does not match the currently selected unit");
+            return;
+        }
+
+        if (moveName == "Move")
+        {
+            TransitionState(GameState.WalkSelected);
+            return;
+        }
+
+        Dictionary<string, ScriptableMove> moveDict = u.GetMoveDictionary();
+        if (!moveDict.ContainsKey(moveName))
+        {
+            Debug.LogWarning("Selected move does not match the currently selected unit");
+            return;
+        }
+        
+        ScriptableMove move = moveDict[moveName];
+        _selectedMove = move;
+        TransitionState(GameState.MoveSelected);
+        
+    }
+
+    private void HandleAttack(Unit attacker, ScriptableMove move, Vector2Int mouseTile)
+    {
+        //Ignoring Validation for now
+        attacker.PlayAnimation(move.animationKey, attacker.GetCurrentDirection(), false);
+        attacker.PlayAnimation("Idle", attacker.GetCurrentDirection());
+        List<Tile> targetedTiles =
+            TargetingUtility.GetTiles(_gridManager.Grid, mouseTile, attacker.GetCurrentDirection(), move);
+        Debug.Log(targetedTiles.Count);
+        _uiController.ClearHighlightedTiles(_gridManager.Grid);
+        foreach (Tile tile in targetedTiles)
+        {
+            Unit target = _levelManager.GetUnitAt(new Vector2Int(tile.x, tile.y));
+            if (target == null) continue;
+            target.Hurt(move.power);
+        }
+
     }
 
     private enum GameState
     {
         PlayerNeutral,
         UnitSelected,
-        SelectingMoveDestination,
+        WalkSelected,
+        MoveSelected,
+        UnitAttacking,
+        UnitWalking,
     }
 }

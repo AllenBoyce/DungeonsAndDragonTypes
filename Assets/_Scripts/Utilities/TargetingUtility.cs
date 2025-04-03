@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public static class TargetingUtility
@@ -10,11 +11,11 @@ public static class TargetingUtility
      * <param name="grid">The grid of tiles that will be retrieved</param>
      * <param name="origin">The Tile that this method begins its retrieval process on, and is included in the retrieval process.</param>
      * <param name="shape">The shape of tiles on the grid that will be retrieved. Can be Circle, Rectangle, Cone, Line.</param>
-     * <param name="direction">The cardinal direction that orients the shape targeting property. Uses enum Direction. Can be North, NorthEast, East, SouthEast, South, SouthWest, West, NorthWest.</param>
+     * <param name="direction">The cardinal direction that orients the shape targeting property. Uses enum Unit.Direction. Can be North, NorthEast, East, SouthEast, South, SouthWest, West, NorthWest.</param>
      * <param name="primaryRange">The main factor in determining the size of the shape targeting property. Determines the diameter of a Circle, the side length of a Square, the altitude of a Cone, the length of a Line.</param>
      * <param name="secondaryRange">Allows the shape to vary in other factors. Optional parameter that defaults to -1. If the shape is a Circle, determines the radius of the inner circle that is not retrieved. If the shape is a Cone, determines the width of the cone.</param>
      */
-    public static List<Tile> GetTiles(Dictionary<Vector2Int, Tile> grid, Vector2Int origin, Shape shape, Direction direction, int primaryRange, int secondaryRange = -1)
+    public static List<Tile> GetTiles(Dictionary<Vector2Int, Tile> grid, Vector2Int origin, Shape shape, Unit.Direction direction, int primaryRange, int secondaryRange = -1)
 {
     List<Tile> targetedTiles = new List<Tile>();
     
@@ -42,6 +43,12 @@ public static class TargetingUtility
     return targetedTiles;
 }
 
+    public static List<Tile> GetTiles(Dictionary<Vector2Int, Tile> grid, Vector2Int origin, Unit.Direction direction, ScriptableMove move)
+    {
+        return GetTiles(grid, origin, move.shape, direction, move.primaryRange, move.secondaryRange);
+    }
+
+
 // Helper method for Circle shape targeting
 private static List<Tile> GetCircleTiles(Dictionary<Vector2Int, Tile> grid, Vector2Int origin, int radius, int innerRadius)
 {
@@ -63,6 +70,7 @@ private static List<Tile> GetCircleTiles(Dictionary<Vector2Int, Tile> grid, Vect
             
             if (withinOuterCircle && outsideInnerCircle)
             {
+                if (!grid.ContainsKey(pos)) break;
                 Tile tile = grid[pos];
                 if (tile != null)
                     tiles.Add(tile);
@@ -74,7 +82,7 @@ private static List<Tile> GetCircleTiles(Dictionary<Vector2Int, Tile> grid, Vect
 }
 
 // Helper method for Square shape targeting
-private static List<Tile> GetSquareTiles(Dictionary<Vector2Int, Tile> grid, Vector2Int origin, int sideLength, Direction direction)
+private static List<Tile> GetSquareTiles(Dictionary<Vector2Int, Tile> grid, Vector2Int origin, int sideLength, Unit.Direction direction)
 {
     List<Tile> tiles = new List<Tile>();
     
@@ -86,25 +94,25 @@ private static List<Tile> GetSquareTiles(Dictionary<Vector2Int, Tile> grid, Vect
     
     switch (direction)
     {
-        case Direction.North:
+        case Unit.Direction.North:
             startX = origin.x - halfSide;
             endX = origin.x + halfSide;
             startY = origin.y;
             endY = origin.y + sideLength - 1;
             break;
-        case Direction.South:
+        case Unit.Direction.South:
             startX = origin.x - halfSide;
             endX = origin.x + halfSide;
             startY = origin.y - sideLength + 1;
             endY = origin.y;
             break;
-        case Direction.East:
+        case Unit.Direction.East:
             startX = origin.x;
             endX = origin.x + sideLength - 1;
             startY = origin.y - halfSide;
             endY = origin.y + halfSide;
             break;
-        case Direction.West:
+        case Unit.Direction.West:
             startX = origin.x - sideLength + 1;
             endX = origin.x;
             startY = origin.y - halfSide;
@@ -124,6 +132,7 @@ private static List<Tile> GetSquareTiles(Dictionary<Vector2Int, Tile> grid, Vect
         for (int y = startY; y <= endY; y++)
         {
             Vector2Int pos = new Vector2Int(x, y);
+            if (!grid.ContainsKey(pos)) break;
             Tile tile = grid[pos];
             if (tile != null)
                 tiles.Add(tile);
@@ -134,7 +143,7 @@ private static List<Tile> GetSquareTiles(Dictionary<Vector2Int, Tile> grid, Vect
 }
 
 // Helper method for Cone shape targeting
-private static List<Tile> GetConeTiles(Dictionary<Vector2Int, Tile> grid, Vector2Int origin, int altitude, int width, Direction direction)
+private static List<Tile> GetConeTiles(Dictionary<Vector2Int, Tile> grid, Vector2Int origin, int altitude, int width, Unit.Direction direction)
 {
     List<Tile> tiles = new List<Tile>();
     
@@ -175,6 +184,7 @@ private static List<Tile> GetConeTiles(Dictionary<Vector2Int, Tile> grid, Vector
             
             if (distanceAlongDir <= altitude && perpendicularDistance <= halfConeWidth)
             {
+                if (!grid.ContainsKey(pos)) break;
                 Tile tile = grid[pos];
                 if (tile != null)
                     tiles.Add(tile);
@@ -191,7 +201,7 @@ private static List<Tile> GetConeTiles(Dictionary<Vector2Int, Tile> grid, Vector
 }
 
 // Helper method for Line shape targeting
-private static List<Tile> GetLineTiles(Dictionary<Vector2Int, Tile> grid, Vector2Int origin, int length, Direction direction)
+private static List<Tile> GetLineTiles(Dictionary<Vector2Int, Tile> grid, Vector2Int origin, int length, Unit.Direction direction)
 {
     List<Tile> tiles = new List<Tile>();
     
@@ -202,6 +212,7 @@ private static List<Tile> GetLineTiles(Dictionary<Vector2Int, Tile> grid, Vector
     for (int i = 0; i <= length; i++)
     {
         Vector2Int pos = origin + dirVector * i;
+        if (!grid.ContainsKey(pos)) break;
         Tile tile = grid[pos];
         if (tile != null)
             tiles.Add(tile);
@@ -210,58 +221,57 @@ private static List<Tile> GetLineTiles(Dictionary<Vector2Int, Tile> grid, Vector
     return tiles;
 }
 
-// Helper method to convert Direction enum to Vector2
-private static Vector2 GetDirectionVector(Direction direction)
+// Helper method to convert Unit.Direction enum to Vector2
+private static Vector2 GetDirectionVector(Unit.Direction direction)
 {
     switch (direction)
     {
-        case Direction.North:
+        case Unit.Direction.North:
             return Vector2.up;
-        case Direction.NorthEast:
+        case Unit.Direction.NorthEast:
             return new Vector2(0.7071f, 0.7071f); // Normalized vector (1,1)
-        case Direction.East:
+        case Unit.Direction.East:
             return Vector2.right;
-        case Direction.SouthEast:
+        case Unit.Direction.SouthEast:
             return new Vector2(0.7071f, -0.7071f); // Normalized vector (1,-1)
-        case Direction.South:
+        case Unit.Direction.South:
             return Vector2.down;
-        case Direction.SouthWest:
+        case Unit.Direction.SouthWest:
             return new Vector2(-0.7071f, -0.7071f); // Normalized vector (-1,-1)
-        case Direction.West:
+        case Unit.Direction.West:
             return Vector2.left;
-        case Direction.NorthWest:
+        case Unit.Direction.NorthWest:
             return new Vector2(-0.7071f, 0.7071f); // Normalized vector (-1,1)
         default:
             return Vector2.up;
     }
 }
 
-// Helper method to convert Direction enum to Vector2Int
-private static Vector2Int GetDirectionIntVector(Direction direction)
+// Helper method to convert Unit.Direction enum to Vector2Int
+public static Vector2Int GetDirectionIntVector(Unit.Direction direction)
 {
     switch (direction)
     {
-        case Direction.North:
+        case Unit.Direction.North:
             return new Vector2Int(0, 1);
-        case Direction.NorthEast:
+        case Unit.Direction.NorthEast:
             return new Vector2Int(1, 1);
-        case Direction.East:
+        case Unit.Direction.East:
             return new Vector2Int(1, 0);
-        case Direction.SouthEast:
+        case Unit.Direction.SouthEast:
             return new Vector2Int(1, -1);
-        case Direction.South:
+        case Unit.Direction.South:
             return new Vector2Int(0, -1);
-        case Direction.SouthWest:
+        case Unit.Direction.SouthWest:
             return new Vector2Int(-1, -1);
-        case Direction.West:
+        case Unit.Direction.West:
             return new Vector2Int(-1, 0);
-        case Direction.NorthWest:
+        case Unit.Direction.NorthWest:
             return new Vector2Int(-1, 1);
         default:
             return new Vector2Int(0, 1);
     }
 }
-
 
 
     public enum Shape
@@ -270,16 +280,5 @@ private static Vector2Int GetDirectionIntVector(Direction direction)
         Square,
         Cone,
         Line
-    }
-    public enum Direction
-    {
-        North,
-        NorthEast,
-        East,
-        SouthEast,
-        South,
-        SouthWest,
-        West,
-        NorthWest
     }
 }
