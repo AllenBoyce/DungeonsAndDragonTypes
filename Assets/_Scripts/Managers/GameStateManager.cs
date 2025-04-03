@@ -19,4 +19,9 @@ public class GameStateManager : MonoBehaviour
     {
         currentState.UpdateState(this);
     }
+
+    public void TransitionToState(GameBaseState newState) {
+        currentState = newState;
+        currentState.EnterState(this);
+    }
 }

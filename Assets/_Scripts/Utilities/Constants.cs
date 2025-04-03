@@ -6,4 +6,10 @@ public static class Constants
     public const float CAMERA_LAYER = -10f;
     public const float UNIT_LAYER = -4f;
     public const float TILE_HIGHLIGHT_LAYER = -1f;
+
+    public enum PokemonSpecies {
+        Garchomp,
+        Flapple,
+        Flygon
+    }
 }

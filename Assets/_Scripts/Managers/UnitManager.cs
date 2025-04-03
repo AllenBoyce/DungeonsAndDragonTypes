@@ -33,7 +33,7 @@ public class UnitManager : Singleton<UnitManager>
     public Unit GenerateUnit(ScriptablePokemon pokemon, int player)
     {
         // Create a new GameObject for the unit
-        GameObject unitObject = new GameObject($"Unit_{pokemon.name}_{player}");
+        GameObject unitObject = new GameObject($"Unit_{pokemon.GetName()}_{player}");
     
         // Add the Unit component to the new GameObject
         Unit unit = unitObject.AddComponent<Unit>();
@@ -58,18 +58,18 @@ public class UnitManager : Singleton<UnitManager>
      * Generates a new Unit Object from a PokemonSpecies enum and its owner player
      * Returns the newly created Unit
      */
-    public Unit GenerateUnit(string species, int player)
+    public Unit GenerateUnit(Constants.PokemonSpecies species, int player)
     {
         ScriptablePokemon pokemon = FindScriptablePokemon(species);
         
         return GenerateUnit(pokemon, player);
     }
 
-    private ScriptablePokemon FindScriptablePokemon(string species)
+    private ScriptablePokemon FindScriptablePokemon(Constants.PokemonSpecies species)
     {
         foreach (ScriptablePokemon pokemon in _scriptablePokemon)
         {
-            if (pokemon.name == species) return pokemon;
+            if (pokemon.species == species) return pokemon;
         }
         Debug.LogError($"No scriptable pokemon found for species: {species}");
         throw new System.Exception("No scriptable pokemon found for species: " + species);

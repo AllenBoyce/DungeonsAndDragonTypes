@@ -32,10 +32,10 @@ public class GameManager : MonoBehaviour
 
         if (DEMO)
         {
-            Unit u = _unitManager.GenerateUnit("Garchomp", 0);
+            Unit u = _unitManager.GenerateUnit(Constants.PokemonSpecies.Garchomp, 0);
             _levelManager.PutUnit(u, 5, 5);
             _selectedUnit = u;
-            Unit u2 = _unitManager.GenerateUnit("Flapple", 0);
+            Unit u2 = _unitManager.GenerateUnit(Constants.PokemonSpecies.Flapple, 0);
             _levelManager.PutUnit(u2, 8, 5);
         }
     }

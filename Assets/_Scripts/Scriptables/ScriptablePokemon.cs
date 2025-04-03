@@ -7,7 +7,7 @@ public class ScriptablePokemon : ScriptableObject
 {
     public PokemonModel prefab;
 
-    public string pokemonName;
+    public Constants.PokemonSpecies species;
     [SerializeField] private Stats _stats;
     public Stats BaseStats => _stats;
 
@@ -16,7 +16,9 @@ public class ScriptablePokemon : ScriptableObject
 
     public List<ScriptableMove> learnableMoves;
     
-    
+    public string GetName() {
+        return species.ToString();
+    }
 }
 
 [Serializable]
