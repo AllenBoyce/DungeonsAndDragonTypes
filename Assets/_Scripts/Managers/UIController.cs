@@ -6,7 +6,6 @@ using Button = UnityEngine.UI.Button;
 
 public class UIController : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] private Canvas _gameCanvas;
     private GameObject _portraitObj;
     private List<GameObject> _actionButtons;
@@ -14,6 +13,53 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameManager _gameManager;
     [SerializeField] private GameObject _actionButtonPrefab;
     [SerializeField] private GameObject _endTurnButton;
+
+    void Awake()
+    {
+        GameManager.OnGameStateChanged += OnGameStateChanged;
+        GameManager.OnHoveredTileChanged += OnHoveredTileChanged;
+        GameManager.OnUnitSelected += OnUnitSelected;
+    }
+
+    void OnDestroy() {
+        GameManager.OnGameStateChanged -= OnGameStateChanged;
+        GameManager.OnHoveredTileChanged -= OnHoveredTileChanged;
+        GameManager.OnUnitSelected -= OnUnitSelected;
+    }
+
+    #region Event Listeners
+    void OnGameStateChanged(GameManager.GameState newState) {
+        Wipe();
+        switch (newState) {
+            case GameManager.GameState.PlayerNeutral:
+                OnPlayerNeutral();
+                break;
+            case GameManager.GameState.UnitSelected:
+                OnUnitSelected(GameManager.Instance.SelectedUnit);
+                break;       
+        }
+    }
+
+
+    void OnHoveredTileChanged(Vector2Int hoveredTile) {
+        switch (GameManager.Instance.CurrentState) {
+            case GameManager.GameState.PlayerNeutral:
+                break;
+            case GameManager.GameState.UnitSelected:
+                break;
+            case GameManager.GameState.WalkSelected:
+                break;
+            case GameManager.GameState.MoveSelected:
+                break;
+        }
+    }
+
+    #endregion
+
+    public void PreviewMovementPath(MovementPath path) {
+        //Display path preview
+    }
+
     void Start()
     {
         Initialize();
@@ -22,6 +68,21 @@ public class UIController : MonoBehaviour
     public void Initialize()
     {
         InitializeEndTurnButton();
+    }
+
+    private void OnPlayerNeutral() {
+    }
+
+    private void OnUnitSelected(Unit u) {
+        
+        Debug.Log(u.name);
+        DisplayUnitControls(u);
+    }
+
+    private void OnMoveSelected() {
+        Unit u = GameManager.Instance.SelectedUnit;
+        ScriptableMove move = GameManager.Instance.SelectedMove;
+        
     }
 
     public void Wipe()

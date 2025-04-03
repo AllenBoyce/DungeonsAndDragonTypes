@@ -68,6 +68,7 @@
     <Compile Include="Assets/_Scripts/Managers/UIController.cs" />
     <Compile Include="Assets/_Scripts/ObserverPattern/IObserver.cs" />
     <Compile Include="Assets/_Scripts/Managers/AnimationController.cs" />
+    <Compile Include="Assets/_Scripts/Managers/GameStateTransitionManager.cs" />
     <Compile Include="Assets/_Scripts/States/UnitSelectedState.cs" />
     <Compile Include="Assets/_Scripts/Managers/GameStateManager.cs" />
     <Compile Include="Assets/_Scripts/Managers/UnitManager.cs" />

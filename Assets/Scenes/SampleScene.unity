@@ -747,7 +747,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteFolderPath: Resources/Sprites/Pokemon/
-  pokemonName: Garchomp
+  pokemonName: Flapple
   generatedAnimClips: []
 --- !u!4 &776340631
 Transform:

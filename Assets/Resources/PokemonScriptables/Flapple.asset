@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Flapple
   m_EditorClassIdentifier: 
   prefab: {fileID: 484404740667683852, guid: 5549db985fe7e42cbb28646a93a5ee5b, type: 3}
-  pokemonName: Flapple
+  species: 1
   _stats:
     hp: 250
     atk: 202

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -5,22 +6,63 @@ using UnityEngine.Rendering;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    //private GameBaseState _currentState;
+    public static GameManager Instance;
+
+    private void Awake() {
+        Instance = this;
+    }
+
+    #region Managers
     private GameState _currentState;
     private UnitManager _unitManager;
     private LevelManager _levelManager;
     private GridManager _gridManager;
     private MovementController _movementController;
     private UIController _uiController;
+
+    private GameStateManager _gameStateManager;
+    private GameBaseState _currentGameState;
+    #endregion
     
-    //Variables pertaining to the game
+    /*
+    Events for:
+    - Game State Change
+        Listeners: UIController
+    - Hovered Tile Change
+        Listeners: 
+    - Unit Selected
+        Listeners:
+    - Move Selected
+        Listeners:
+    - Unit Attacks
+        Listeners: AnimationController
+    - Unit Takes Damage
+        Listeners: AnimationController
+    - Unit Dies
+        Listeners: AnimationController
+    - Unit Moves
+        Listeners:
+    - Active Player Change
+        Listeners:
+    */
+    #region Events
+    public static event Action<GameState> OnGameStateChanged;
+    public static event Action<Vector2Int> OnHoveredTileChanged;
+    public static event Action<Unit> OnUnitSelected;
+    #endregion
+    
+    #region Variables
     private int _activePlayer;
     private Unit _selectedUnit;
     private ScriptableMove _selectedMove;
+    private Vector2Int _hoveredTile;
+    #endregion
 
+    #region Debug Variables
     private bool DEBUG = true;
     private bool DEMO = true;
+    #endregion
+
     void Start()
     {
         _unitManager = FindFirstObjectByType<UnitManager>();
@@ -65,6 +107,8 @@ public class GameManager : MonoBehaviour
         }
         
         _currentState = nextState;
+
+        OnGameStateChanged?.Invoke(nextState);
     }
 
     #region Check and Logic Regarding Mouse Clicks
@@ -86,9 +130,21 @@ public class GameManager : MonoBehaviour
     {
         Vector2 mousePosition = MousePosition();
         Vector2Int mouseTile = new Vector2Int(_gridManager.GetGridX(mousePosition.x), _gridManager.GetGridY(mousePosition.y));
-        
+        if(_hoveredTile != mouseTile) {
+            _hoveredTile = mouseTile;
+            OnHoveredTileChanged?.Invoke(_hoveredTile);
+        }
         switch(_currentState)
         {
+            case GameState.PlayerNeutral:
+                break;
+            case GameState.UnitSelected:
+                break;
+            case GameState.WalkSelected:
+                //Generate path
+                MovementPath path = MovementUtility.GenerateMovementPath(_gridManager.Grid, _selectedUnit.GetGridPosition(), mouseTile);
+                _uiController.PreviewMovementPath(path);
+                break;
             case GameState.MoveSelected:
                 
                 Unit.Direction direction = MovementUtility.GetDirection(_selectedUnit.GetGridPosition(), mouseTile);
@@ -143,12 +199,12 @@ public class GameManager : MonoBehaviour
     #endregion
     public void HandleTileClicked(Vector2Int mouseTile)
     {
+        //Unit at the tile that was just clicked
         Unit u = _levelManager.GetUnitAt(mouseTile);
-        //if(u) Debug.Log(u.State);
+
         switch (_currentState)
         {
             case GameState.PlayerNeutral:
-                //Debug.Log($"Tile {mouseTile.x}, {mouseTile.y} Clicked");
                 
                 //If there isn't a unit at the tile, then do nothing
                 if (u == null) return;
@@ -157,6 +213,8 @@ public class GameManager : MonoBehaviour
                 {
                     //If so, then select it and move on to UnitSelected state.
                     _selectedUnit = u;
+                    //temp placement
+                    OnUnitSelected?.Invoke(_selectedUnit);
                     //_uiController.DisplayUnitControls(_selectedUnit);
                     TransitionState(GameState.UnitSelected);
                 }
@@ -166,7 +224,10 @@ public class GameManager : MonoBehaviour
                 }
                 break;
             case GameState.UnitSelected:
-                
+                //If the unit is already selected, deselect it
+                _selectedUnit = null;
+                OnUnitSelected?.Invoke(null);
+                TransitionState(GameState.PlayerNeutral);
                 break;
             case GameState.WalkSelected:
                 //!!IMPORTANT!!
@@ -189,7 +250,7 @@ public class GameManager : MonoBehaviour
                 }
                 _movementController.WalkUnit(_selectedUnit, path);
                 break;
-            case GameState.MoveSelected:
+            case GameState.MoveSelected: //THIS has GOTTA change.
                 TransitionState(GameState.UnitAttacking);
                 HandleAttack(_selectedUnit, _selectedMove, mouseTile);
                 TransitionState(GameState.PlayerNeutral);
@@ -250,7 +311,14 @@ public class GameManager : MonoBehaviour
 
     }
 
-    private enum GameState
+    #region Getters and Setters
+    public Unit SelectedUnit { get { return _selectedUnit; } }
+    public ScriptableMove SelectedMove { get { return _selectedMove; } }
+    public Vector2Int HoveredTile { get { return _hoveredTile; } }
+    public GameState CurrentState { get { return _currentState; } }
+    #endregion
+
+    public enum GameState
     {
         PlayerNeutral,
         UnitSelected,
