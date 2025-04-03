@@ -9,6 +9,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private Canvas _gameCanvas;
     private GameObject _portraitObj;
     private List<GameObject> _actionButtons;
+    private Dictionary<Unit, List<GameObject>> _unitActionButtons; //Each unit gets a list of action buttons, generated at the beginning of the game.
     
     [SerializeField] private GameManager _gameManager;
     [SerializeField] private GameObject _actionButtonPrefab;
@@ -70,14 +71,23 @@ public class UIController : MonoBehaviour
         //Display path preview
     }
 
-    void Start()
-    {
-        Initialize();
-    }
+    // void Start()
+    // {
+    //     Initialize();
+    // }
 
     public void Initialize()
     {
         InitializeEndTurnButton();
+        InitializeUnitActionButtons(GameManager.Instance.Units);
+    }
+
+    private void InitializeUnitActionButtons(List<Unit> units) {
+        _unitActionButtons = GenerateActionButtons(units);
+        foreach (Unit u in units) {
+            Debug.Log(u.name);
+        }
+
     }
 
     private void OnPlayerNeutral() {
@@ -88,6 +98,8 @@ public class UIController : MonoBehaviour
         
         Debug.Log(u.name);
         DisplayUnitControls(u);
+
+        _unitActionButtons[u].ForEach(button => button.SetActive(true));
     }
 
     private void OnMoveSelected() {
@@ -114,7 +126,7 @@ public class UIController : MonoBehaviour
             {
                 if (button != null)
                 {
-                    Destroy(button);
+                    button.SetActive(false);
                 }
             }
             _actionButtons = null;
@@ -135,6 +147,14 @@ public class UIController : MonoBehaviour
         _endTurnButton.SetActive(true);
     }
     
+    private Dictionary<Unit, List<GameObject>> GenerateActionButtons(List<Unit> units) {
+        Dictionary<Unit, List<GameObject>> unitActionButtons = new Dictionary<Unit, List<GameObject>>();
+        foreach (Unit u in units) {
+            unitActionButtons[u] = GenerateUnitActionButtons(u);
+        }
+        return unitActionButtons;
+    }
+
     /**
      * Generated a list of Button GameObjects that instantiate the ActionButton prefab.
      * Each ActionButton corresponds to one of the given Unit's learnedMoves.
@@ -142,7 +162,7 @@ public class UIController : MonoBehaviour
      * The text of each Button is the name of the Action it refers to.
      * When the Button is clicked, it calls GameManager's SelectMove function, passing in the unit and the ScriptableMove.
      */
-    private List<GameObject> GenerateActionButtons(Unit u)
+    private List<GameObject> GenerateUnitActionButtons(Unit u)
     {
         // Create a new list to store the generated button GameObjects
         List<GameObject> actionButtons = new List<GameObject>();
@@ -157,7 +177,7 @@ public class UIController : MonoBehaviour
                 // Instantiate a button prefab from the UI resources
                 
                 GameObject actionButton = GenerateActionButton(u, action.name);
-                
+                actionButton.name = $"{u.name}{action.name} Button";
             
                 // Add the button to our list
                 actionButtons.Add(actionButton);
@@ -191,14 +211,16 @@ public class UIController : MonoBehaviour
             Debug.Log(_gameManager.name);
             _gameManager.SelectMove(u, actionName);
         });
-
+        actionButton.SetActive(false);
         return actionButton;
     }
 
     
     private void DisplayActionButtons(Unit u)
     {
-        List<GameObject> actionButtons = GenerateActionButtons(u);
+        _actionButtons = new List<GameObject>();
+        List<GameObject> actionButtons = _unitActionButtons[u];
+        Debug.Log(actionButtons.Count);
         // If no buttons to display, return early
         if (actionButtons == null || actionButtons.Count == 0)
             return;
@@ -225,7 +247,6 @@ public class UIController : MonoBehaviour
         }
     
         // Calculate spacing between buttons (assuming we want equal spacing)
-        // Let's use a fixed amount of spacing between buttons 
         float buttonSpacing = 20f;
         float totalWidth = totalButtonWidth + buttonSpacing * (actionButtons.Count - 1);
     
@@ -233,23 +254,29 @@ public class UIController : MonoBehaviour
         float startX = -totalWidth / 2;
         float currentX = startX;
     
-        // Set Y position as requested
-        float yPosition = -312f;
-    
+        // Set position near bottom of screen with padding
+        float bottomPadding = 50f;
+        
         // Position each button
         for (int i = 0; i < actionButtons.Count; i++)
         {
             GameObject button = actionButtons[i];
             RectTransform buttonRect = button.GetComponent<RectTransform>();
+            
+            // Set anchors to bottom of screen
+            buttonRect.anchorMin = new Vector2(0.5f, 0f);
+            buttonRect.anchorMax = new Vector2(0.5f, 0f);
+            buttonRect.pivot = new Vector2(0.5f, 0.5f);
         
-            // Position the button
-            buttonRect.anchoredPosition = new Vector2(currentX + buttonWidths[i] / 2, yPosition);
+            // Position the button with positive Y value from bottom
+            buttonRect.anchoredPosition = new Vector2(currentX + buttonWidths[i] / 2, bottomPadding);
         
             // Set the button as active
             button.SetActive(true);
         
             // Move to the next button position
             currentX += buttonWidths[i] + buttonSpacing;
+            _actionButtons.Add(button);
         }
     }
 

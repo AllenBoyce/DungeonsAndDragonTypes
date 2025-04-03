@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour
         _movementController = FindFirstObjectByType<MovementController>();
         _uiController = FindFirstObjectByType<UIController>();
 
-
+        
         if (DEMO)
         {
             Unit u = _unitManager.GenerateUnit(Constants.PokemonSpecies.Garchomp, 0);
@@ -82,6 +82,8 @@ public class GameManager : MonoBehaviour
             _selectedUnit = u;
             Unit u2 = _unitManager.GenerateUnit(Constants.PokemonSpecies.Flapple, 0);
             _levelManager.PutUnit(u2, 8, 5);
+
+            _uiController.Initialize(); //SLOPPY AND TEMPORARY
         }
     }
 
@@ -306,6 +308,8 @@ public class GameManager : MonoBehaviour
         TransitionState(GameState.MoveSelected);
         
     }
+    
+    public List<Unit> Units { get { return _levelManager.Units; } }
 
     private void HandleAttack(Unit attacker, ScriptableMove move, Vector2Int mouseTile)
     {

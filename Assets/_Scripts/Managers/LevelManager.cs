@@ -53,6 +53,8 @@ public class LevelManager: MonoBehaviour
         return path.Pivots.Count > 0;
     }
 
+    public List<Unit> Units { get { return _units; } }
+
     void Update()
     {
         
