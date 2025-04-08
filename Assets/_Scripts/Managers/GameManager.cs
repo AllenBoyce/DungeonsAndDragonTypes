@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -33,6 +34,8 @@ public class GameManager : MonoBehaviour
         Listeners: 
     - Unit Selected
         Listeners:
+    - Unit Deselected
+        Listeners:
     - Move Selected
         Listeners:
     - Unit Attacks
@@ -50,11 +53,12 @@ public class GameManager : MonoBehaviour
     public static event Action<GameState> OnGameStateChanged;
     public static event Action<Vector2Int> OnHoveredTileChanged;
     public static event Action<Unit> OnUnitSelected;
+    public static event Action<Unit> OnUnitDeselected;
     public static event Action<Unit, ScriptableMove, Vector2Int> OnUnitAttack;
     public static event Action<Unit, ScriptableMove, Vector2Int> OnUnitHurt; //Unit getting Hurt, Move that damages it, Tile attack originates from
     #endregion
     
-    #region Variables
+    #region Private Variables
     private int _activePlayer;
     private Unit _selectedUnit;
     private ScriptableMove _selectedMove;
@@ -64,6 +68,21 @@ public class GameManager : MonoBehaviour
     #region Debug Variables
     private bool DEBUG = true;
     private bool DEMO = true;
+    #endregion
+
+    #region Debug Methods
+    private void DebugLog(string message) {
+        if(DEBUG) Debug.Log(message);
+    }
+    private void DebugCheck() {
+        if (DEBUG) {
+            if (Input.GetKeyDown(KeyCode.Space)) {
+                Debug.Log("Current State: " + _currentState);
+                Debug.Log("Selected Unit: " + _selectedUnit);
+            }
+        }
+    }
+
     #endregion
 
     void Start()
@@ -79,7 +98,6 @@ public class GameManager : MonoBehaviour
         {
             Unit u = _unitManager.GenerateUnit(Constants.PokemonSpecies.Garchomp, 0);
             _levelManager.PutUnit(u, 5, 5);
-            _selectedUnit = u;
             Unit u2 = _unitManager.GenerateUnit(Constants.PokemonSpecies.Flapple, 0);
             _levelManager.PutUnit(u2, 8, 5);
 
@@ -95,30 +113,14 @@ public class GameManager : MonoBehaviour
         HoverCheck();
     }
 
-    private void DebugCheck() {
-        if (DEBUG) {
-            if (Input.GetKeyDown(KeyCode.Space)) {
-                Debug.Log("Current State: " + _currentState);
-                Debug.Log("Selected Unit: " + _selectedUnit);
-            }
-        }
-    }
     
     private void TransitionState(GameState nextState)
     {
         Debug.Log("Transitioning State to: " + nextState);
-        
-        // //TEMPORARY LOGIC MOVE LATER
-        // if(_currentState != GameState.UnitSelected && nextState == GameState.UnitSelected) _uiController.DisplayUnitControls(_selectedUnit);
-        
-        //TEMPORARY LOGIC MOVE LATER
-        //if(nextState == GameState.MoveSelected)
 
         if (_currentState == GameState.UnitAttacking && nextState == GameState.PlayerNeutral)
         {
-            Debug.Log("Clearing Attacking Unit");
-            _selectedUnit = null;
-            _uiController.Wipe();
+            DeselectUnit(); 
         }
         
         _currentState = nextState;
@@ -215,8 +217,8 @@ public class GameManager : MonoBehaviour
     public void HandleTileClicked(Vector2Int mouseTile)
     {
         //Unit at the tile that was just clicked
-        Unit u = _levelManager.GetUnitAt(mouseTile);
-
+        Unit u = GetUnitAt(mouseTile);
+        
         switch (_currentState)
         {
             case GameState.PlayerNeutral:
@@ -224,26 +226,15 @@ public class GameManager : MonoBehaviour
                 //If there isn't a unit at the tile, then do nothing
                 if (u == null) return;
                 //But if there is, check if it belongs to the active player.
-                if (u.PlayerOwner == _activePlayer)
+                if (u.PlayerOwner == _activePlayer) 
                 {
-                    Debug.Log("Selected Unit: " + u.name);
-                    //If so, then select it and move on to UnitSelected state.
-                    _selectedUnit = u;
-                    //temp placement
-                    OnUnitSelected?.Invoke(_selectedUnit);
-                    //_uiController.DisplayUnitControls(_selectedUnit);
-                    TransitionState(GameState.UnitSelected);
-                }
-                else
-                {
-                    //Else, do nothing for now
+                    if(u == _selectedUnit) DeselectUnit(); //In theory this should never actually happen, since PlayerNeutral means there shouldn't be a unit selected.
+                    else SelectUnit(u);
                 }
                 break;
             case GameState.UnitSelected:
-                //If the unit is already selected, deselect it
-                // _selectedUnit = null;
-                // OnUnitSelected?.Invoke(null);
-                // TransitionState(GameState.PlayerNeutral);
+                if(u == null) return;
+                if(u == _selectedUnit) DeselectUnit();
                 break;
             case GameState.WalkSelected:
                 //!!IMPORTANT!!
@@ -274,6 +265,24 @@ public class GameManager : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    private Unit GetUnitAt(Vector2Int mouseTile) {
+        return _levelManager.GetUnitAt(mouseTile);
+    }
+
+    private void SelectUnit(Unit u) {
+        if(_selectedUnit == u) return;
+        _selectedUnit = u;
+        OnUnitSelected?.Invoke(_selectedUnit);
+        TransitionState(GameState.UnitSelected);
+    }
+
+    private void DeselectUnit() {
+        _selectedUnit = null;
+        OnUnitDeselected?.Invoke(_selectedUnit);
+        _uiController.Wipe();
+        TransitionState(GameState.PlayerNeutral);
     }
 
     public void EndTurn()

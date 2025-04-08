@@ -13,15 +13,17 @@ public class PokemonAnimationLoader : MonoBehaviour
     [Tooltip("Path to the folder containing animation sprite sheets (relative to Assets/Resources/)")]
     public string spriteFolderPath = "Resources/Sprites/Pokemon/"; // e.g. "Pokemon/Sprites/Pikachu/"
     
-    [Tooltip("The Pokémon species name (this will be used for file naming conventions)")]
-    public string pokemonName = "";
+    [Tooltip("The Pokémon species")]
+    public Constants.PokemonSpecies species;
+
+    public string pokemonName { get { return species.ToString(); } }
     
     [Header("Animation References")]
     [Tooltip("Automatically populated animation clips")]
     public List<AnimationClip> generatedAnimClips = new List<AnimationClip>();
 
     [Tooltip("The number of game frames per second")]
-    public float gameFramesPerSecond = 60f;
+    public float gameFramesPerSecond = 48;
     
 }
 
@@ -44,7 +46,6 @@ public class PokemonAnimationLoaderEditor : Editor
 {
     // Dictionary to store animation data by name
     private Dictionary<string, AnimationFrameData> animationDataByName = new Dictionary<string, AnimationFrameData>();
-
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
@@ -52,7 +53,6 @@ public class PokemonAnimationLoaderEditor : Editor
         EditorGUILayout.Space();
         
         PokemonAnimationLoader loader = (PokemonAnimationLoader)target;
-        
         if (GUILayout.Button("Generate Animations"))
         {
             GenerateAnimations(loader);

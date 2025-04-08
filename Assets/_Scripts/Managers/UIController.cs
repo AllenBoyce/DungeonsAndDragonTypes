@@ -67,8 +67,12 @@ public class UIController : MonoBehaviour
 
     #endregion
 
+    /**
+     * Displays a preview of the movement path for the selected unit.
+     * The path is displayed as a series of PathPreview sprites above each tile in the path.
+     */
     public void PreviewMovementPath(MovementPath path) {
-        //Display path preview
+        
     }
 
     // void Start()
