@@ -55,16 +55,18 @@ public class UIController : MonoBehaviour
 
 
     void OnHoveredTileChanged(Vector2Int hoveredTile) {
-        // switch (GameManager.Instance.CurrentState.GetType().Name) { //Ugly and lame but works
-        //     case "PlayerNeutralState":
-        //         break;
-        //     case "UnitSelectedState":
-        //         break;
-        //     case "MoveSelectedState":
-        //         break;
-        //     case "ExecuteMoveState":
-        //         break;
-        // }
+        //Debug.Log(hoveredTile);
+        switch (GameManager.Instance.CurrentState.GetType().Name) { //Ugly and lame but works
+            case "PlayerNeutralState":
+                break;
+            case "UnitSelectedState":
+                break;
+            case "MoveSelectedState":
+                HighlightTargetedTiles(GameManager.Instance.SelectedMove, hoveredTile, GameManager.Instance.SelectedUnit.GetCurrentDirection(), GameManager.Instance.Grid);
+                break;
+            case "ExecuteMoveState":
+                break;
+        }
     }
 
     #endregion
@@ -116,6 +118,7 @@ public class UIController : MonoBehaviour
     public void Wipe()
     {
         WipeUnitControls();
+        ClearHighlightedTiles(GameManager.Instance.Grid);
     }
 
     private void WipeUnitControls()

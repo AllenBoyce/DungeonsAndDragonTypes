@@ -55,6 +55,8 @@ public class GameManager : MonoBehaviour
     public static event Action<Vector2Int> OnTileRightClicked;
     public static event Action<Unit> OnUnitSelected;
     public static event Action<Unit> OnUnitDeselected;
+    public static event Action<Unit, ScriptableMove> OnMoveSelected;
+    public static event Action<Unit, ScriptableMove> OnMoveDeselected;
     public static event Action<Unit, ScriptableMove, Vector2Int> OnUnitAttack;
     public static event Action<Unit, ScriptableMove, Vector2Int> OnUnitHurt; //Unit getting Hurt, Move that damages it, Tile attack originates from
     #endregion
@@ -123,9 +125,9 @@ public class GameManager : MonoBehaviour
     /// <param name="nextState">The new state to transition to.</param>
     public void TransitionState(GameBaseState nextState)
     {
-        Debug.Log("GameManager calling TransitionToState " + nextState.ToString());
+        //Debug.Log("GameManager calling TransitionToState " + nextState.ToString());
         _stateManager.TransitionToState(nextState);
-        Debug.Log("GameManager TransitionToState complete. Current State: " + _stateManager.CurrentState.ToString());
+        //Debug.Log("GameManager TransitionToState complete. Current State: " + _stateManager.CurrentState.ToString());
         OnGameStateChanged?.Invoke(nextState);
     }
 
@@ -158,11 +160,6 @@ public class GameManager : MonoBehaviour
         //         _uiController.PreviewMovementPath(path);
         //         break;
         //     case GameState.MoveSelected:
-                
-        //         Unit.Direction direction = MovementUtility.GetDirection(_selectedUnit.GetGridPosition(), mouseTile);
-        //         _selectedUnit.SetCurrentDirection(direction);
-        //         _selectedUnit.PlayAnimation("Idle", direction); //temporary bullshit
-        //         _uiController.HighlightTargetedTiles(_selectedMove, mouseTile, _selectedUnit.GetCurrentDirection(), _gridManager.Grid);
         //         break;
         // }
     }
@@ -193,12 +190,12 @@ public class GameManager : MonoBehaviour
         {
             
         }
-        Debug.Log("HandleRightClick: " + mousePosition);
+        //Debug.Log("HandleRightClick: " + mousePosition);
         Vector2Int mouseTile = new Vector2Int(_gridManager.GetGridX(mousePosition.x), _gridManager.GetGridY(mousePosition.y));
         if (IsTileWithinBounds(mouseTile))
         {
             //HandleTileLeftClicked(mouseTile);
-            Debug.Log("HandleRightClick: " + mouseTile);
+            //Debug.Log("HandleRightClick: " + mouseTile);
             OnTileRightClicked?.Invoke(mouseTile);
         }
         else
@@ -271,11 +268,16 @@ public class GameManager : MonoBehaviour
     }
 
     public void DeselectUnit() {
-        Debug.Log("GameManager DeselectUnit");
+        //Debug.Log("GameManager DeselectUnit");
         _selectedUnit = null;
         OnUnitDeselected?.Invoke(_selectedUnit);
         _uiController.Wipe(); //This should be handled by the UI controller's listener
         TransitionState(_stateManager.playerNeutralState);
+    }
+
+    public void DeselectMove() {
+        _selectedMove = null;
+        TransitionState(_stateManager.unitSelectedState);
     }
 
     public void EndTurn()
@@ -307,7 +309,9 @@ public class GameManager : MonoBehaviour
         
         ScriptableMove move = moveDict[moveName];
         _selectedMove = move;
-       // TransitionState(GameState.MoveSelected);
+
+        TransitionState(GameStateManager.moveSelectedState);
+        OnMoveSelected?.Invoke(u, move);
         
     }
     

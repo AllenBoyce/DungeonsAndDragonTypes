@@ -30,8 +30,8 @@ public class GameStateManager : MonoBehaviour
     /// </summary>
     /// <param name="mouseTile">The tile that the mouse is clicked on</param>
     public void OnTileRightClicked(Vector2Int mouseTile) {
-        Debug.Log("GameStateManager: OnTileRightClicked: " + mouseTile);
-        Debug.Log("CurrentState: " + CurrentState.ToString());
+        //Debug.Log("GameStateManager: OnTileRightClicked: " + mouseTile);
+        //Debug.Log("CurrentState: " + CurrentState.ToString());
         CurrentState.HandleRightClickTile(mouseTile);
     }
 
