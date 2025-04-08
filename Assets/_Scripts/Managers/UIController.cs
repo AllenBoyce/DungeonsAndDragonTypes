@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
@@ -29,19 +30,19 @@ public class UIController : MonoBehaviour
     }
 
     #region Event Listeners
-    void OnGameStateChanged(GameManager.GameState newState) {
+    void OnGameStateChanged(GameBaseState newState) {
         Wipe();
-        switch (newState) {
-            case GameManager.GameState.PlayerNeutral:
+        switch (newState.GetType().Name) { //Ugly and lame but works
+            case "PlayerNeutralState":
                 OnPlayerNeutral();
                 break;
-            case GameManager.GameState.UnitSelected:
+            case "UnitSelectedState":
                 OnUnitSelected(GameManager.Instance.SelectedUnit);
                 break;
-            case GameManager.GameState.MoveSelected:
+            case "MoveSelectedState":
                 OnMoveSelected();
                 break;
-            case GameManager.GameState.UnitAttacking:
+            case "ExecuteMoveState":
                 OnUnitAttacking();
                 break;
         }
@@ -53,14 +54,14 @@ public class UIController : MonoBehaviour
 
 
     void OnHoveredTileChanged(Vector2Int hoveredTile) {
-        switch (GameManager.Instance.CurrentState) {
-            case GameManager.GameState.PlayerNeutral:
+        switch (GameManager.Instance.CurrentState.GetType().Name) { //Ugly and lame but works
+            case "PlayerNeutralState":
                 break;
-            case GameManager.GameState.UnitSelected:
+            case "UnitSelectedState":
                 break;
-            case GameManager.GameState.WalkSelected:
+            case "MoveSelectedState":
                 break;
-            case GameManager.GameState.MoveSelected:
+            case "ExecuteMoveState":
                 break;
         }
     }

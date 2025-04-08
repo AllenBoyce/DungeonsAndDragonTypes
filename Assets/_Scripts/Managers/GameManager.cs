@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     }
 
     #region Managers
-    private GameState _currentState;
+    //private GameState _currentState;
     private UnitManager _unitManager;
     private LevelManager _levelManager;
     private GridManager _gridManager;
@@ -22,7 +22,6 @@ public class GameManager : MonoBehaviour
     private UIController _uiController;
 
     private GameStateManager _stateManager;
-    private GameStateTransitionManager _stateTransitionManager;
     // private GameBaseState _currentGameState;
     #endregion
     
@@ -50,8 +49,10 @@ public class GameManager : MonoBehaviour
         Listeners:
     */
     #region Events
-    public static event Action<GameState> OnGameStateChanged;
+    public static event Action<GameBaseState> OnGameStateChanged;
     public static event Action<Vector2Int> OnHoveredTileChanged;
+    public static event Action<Vector2Int> OnTileLeftClicked;
+    public static event Action<Vector2Int> OnTileRightClicked;
     public static event Action<Unit> OnUnitSelected;
     public static event Action<Unit> OnUnitDeselected;
     public static event Action<Unit, ScriptableMove, Vector2Int> OnUnitAttack;
@@ -77,7 +78,7 @@ public class GameManager : MonoBehaviour
     private void DebugCheck() {
         if (DEBUG) {
             if (Input.GetKeyDown(KeyCode.Space)) {
-                Debug.Log("Current State: " + _currentState);
+                Debug.Log("Current State: " + CurrentState.ToString());
                 Debug.Log("Selected Unit: " + _selectedUnit);
             }
         }
@@ -114,17 +115,13 @@ public class GameManager : MonoBehaviour
     }
 
     
-    private void TransitionState(GameState nextState)
+    /// <summary>
+    /// Transitions to a new state by calling the GameStateManager's TransitionToState method and invoking the OnGameStateChanged event.
+    /// </summary>
+    /// <param name="nextState">The new state to transition to.</param>
+    public void TransitionState(GameBaseState nextState)
     {
-        Debug.Log("Transitioning State to: " + nextState);
-
-        if (_currentState == GameState.UnitAttacking && nextState == GameState.PlayerNeutral)
-        {
-            DeselectUnit(); 
-        }
-        
-        _currentState = nextState;
-
+        _stateManager.TransitionToState(nextState);
         OnGameStateChanged?.Invoke(nextState);
     }
 
@@ -142,7 +139,6 @@ public class GameManager : MonoBehaviour
             HandleRightClick();
         }
     }
-
     private void HoverCheck()
     {
         Vector2 mousePosition = MousePosition();
@@ -151,25 +147,26 @@ public class GameManager : MonoBehaviour
             _hoveredTile = mouseTile;
             OnHoveredTileChanged?.Invoke(_hoveredTile);
         }
-        switch(_currentState)
-        {
-            case GameState.PlayerNeutral:
-                break;
-            case GameState.UnitSelected:
-                break;
-            case GameState.WalkSelected:
-                //Generate path
-                MovementPath path = MovementUtility.GenerateMovementPath(_gridManager.Grid, _selectedUnit.GetGridPosition(), mouseTile);
-                _uiController.PreviewMovementPath(path);
-                break;
-            case GameState.MoveSelected:
+
+        // switch(_currentState)
+        // {
+        //     case GameState.PlayerNeutral:
+        //         break;
+        //     case GameState.UnitSelected:
+        //         break;
+        //     case GameState.WalkSelected:
+        //         //Generate path
+        //         MovementPath path = MovementUtility.GenerateMovementPath(_gridManager.Grid, _selectedUnit.GetGridPosition(), mouseTile);
+        //         _uiController.PreviewMovementPath(path);
+        //         break;
+        //     case GameState.MoveSelected:
                 
-                Unit.Direction direction = MovementUtility.GetDirection(_selectedUnit.GetGridPosition(), mouseTile);
-                _selectedUnit.SetCurrentDirection(direction);
-                _selectedUnit.PlayAnimation("Idle", direction); //temporary bullshit
-                _uiController.HighlightTargetedTiles(_selectedMove, mouseTile, _selectedUnit.GetCurrentDirection(), _gridManager.Grid);
-                break;
-        }
+        //         Unit.Direction direction = MovementUtility.GetDirection(_selectedUnit.GetGridPosition(), mouseTile);
+        //         _selectedUnit.SetCurrentDirection(direction);
+        //         _selectedUnit.PlayAnimation("Idle", direction); //temporary bullshit
+        //         _uiController.HighlightTargetedTiles(_selectedMove, mouseTile, _selectedUnit.GetCurrentDirection(), _gridManager.Grid);
+        //         break;
+        // }
     }
 
     private void HandleLeftClick(Vector2 mousePosition)
@@ -177,7 +174,8 @@ public class GameManager : MonoBehaviour
         Vector2Int mouseTile = new Vector2Int(_gridManager.GetGridX(mousePosition.x), _gridManager.GetGridY(mousePosition.y));
         if (IsTileWithinBounds(mouseTile))
         {
-            HandleTileClicked(mouseTile);
+            //HandleTileLeftClicked(mouseTile);
+            OnTileLeftClicked?.Invoke(mouseTile);
         }
         else
         {
@@ -198,12 +196,14 @@ public class GameManager : MonoBehaviour
             
         }
 
-        if (_currentState == GameState.MoveSelected)
-        {
-            _selectedMove = null;
-            _uiController.ClearHighlightedTiles(_gridManager.Grid);
-            TransitionState(GameState.UnitSelected);
-        }
+        CurrentState.HandleRightClickTile(_hoveredTile);
+
+        // if (_currentState == GameState.MoveSelected)
+        // {
+        //     _selectedMove = null;
+        //     _uiController.ClearHighlightedTiles(_gridManager.Grid);
+        //     TransitionState(GameState.UnitSelected);
+        // }
     }
 
     private Vector2 MousePosition()
@@ -217,78 +217,79 @@ public class GameManager : MonoBehaviour
     public void HandleTileClicked(Vector2Int mouseTile)
     {
         //Unit at the tile that was just clicked
-        Unit u = GetUnitAt(mouseTile);
+
+        //CurrentState.HandleLeftClickTile(mouseTile);
         
-        switch (_currentState)
-        {
-            case GameState.PlayerNeutral:
+        // switch (_currentState)
+        // {
+        //     case GameState.PlayerNeutral:
                 
-                //If there isn't a unit at the tile, then do nothing
-                if (u == null) return;
-                //But if there is, check if it belongs to the active player.
-                if (u.PlayerOwner == _activePlayer) 
-                {
-                    if(u == _selectedUnit) DeselectUnit(); //In theory this should never actually happen, since PlayerNeutral means there shouldn't be a unit selected.
-                    else SelectUnit(u);
-                }
-                break;
-            case GameState.UnitSelected:
-                if(u == null) return;
-                if(u == _selectedUnit) DeselectUnit();
-                break;
-            case GameState.WalkSelected:
-                //!!IMPORTANT!!
-                //In final version, the move logic here will be a separate state.
-                if (u != null) return;
+        //         //If there isn't a unit at the tile, then do nothing
+        //         if (u == null) return;
+        //         //But if there is, check if it belongs to the active player.
+        //         if (u.PlayerOwner == _activePlayer) 
+        //         {
+        //             if(u == _selectedUnit) DeselectUnit(); //In theory this should never actually happen, since PlayerNeutral means there shouldn't be a unit selected.
+        //             else SelectUnit(u);
+        //         }
+        //         break;
+        //     case GameState.UnitSelected:
+        //         if(u == null) return;
+        //         if(u == _selectedUnit) DeselectUnit();
+        //         break;
+        //     case GameState.WalkSelected:
+        //         //!!IMPORTANT!!
+        //         //In final version, the move logic here will be a separate state.
+        //         if (u != null) return;
                 
-                //Target tile is empty so MOVE OUR GUY OVER THERE
-                MovementPath path = MovementUtility.GenerateMovementPath(_gridManager.Grid, _selectedUnit.GetGridPosition(), mouseTile);
-                if (path != null && path.Pivots != null && path.Pivots.Count > 0)
-                {
-                    //Debug.Log($"Moving unit from {_selectedUnit.GetGridPosition()} to {mouseTile} with {path.Pivots.Count} pivot points");
-                    _movementController.WalkUnit(_selectedUnit, path);
+        //         //Target tile is empty so MOVE OUR GUY OVER THERE
+        //         MovementPath path = MovementUtility.GenerateMovementPath(_gridManager.Grid, _selectedUnit.GetGridPosition(), mouseTile);
+        //         if (path != null && path.Pivots != null && path.Pivots.Count > 0)
+        //         {
+        //             //Debug.Log($"Moving unit from {_selectedUnit.GetGridPosition()} to {mouseTile} with {path.Pivots.Count} pivot points");
+        //             _movementController.WalkUnit(_selectedUnit, path);
     
-                    // Update the unit's grid position after movement
-                    _selectedUnit.SetGridPosition(mouseTile);
-                }
-                else
-                {
-                    Debug.LogWarning("Cannot generate a valid path to the destination");
-                }
-                _movementController.WalkUnit(_selectedUnit, path);
-                break;
-            case GameState.MoveSelected: //THIS has GOTTA change.
-                TransitionState(GameState.UnitAttacking);
-                HandleAttack(_selectedUnit, _selectedMove, mouseTile);
-                TransitionState(GameState.PlayerNeutral);
-                break;
-            default:
-                break;
-        }
+        //             // Update the unit's grid position after movement
+        //             _selectedUnit.SetGridPosition(mouseTile);
+        //         }
+        //         else
+        //         {
+        //             Debug.LogWarning("Cannot generate a valid path to the destination");
+        //         }
+        //         _movementController.WalkUnit(_selectedUnit, path);
+        //         break;
+        //     case GameState.MoveSelected: //THIS has GOTTA change.
+        //         TransitionState(GameState.UnitAttacking);
+        //         HandleAttack(_selectedUnit, _selectedMove, mouseTile);
+        //         TransitionState(GameState.PlayerNeutral);
+        //         break;
+        //     default:
+        //         break;
+        // }
     }
 
-    private Unit GetUnitAt(Vector2Int mouseTile) {
+    public Unit GetUnitAt(Vector2Int mouseTile) {
         return _levelManager.GetUnitAt(mouseTile);
     }
 
-    private void SelectUnit(Unit u) {
+    public void SelectUnit(Unit u) {
         if(_selectedUnit == u) return;
         _selectedUnit = u;
         OnUnitSelected?.Invoke(_selectedUnit);
-        TransitionState(GameState.UnitSelected);
+        //TransitionState(GameStateManager.UnitSelectedState);
     }
 
     private void DeselectUnit() {
         _selectedUnit = null;
         OnUnitDeselected?.Invoke(_selectedUnit);
         _uiController.Wipe();
-        TransitionState(GameState.PlayerNeutral);
+        //TransitionState(GameState.PlayerNeutral);
     }
 
     public void EndTurn()
     {
         _uiController.Wipe();
-        TransitionState(GameState.PlayerNeutral);
+        //TransitionState(GameState.PlayerNeutral);
     }
 
     public void SelectMove(Unit u, string moveName)
@@ -301,7 +302,7 @@ public class GameManager : MonoBehaviour
 
         if (moveName == "Move")
         {
-            TransitionState(GameState.WalkSelected);
+            //TransitionState(GameState.WalkSelected);
             return;
         }
 
@@ -314,7 +315,7 @@ public class GameManager : MonoBehaviour
         
         ScriptableMove move = moveDict[moveName];
         _selectedMove = move;
-        TransitionState(GameState.MoveSelected);
+       // TransitionState(GameState.MoveSelected);
         
     }
     
@@ -339,17 +340,25 @@ public class GameManager : MonoBehaviour
     public Unit SelectedUnit { get { return _selectedUnit; } }
     public ScriptableMove SelectedMove { get { return _selectedMove; } }
     public Vector2Int HoveredTile { get { return _hoveredTile; } }
-    public GameState CurrentState { get { return _currentState; } }
+    public GameBaseState CurrentState { get {return _stateManager.CurrentState;} }
     public Dictionary<Vector2Int, Tile> Grid { get { return _gridManager.Grid; } }
+    public GameStateManager GameStateManager { get { return _stateManager; } }
     #endregion
 
-    public enum GameState
-    {
-        PlayerNeutral,
-        UnitSelected,
-        WalkSelected,
-        MoveSelected,
-        UnitAttacking,
-        UnitWalking,
+    #region Utility Methods for States
+    public bool DoesUnitBelongToActivePlayer(Unit u) {
+        Debug.Log("DoesUnitBelongToActivePlayer: " + u.PlayerOwner + " == " + _activePlayer);
+        return u.PlayerOwner == _activePlayer;
     }
+    #endregion
+
+    // public enum GameState
+    // {
+    //     PlayerNeutral,
+    //     UnitSelected,
+    //     WalkSelected,
+    //     MoveSelected,
+    //     UnitAttacking,
+    //     UnitWalking,
+    // }
 }

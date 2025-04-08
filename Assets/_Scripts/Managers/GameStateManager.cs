@@ -2,26 +2,47 @@ using UnityEngine;
 
 public class GameStateManager : MonoBehaviour
 {
-    GameBaseState currentState;
-    PlayerNeutralState playerNeutralState = new PlayerNeutralState();
-    /*UnitSelectedState unitSelectedState = new UnitSelectedState();
-    ChooseTargetState chooseTargetState = new ChooseTargetState();
-    ExecuteMoveState executeMoveState = new ExecuteMoveState();
-    CheckupState checkupState = new CheckupState();*/
+    public GameBaseState CurrentState {get; private set;}
+    public PlayerNeutralState playerNeutralState = new();
+    public UnitSelectedState unitSelectedState = new();
+    public WalkSelectedState walkSelectedState = new();
+    public MoveSelectedState moveSelectedState = new();
+    public ExecuteMoveState executeMoveState = new();
+
+    /// <summary>
+    /// Invokes the CurrentState's HandleHoverTile method whenever the mouse hovers over a new tile
+    /// </summary>
+    /// <param name="mouseTile">The tile that the mouse is hovering over</param>
+    public void OnHoveredTileChanged(Vector2Int mouseTile) {
+        CurrentState.HandleHoverTile(mouseTile);
+    }
+
+    /// <summary>
+    /// Invokes the CurrentState's HandleLeftClickTile method whenever the left mouse button is clicked
+    /// </summary>
+    /// <param name="mouseTile">The tile that the mouse is clicked on</param>
+    public void OnTileLeftClicked(Vector2Int mouseTile) {
+        CurrentState.HandleLeftClickTile(mouseTile);
+    }
 
     void Start()
     {
-        currentState = playerNeutralState;
-        currentState.EnterState(this);
+        GameManager.OnHoveredTileChanged += OnHoveredTileChanged;
+        GameManager.OnTileLeftClicked += OnTileLeftClicked;
+
+
+        CurrentState = playerNeutralState;
+        CurrentState.EnterState(this);
     }
 
     void Update()
     {
-        currentState.UpdateState(this);
+        CurrentState.UpdateState(this);
     }
 
     public void TransitionToState(GameBaseState newState) {
-        currentState = newState;
-        currentState.EnterState(this);
+        Debug.Log("Transitioning to state: " + newState.GetType().Name);
+        CurrentState = newState;
+        CurrentState.EnterState(this);
     }
 }

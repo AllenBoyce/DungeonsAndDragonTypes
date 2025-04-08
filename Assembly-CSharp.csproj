@@ -48,7 +48,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets/_Scripts/Units/Unit.cs" />
+    <Compile Include="Assets/_Scripts/States/MoveSelectedState.cs" />
     <Compile Include="Assets/_Scripts/Managers/GridManager.cs" />
+    <Compile Include="Assets/_Scripts/States/ExecuteMoveState.cs" />
     <Compile Include="Assets/_Scripts/States/PlayerNeutralState.cs" />
     <Compile Include="Assets/_Scripts/Utilities/Constants.cs" />
     <Compile Include="Assets/_Scripts/Utilities/Singleton.cs" />
@@ -63,12 +65,12 @@
     <Compile Include="Assets/_Scripts/PokemonModel.cs" />
     <Compile Include="Assets/_Scripts/Utilities/MovementUtility.cs" />
     <Compile Include="Assets/_Scripts/Utilities/TargetingUtility.cs" />
+    <Compile Include="Assets/_Scripts/States/WalkSelectedState.cs" />
     <Compile Include="Assets/_Scripts/Pokemon.cs" />
     <Compile Include="Assets/_Scripts/Utilities/PokemonAnimationLoader.cs" />
     <Compile Include="Assets/_Scripts/Managers/UIController.cs" />
     <Compile Include="Assets/_Scripts/ObserverPattern/IObserver.cs" />
     <Compile Include="Assets/_Scripts/Managers/AnimationController.cs" />
-    <Compile Include="Assets/_Scripts/Managers/GameStateTransitionManager.cs" />
     <Compile Include="Assets/_Scripts/States/UnitSelectedState.cs" />
     <Compile Include="Assets/_Scripts/Managers/GameStateManager.cs" />
     <Compile Include="Assets/_Scripts/Managers/UnitManager.cs" />

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class UnitSelectedState : GameBaseState
+public class WalkSelectedState : GameBaseState
 {
     public override void EnterState(GameStateManager gameStateManager)
     {
