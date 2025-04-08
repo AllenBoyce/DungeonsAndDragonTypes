@@ -23,8 +23,4 @@ public abstract class GameBaseState
 
     public abstract void HandleRightClickTile(Vector2Int mouseTile);
 
-    protected void TransitionToState(GameBaseState newState) {
-        GameManager.Instance.TransitionState(newState);
-    }
-
 }

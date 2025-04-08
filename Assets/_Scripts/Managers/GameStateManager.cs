@@ -3,11 +3,11 @@ using UnityEngine;
 public class GameStateManager : MonoBehaviour
 {
     public GameBaseState CurrentState {get; private set;}
-    public PlayerNeutralState playerNeutralState = new();
-    public UnitSelectedState unitSelectedState = new();
-    public WalkSelectedState walkSelectedState = new();
-    public MoveSelectedState moveSelectedState = new();
-    public ExecuteMoveState executeMoveState = new();
+    public PlayerNeutralState playerNeutralState = new PlayerNeutralState();
+    public UnitSelectedState unitSelectedState = new UnitSelectedState();
+    public WalkSelectedState walkSelectedState = new WalkSelectedState();
+    public MoveSelectedState moveSelectedState = new MoveSelectedState();
+    public ExecuteMoveState executeMoveState = new ExecuteMoveState();
 
     /// <summary>
     /// Invokes the CurrentState's HandleHoverTile method whenever the mouse hovers over a new tile
@@ -25,11 +25,21 @@ public class GameStateManager : MonoBehaviour
         CurrentState.HandleLeftClickTile(mouseTile);
     }
 
+    /// <summary>
+    /// Invokes the CurrentState's HandleRightClickTile method whenever the right mouse button is clicked
+    /// </summary>
+    /// <param name="mouseTile">The tile that the mouse is clicked on</param>
+    public void OnTileRightClicked(Vector2Int mouseTile) {
+        Debug.Log("GameStateManager: OnTileRightClicked: " + mouseTile);
+        Debug.Log("CurrentState: " + CurrentState.ToString());
+        CurrentState.HandleRightClickTile(mouseTile);
+    }
+
     void Start()
     {
         GameManager.OnHoveredTileChanged += OnHoveredTileChanged;
         GameManager.OnTileLeftClicked += OnTileLeftClicked;
-
+        GameManager.OnTileRightClicked += OnTileRightClicked;
 
         CurrentState = playerNeutralState;
         CurrentState.EnterState(this);

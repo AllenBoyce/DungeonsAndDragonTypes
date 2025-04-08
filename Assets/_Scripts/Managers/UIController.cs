@@ -34,6 +34,7 @@ public class UIController : MonoBehaviour
         Wipe();
         switch (newState.GetType().Name) { //Ugly and lame but works
             case "PlayerNeutralState":
+                Debug.Log("UI Controller receives PlayerNeutralState");
                 OnPlayerNeutral();
                 break;
             case "UnitSelectedState":
@@ -54,16 +55,16 @@ public class UIController : MonoBehaviour
 
 
     void OnHoveredTileChanged(Vector2Int hoveredTile) {
-        switch (GameManager.Instance.CurrentState.GetType().Name) { //Ugly and lame but works
-            case "PlayerNeutralState":
-                break;
-            case "UnitSelectedState":
-                break;
-            case "MoveSelectedState":
-                break;
-            case "ExecuteMoveState":
-                break;
-        }
+        // switch (GameManager.Instance.CurrentState.GetType().Name) { //Ugly and lame but works
+        //     case "PlayerNeutralState":
+        //         break;
+        //     case "UnitSelectedState":
+        //         break;
+        //     case "MoveSelectedState":
+        //         break;
+        //     case "ExecuteMoveState":
+        //         break;
+        // }
     }
 
     #endregion

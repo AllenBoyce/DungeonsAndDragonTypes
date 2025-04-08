@@ -23,6 +23,8 @@ public class UnitSelectedState : GameBaseState
     }
     public override void HandleRightClickTile(Vector2Int mouseTile)
     {   
-
+        Debug.Log("UnitSelectedState: HandleRightClickTile");
+        //Deselect this unit
+        GameManager.Instance.DeselectUnit();
     }
 }

@@ -24,11 +24,11 @@ public class PlayerNeutralState : GameBaseState
 
     public override void HandleLeftClickTile(Vector2Int mouseTile)  
     {
-        Debug.Log("Blue Flag");
-        if(GameManager.Instance.DoesUnitBelongToActivePlayer(GameManager.Instance.GetUnitAt(mouseTile))) {
-            Debug.Log("RedFlag");
-            GameManager.Instance.SelectUnit(GameManager.Instance.GetUnitAt(mouseTile));
-            TransitionToState(GameManager.Instance.GameStateManager.unitSelectedState); //Holy ugly
+        Unit u = GameManager.Instance.GetUnitAt(mouseTile);
+        if(u == null) return;
+        if(GameManager.Instance.DoesUnitBelongToActivePlayer(u)) {
+            GameManager.Instance.SelectUnit(u);
+            return;
         }
     }
     public override void HandleRightClickTile(Vector2Int mouseTile)
