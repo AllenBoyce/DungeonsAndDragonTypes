@@ -59,6 +59,7 @@ public class GameManager : MonoBehaviour
     public static event Action<Unit, ScriptableMove> OnMoveDeselected;
     public static event Action<Unit, ScriptableMove, Vector2Int> OnUnitAttack;
     public static event Action<Unit, ScriptableMove, Vector2Int> OnUnitHurt; //Unit getting Hurt, Move that damages it, Tile attack originates from
+    
     #endregion
     
     #region Private Variables
@@ -98,7 +99,8 @@ public class GameManager : MonoBehaviour
         _uiController = FindFirstObjectByType<UIController>();
         _stateManager = GetComponent<GameStateManager>();
 
-        
+        MovementController.OnUnitMoving += OnUnitMoving;
+        MovementController.OnUnitStoppedMoving += OnUnitStoppedMoving;
         if (DEMO)
         {
             Unit u = _unitManager.GenerateUnit(Constants.PokemonSpecies.Garchomp, 0);
@@ -228,23 +230,7 @@ public class GameManager : MonoBehaviour
         //     case GameState.WalkSelected:
         //         //!!IMPORTANT!!
         //         //In final version, the move logic here will be a separate state.
-        //         if (u != null) return;
-                
-        //         //Target tile is empty so MOVE OUR GUY OVER THERE
-        //         MovementPath path = MovementUtility.GenerateMovementPath(_gridManager.Grid, _selectedUnit.GetGridPosition(), mouseTile);
-        //         if (path != null && path.Pivots != null && path.Pivots.Count > 0)
-        //         {
-        //             //Debug.Log($"Moving unit from {_selectedUnit.GetGridPosition()} to {mouseTile} with {path.Pivots.Count} pivot points");
-        //             _movementController.WalkUnit(_selectedUnit, path);
-    
-        //             // Update the unit's grid position after movement
-        //             _selectedUnit.SetGridPosition(mouseTile);
-        //         }
-        //         else
-        //         {
-        //             Debug.LogWarning("Cannot generate a valid path to the destination");
-        //         }
-        //         _movementController.WalkUnit(_selectedUnit, path);
+        //         
         //         break;
         //     case GameState.MoveSelected: //THIS has GOTTA change.
         //         TransitionState(GameState.UnitAttacking);
@@ -296,7 +282,7 @@ public class GameManager : MonoBehaviour
 
         if (moveName == "Move")
         {
-            //TransitionState(GameState.WalkSelected);
+            TransitionState(GameStateManager.walkSelectedState);
             return;
         }
 
@@ -313,6 +299,15 @@ public class GameManager : MonoBehaviour
         TransitionState(GameStateManager.moveSelectedState);
         OnMoveSelected?.Invoke(u, move);
         
+    }
+
+    public void OnUnitMoving(Unit u, MovementPath path) {
+        Debug.Log("GameManager OnUnitMoving: " + u.name + " with path: " + path.Pivots.Count);
+    }
+
+    public void OnUnitStoppedMoving(Unit u, MovementPath path) {
+        Debug.Log("GameManager OnUnitStoppedMoving: " + u.name + " with path: " + path.Pivots.Count);
+        TransitionState(_stateManager.unitSelectedState);
     }
     
     public List<Unit> Units { get { return _levelManager.Units; } }
@@ -339,6 +334,7 @@ public class GameManager : MonoBehaviour
     public GameBaseState CurrentState { get {return _stateManager.CurrentState;} }
     public Dictionary<Vector2Int, Tile> Grid { get { return _gridManager.Grid; } }
     public GameStateManager GameStateManager { get { return _stateManager; } }
+    public MovementController MovementController { get { return _movementController; } }
     #endregion
 
     #region Utility Methods for States

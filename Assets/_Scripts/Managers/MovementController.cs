@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -6,12 +7,17 @@ public class MovementController : MonoBehaviour
 {
     private GridManager _gridManager;
     private float _moveSpeed = 2.0f;
+
+    public static event Action<Unit, MovementPath> OnUnitMoving;
+    public static event Action<Unit, MovementPath> OnUnitStoppedMoving;
+
     void Start()
     {
         _gridManager = FindFirstObjectByType<GridManager>();
     }
 
     public async Task WalkUnit(Unit u, MovementPath path) {
+        OnUnitMoving?.Invoke(u, path);
         u.UpdateState(Unit.UnitState.Moving);
         if(path.Pivots.Count <= 0){
             Debug.LogError("MovementPath has no pivots");
@@ -31,6 +37,7 @@ public class MovementController : MonoBehaviour
         }
         u.PlayAnimation("Idle");
         u.UpdateState(Unit.UnitState.Idle);
+        OnUnitStoppedMoving?.Invoke(u, path);
     }
 
     
