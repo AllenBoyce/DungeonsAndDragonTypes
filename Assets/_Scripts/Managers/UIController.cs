@@ -39,6 +39,7 @@ public class UIController : MonoBehaviour
                 break;
             case "UnitSelectedState":
                 OnUnitSelected(GameManager.Instance.SelectedUnit);
+                Debug.Log("UI Controller receives UnitSelectedState");
                 break;
             case "MoveSelectedState":
                 OnMoveSelected();
@@ -103,8 +104,10 @@ public class UIController : MonoBehaviour
     }
 
     private void OnUnitSelected(Unit u) {
+        Debug.Log("UI Controller receives OnUnitSelected");
         
-        Debug.Log(u.name);
+        //Debug.Log(u.name);
+        Debug.Log("Displaying Unit Controls");
         DisplayUnitControls(u);
 
         _unitActionButtons[u].ForEach(button => button.SetActive(true));
@@ -138,7 +141,7 @@ public class UIController : MonoBehaviour
                     button.SetActive(false);
                 }
             }
-            _actionButtons = null;
+            //_actionButtons = null;
         }
     }
 
@@ -227,9 +230,11 @@ public class UIController : MonoBehaviour
     
     private void DisplayActionButtons(Unit u)
     {
+        Debug.Log("Displaying Action Buttons");
+        Debug.Log("Before: _actionButtons = " + (_actionButtons == null ? "null" : _actionButtons.Count.ToString()));
         _actionButtons = new List<GameObject>();
         List<GameObject> actionButtons = _unitActionButtons[u];
-        Debug.Log(actionButtons.Count);
+        Debug.Log("actionButtons.Count = " + actionButtons.Count);
         // If no buttons to display, return early
         if (actionButtons == null || actionButtons.Count == 0)
             return;

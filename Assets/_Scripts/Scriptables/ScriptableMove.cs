@@ -11,7 +11,7 @@ public class ScriptableMove : ScriptableObject
     [SerializeField] public TargetingUtility.Shape shape;
     [SerializeField] public MoveType moveType;
     [SerializeField] public string animationKey = "Attack"; //Later on this will change to keys
-    
+    [SerializeField] public int apCost;
     public enum MoveType
     {
         Normal,

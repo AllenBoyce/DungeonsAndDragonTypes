@@ -24,6 +24,11 @@ public class MoveSelectedState : GameBaseState
 
     public override void HandleLeftClickTile(Vector2Int mouseTile)  
     {
+        Unit selectedUnit = GameManager.Instance.SelectedUnit;
+        ScriptableMove move = GameManager.Instance.SelectedMove;
+        if(selectedUnit == null) return;
+        
+        GameManager.Instance.HandleAttack(selectedUnit, move, mouseTile);
 
     }
     public override void HandleRightClickTile(Vector2Int mouseTile)

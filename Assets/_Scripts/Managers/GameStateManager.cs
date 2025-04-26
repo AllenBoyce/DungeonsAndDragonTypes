@@ -8,6 +8,8 @@ public class GameStateManager : MonoBehaviour
     public WalkSelectedState walkSelectedState = new WalkSelectedState();
     public MoveSelectedState moveSelectedState = new MoveSelectedState();
     public ExecuteMoveState executeMoveState = new ExecuteMoveState();
+    // public MoveCheckupState moveCheckupState = new MoveCheckupState();
+    // public GameOverState gameOverState = new GameOverState();
 
     /// <summary>
     /// Invokes the CurrentState's HandleHoverTile method whenever the mouse hovers over a new tile

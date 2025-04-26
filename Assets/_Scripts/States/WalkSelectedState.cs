@@ -21,7 +21,7 @@ public class WalkSelectedState : GameBaseState
         selectedUnit.PlayAnimation("Idle", direction); //temporary bullshit?
     }
 
-    public override void HandleLeftClickTile(Vector2Int mouseTile)  
+    public override void HandleLeftClickTile(Vector2Int mouseTile)  //TODO: Later we'll put this in it's own state
     {
         Unit selectedUnit = GameManager.Instance.SelectedUnit;
         if (selectedUnit == null) return;
@@ -30,7 +30,7 @@ public class WalkSelectedState : GameBaseState
         MovementPath path = MovementUtility.GenerateMovementPath(GameManager.Instance.Grid, selectedUnit.GetGridPosition(), mouseTile);
         if (path != null && path.Pivots != null && path.Pivots.Count > 0)
         {
-            //Debug.Log($"Moving unit from {_selectedUnit.GetGridPosition()} to {mouseTile} with {path.Pivots.Count} pivot points");
+            //Ignore warning
             GameManager.Instance.MovementController.WalkUnit(selectedUnit, path);
             
         }
@@ -38,6 +38,7 @@ public class WalkSelectedState : GameBaseState
         {
             Debug.LogWarning("Cannot generate a valid path to the destination");
         }
+        //Ignore warning
         GameManager.Instance.MovementController.WalkUnit(selectedUnit, path);
     }
     public override void HandleRightClickTile(Vector2Int mouseTile)

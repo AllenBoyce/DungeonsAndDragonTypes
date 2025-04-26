@@ -20,3 +20,4 @@ MonoBehaviour:
   shape: 0
   moveType: 8
   animationKey: Attack
+  apCost: 3

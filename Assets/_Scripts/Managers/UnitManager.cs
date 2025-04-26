@@ -32,6 +32,7 @@ public class UnitManager : Singleton<UnitManager>
      */
     public Unit GenerateUnit(ScriptablePokemon pokemon, int player)
     {
+        Debug.Log("UnitManager GenerateUnit: " + pokemon.GetName() + " for player " + player);
         // Create a new GameObject for the unit
         GameObject unitObject = new GameObject($"Unit_{pokemon.GetName()}_{player}");
     

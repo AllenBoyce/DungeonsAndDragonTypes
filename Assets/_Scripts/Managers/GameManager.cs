@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour
     public static event Action<Unit, ScriptableMove> OnMoveDeselected;
     public static event Action<Unit, ScriptableMove, Vector2Int> OnUnitAttack;
     public static event Action<Unit, ScriptableMove, Vector2Int> OnUnitHurt; //Unit getting Hurt, Move that damages it, Tile attack originates from
-    
+    public static event Action<int> OnActivePlayerChanged;
     #endregion
     
     #region Private Variables
@@ -67,10 +67,11 @@ public class GameManager : MonoBehaviour
     private Unit _selectedUnit;
     private ScriptableMove _selectedMove;
     private Vector2Int _hoveredTile;
+    private bool _unhandledFaint; //Basically a flag to check if a pokemon has fainted but we haven't handled it yet. This would be used at the end of the state to decide whether we need to transition to checkup state or not.
     #endregion
 
     #region Debug Variables
-    private bool DEBUG = true;
+    private bool DEBUG = Constants.DebugMode;
     private bool DEMO = true;
     #endregion
 
@@ -105,7 +106,7 @@ public class GameManager : MonoBehaviour
         {
             Unit u = _unitManager.GenerateUnit(Constants.PokemonSpecies.Garchomp, 0);
             _levelManager.PutUnit(u, 5, 5);
-            Unit u2 = _unitManager.GenerateUnit(Constants.PokemonSpecies.Flapple, 0);
+            Unit u2 = _unitManager.GenerateUnit(Constants.PokemonSpecies.Flapple, 1);
             _levelManager.PutUnit(u2, 8, 5);
 
             _uiController.Initialize(); //SLOPPY AND TEMPORARY
@@ -127,7 +128,7 @@ public class GameManager : MonoBehaviour
     /// <param name="nextState">The new state to transition to.</param>
     public void TransitionState(GameBaseState nextState)
     {
-        //Debug.Log("GameManager calling TransitionToState " + nextState.ToString());
+        Debug.Log("GameManager calling TransitionToState " + nextState.ToString());
         _stateManager.TransitionToState(nextState);
         //Debug.Log("GameManager TransitionToState complete. Current State: " + _stateManager.CurrentState.ToString());
         OnGameStateChanged?.Invoke(nextState);
@@ -155,15 +156,6 @@ public class GameManager : MonoBehaviour
             _hoveredTile = mouseTile;
             OnHoveredTileChanged?.Invoke(_hoveredTile);
         }
-
-        //     case GameState.WalkSelected:
-        //         //Generate path
-        //         MovementPath path = MovementUtility.GenerateMovementPath(_gridManager.Grid, _selectedUnit.GetGridPosition(), mouseTile);
-        //         _uiController.PreviewMovementPath(path);
-        //         break;
-        //     case GameState.MoveSelected:
-        //         break;
-        // }
     }
 
     private void HandleLeftClick(Vector2 mousePosition)
@@ -204,13 +196,6 @@ public class GameManager : MonoBehaviour
         {
             //Logic for clicking outside of tile
         }
-
-        // if (_currentState == GameState.MoveSelected)
-        // {
-        //     _selectedMove = null;
-        //     _uiController.ClearHighlightedTiles(_gridManager.Grid);
-        //     TransitionState(GameState.UnitSelected);
-        // }
     }
 
     private Vector2 MousePosition()
@@ -223,23 +208,6 @@ public class GameManager : MonoBehaviour
     #endregion
     public void HandleTileClicked(Vector2Int mouseTile)
     {
-        //     case GameState.UnitSelected:
-        //         if(u == null) return;
-        //         if(u == _selectedUnit) DeselectUnit();
-        //         break;
-        //     case GameState.WalkSelected:
-        //         //!!IMPORTANT!!
-        //         //In final version, the move logic here will be a separate state.
-        //         
-        //         break;
-        //     case GameState.MoveSelected: //THIS has GOTTA change.
-        //         TransitionState(GameState.UnitAttacking);
-        //         HandleAttack(_selectedUnit, _selectedMove, mouseTile);
-        //         TransitionState(GameState.PlayerNeutral);
-        //         break;
-        //     default:
-        //         break;
-        // }
     }
 
     public Unit GetUnitAt(Vector2Int mouseTile) {
@@ -247,7 +215,7 @@ public class GameManager : MonoBehaviour
     }
 
     public void SelectUnit(Unit u) {
-        if(_selectedUnit == u) return;
+        //if(_selectedUnit == u) return;
         _selectedUnit = u;
         OnUnitSelected?.Invoke(_selectedUnit);
         TransitionState(_stateManager.unitSelectedState);
@@ -264,6 +232,10 @@ public class GameManager : MonoBehaviour
     public void DeselectMove() {
         _selectedMove = null;
         TransitionState(_stateManager.unitSelectedState);
+    }
+
+    public int CalculateDamage(Unit attacker, ScriptableMove move, Unit target) {
+        return move.power;
     }
 
     public void EndTurn()
@@ -301,6 +273,31 @@ public class GameManager : MonoBehaviour
         
     }
 
+    public List<Tile> GetTargetedTiles(ScriptableMove move) {
+        return TargetingUtility.GetTiles(_gridManager.Grid, _hoveredTile, _selectedUnit.GetCurrentDirection(), move);
+    }
+
+    // TO BE USED IN EXECUTE MOVE STATE
+    public List<Unit> GetTargetedUnits(ScriptableMove move) {
+        List<Tile> targetedTiles = GetTargetedTiles(move);
+        List<Unit> targetedUnits = new List<Unit>();
+        foreach (Tile tile in targetedTiles)
+        {
+            Unit target = _levelManager.GetUnitAt(new Vector2Int(tile.x, tile.y));
+            if (target == null) continue;
+            targetedUnits.Add(target);
+        }
+
+        return targetedUnits;
+    }
+
+    public void AlertHurtUnits(List<Unit> hurtUnits, ScriptableMove move, Vector2Int originTile) {
+        foreach (Unit unit in hurtUnits) {
+            OnUnitHurt?.Invoke(unit, move, originTile);
+        }
+    }
+    
+
     public void OnUnitMoving(Unit u, MovementPath path) {
         Debug.Log("GameManager OnUnitMoving: " + u.name + " with path: " + path.Pivots.Count);
     }
@@ -312,19 +309,36 @@ public class GameManager : MonoBehaviour
     
     public List<Unit> Units { get { return _levelManager.Units; } }
 
-    private void HandleAttack(Unit attacker, ScriptableMove move, Vector2Int mouseTile)
+    public void HandleAttack(Unit attacker, ScriptableMove move, Vector2Int mouseTile)
     {
         //Ignoring Validation for now
         OnUnitAttack?.Invoke(attacker, move, mouseTile);
-        List<Tile> targetedTiles =
-            TargetingUtility.GetTiles(_gridManager.Grid, mouseTile, attacker.GetCurrentDirection(), move);
-        foreach (Tile tile in targetedTiles)
-        {
-            Unit target = _levelManager.GetUnitAt(new Vector2Int(tile.x, tile.y));
-            if (target == null) continue;
-            OnUnitHurt?.Invoke(target, move, mouseTile);
-        }
 
+        TransitionState(_stateManager.executeMoveState);
+
+        // List<Tile> targetedTiles =
+        //     TargetingUtility.GetTiles(_gridManager.Grid, mouseTile, attacker.GetCurrentDirection(), move);
+        // foreach (Tile tile in targetedTiles)
+        // {
+        //     Unit target = _levelManager.GetUnitAt(new Vector2Int(tile.x, tile.y));
+        //     if (target == null) continue;
+        //     OnUnitHurt?.Invoke(target, move, mouseTile);
+        // }
+
+        
+    }
+
+    public void HandleHurt(Unit attacker, ScriptableMove move, Unit target) {
+        int damage = CalculateDamage(attacker, move, target);
+        target.Hurt(damage);
+    }
+
+    public void SwitchPlayer() {
+        _activePlayer = 1 - _activePlayer;
+        _selectedUnit = null;
+        _selectedMove = null;
+        OnActivePlayerChanged?.Invoke(_activePlayer);
+        TransitionState(_stateManager.playerNeutralState);
     }
 
     #region Getters and Setters
@@ -335,11 +349,18 @@ public class GameManager : MonoBehaviour
     public Dictionary<Vector2Int, Tile> Grid { get { return _gridManager.Grid; } }
     public GameStateManager GameStateManager { get { return _stateManager; } }
     public MovementController MovementController { get { return _movementController; } }
+    public bool UnhandledFaint { get { return _unhandledFaint; } set { _unhandledFaint = value; } }
+    public (int, int) GetCurrentAP() {
+        if(_selectedUnit == null) throw new Exception("No unit selected");
+        return (_selectedUnit.CurrentAP, _selectedUnit.MaxAP);
+    }
+
+    public int ActivePlayer { get { return _activePlayer; } }
     #endregion
 
     #region Utility Methods for States
     public bool DoesUnitBelongToActivePlayer(Unit u) {
-        Debug.Log("DoesUnitBelongToActivePlayer: " + u.PlayerOwner + " == " + _activePlayer);
+        //Debug.Log("DoesUnitBelongToActivePlayer: " + u.PlayerOwner + " == " + _activePlayer);
         return u.PlayerOwner == _activePlayer;
     }
     #endregion
