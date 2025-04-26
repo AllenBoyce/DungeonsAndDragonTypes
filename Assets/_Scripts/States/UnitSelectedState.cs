@@ -25,6 +25,6 @@ public class UnitSelectedState : GameBaseState
     {   
         //Debug.Log("UnitSelectedState: HandleRightClickTile");
         //Deselect this unit
-        GameManager.Instance.DeselectUnit();
+        if(!GameManager.Instance.UnitLockedIn) GameManager.Instance.DeselectUnit();
     }
 }

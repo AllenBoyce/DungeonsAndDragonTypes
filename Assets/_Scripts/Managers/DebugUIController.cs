@@ -5,6 +5,8 @@ public class DebugUIController : MonoBehaviour
     public Canvas _debugCanvas;
     public TextMeshProUGUI _stateText;
     public TextMeshProUGUI _activePlayerText;
+    public TextMeshProUGUI _APText;
+    public TextMeshProUGUI _HPText;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -22,7 +24,8 @@ public class DebugUIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        _APText.text = $"AP: {GameManager.Instance.SelectedUnit.CurrentAP}";
+        _HPText.text = $"HP: {GameManager.Instance.SelectedUnit.CurrentHP}";
     }
 
     void OnDestroy() {

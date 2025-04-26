@@ -5,7 +5,7 @@ public class PlayerNeutralState : GameBaseState
 
     public override void EnterState(GameStateManager gameStateManager)
     {
-        
+        GameManager.Instance.UnitLockedIn = false;
     }
 
     /// <summary>

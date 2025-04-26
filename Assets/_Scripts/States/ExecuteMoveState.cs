@@ -18,6 +18,8 @@ public class ExecuteMoveState : GameBaseState
 
     public override void EnterState(GameStateManager gameStateManager)
     {
+        GameManager.Instance.UnitLockedIn = true;
+
         _attackingUnit = GameManager.Instance.SelectedUnit;
         _move = GameManager.Instance.SelectedMove;
         _originTile = GameManager.Instance.HoveredTile;

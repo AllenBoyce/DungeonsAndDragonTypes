@@ -68,6 +68,7 @@ public class GameManager : MonoBehaviour
     private ScriptableMove _selectedMove;
     private Vector2Int _hoveredTile;
     private bool _unhandledFaint; //Basically a flag to check if a pokemon has fainted but we haven't handled it yet. This would be used at the end of the state to decide whether we need to transition to checkup state or not.
+    private bool _unitLockedIn; //Once a Unit has moved or attacked, it's locked in and can't be deselected until the end of the turn.
     #endregion
 
     #region Debug Variables
@@ -350,6 +351,7 @@ public class GameManager : MonoBehaviour
     public GameStateManager GameStateManager { get { return _stateManager; } }
     public MovementController MovementController { get { return _movementController; } }
     public bool UnhandledFaint { get { return _unhandledFaint; } set { _unhandledFaint = value; } }
+    public bool UnitLockedIn { get { return _unitLockedIn; } set { _unitLockedIn = value; } }
     public (int, int) GetCurrentAP() {
         if(_selectedUnit == null) throw new Exception("No unit selected");
         return (_selectedUnit.CurrentAP, _selectedUnit.MaxAP);
