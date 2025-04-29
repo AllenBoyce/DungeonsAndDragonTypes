@@ -24,8 +24,8 @@ public class DebugUIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _APText.text = $"AP: {GameManager.Instance.SelectedUnit.CurrentAP}";
-        _HPText.text = $"HP: {GameManager.Instance.SelectedUnit.CurrentHP}";
+        _APText.text = $"AP: {GameManager.Instance.SelectedUnit?.CurrentAP}";
+        _HPText.text = $"HP: {GameManager.Instance.SelectedUnit?.CurrentHP}";
     }
 
     void OnDestroy() {
@@ -33,7 +33,7 @@ public class DebugUIController : MonoBehaviour
     }
     
     void OnGameStateChanged(GameBaseState newState) {
-        Debug.Log("DebugUIController: OnGameStateChanged: " + newState.GetType().Name);
+        //Debug.Log("DebugUIController: OnGameStateChanged: " + newState.GetType().Name);
         string stateName = newState.GetType().Name;
         _stateText.text = $"Current State: {stateName}";
     }

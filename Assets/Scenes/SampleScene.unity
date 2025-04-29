@@ -332,9 +332,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1232927032}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -209.59, y: 229.2}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 137.74, y: -10}
   m_SizeDelta: {x: 100, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &167552181
@@ -963,40 +963,48 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteFolderPath: Resources/Sprites/Pokemon/
-  species: 0
+  species: 1
   generatedAnimClips:
-  - {fileID: 7400000, guid: b8c7b3ed723f84010a2165a309be04e4, type: 2}
-  - {fileID: 7400000, guid: 8120c5519e53d4d5ebb58cd0c008da8f, type: 2}
-  - {fileID: 7400000, guid: 6ea2cfa12022949c69cbf5cd7f2e4457, type: 2}
-  - {fileID: 7400000, guid: 859485aae8e384302bd9fd938c102718, type: 2}
-  - {fileID: 7400000, guid: 84e13e483136c44e1b47a29872734263, type: 2}
-  - {fileID: 7400000, guid: d3ca1c606baaf452d86a20e1c911ec65, type: 2}
-  - {fileID: 7400000, guid: 5ae8e76669fde499886b4b75b68db58c, type: 2}
-  - {fileID: 7400000, guid: 6f83fe7e2ed7b409db9cd75f300d6d82, type: 2}
-  - {fileID: 7400000, guid: f007223737d424b1f9ced5b47afb8e7d, type: 2}
-  - {fileID: 7400000, guid: 7fe8ad3aecd1146b581bba64ded89cd3, type: 2}
-  - {fileID: 7400000, guid: eb5ecb1b5c5194e87b0232546eadf53b, type: 2}
-  - {fileID: 7400000, guid: cce866e49da444b03949231c2a861639, type: 2}
-  - {fileID: 7400000, guid: a6abca8648d0c4438a1e00ca491e4b3e, type: 2}
-  - {fileID: 7400000, guid: 1509110b814c74566aab495405e38664, type: 2}
-  - {fileID: 7400000, guid: 172476d71c73841d69b83f836cfab793, type: 2}
-  - {fileID: 7400000, guid: d7ebf13b39af544baaf38865f0fb11c5, type: 2}
-  - {fileID: 7400000, guid: 232ae90dc44434e9784d6d879adbe696, type: 2}
-  - {fileID: 7400000, guid: 745168fabdcce4bc4b6381a96fe2c1c5, type: 2}
-  - {fileID: 7400000, guid: f93b9080e7aa54ea4978ef02b936f637, type: 2}
-  - {fileID: 7400000, guid: 9da3438066a124dd09f7872e325ce99c, type: 2}
-  - {fileID: 7400000, guid: 9363ff3cfd023425bb5f8c9e34743a45, type: 2}
-  - {fileID: 7400000, guid: 27db850b3c700429da585f5ef6cbf2ff, type: 2}
-  - {fileID: 7400000, guid: 7b0e23f8c152244ffb6cb387a7485dc0, type: 2}
-  - {fileID: 7400000, guid: f278b08381e224672af840f8727e1386, type: 2}
-  - {fileID: 7400000, guid: d28898c5f3ad54aed9e997672c8df91d, type: 2}
-  - {fileID: 7400000, guid: d5d2f562813fd4141929f86d616b2e96, type: 2}
-  - {fileID: 7400000, guid: cfc610df3fc024ec1a72853e94987169, type: 2}
-  - {fileID: 7400000, guid: ae6b695766dbb49f4a4d3512187a32e8, type: 2}
-  - {fileID: 7400000, guid: 0895bc025aa33406c80c64b2eb0b3f70, type: 2}
-  - {fileID: 7400000, guid: b8b847a3ee5d245ffb42ca57d905f997, type: 2}
-  - {fileID: 7400000, guid: c65dea916733d4bf1b1977d4ff6f38eb, type: 2}
-  - {fileID: 7400000, guid: 44088c78a5d5f4e238db1eeb05a3ed2e, type: 2}
+  - {fileID: 7400000, guid: f008b1acce06448fdaac76b5075298dd, type: 2}
+  - {fileID: 7400000, guid: 2114a9fd8c6394e3a949d123e2ae4c68, type: 2}
+  - {fileID: 7400000, guid: 1e14a42a78c284b569bc782a5ca8c6e7, type: 2}
+  - {fileID: 7400000, guid: 3ab35d44d31de4761aeeb8bdcc4fc0c5, type: 2}
+  - {fileID: 7400000, guid: 5f73d46654ef94097b6df9efe396ed02, type: 2}
+  - {fileID: 7400000, guid: 7ebbc24fb4c4441ef8bc2669a72af188, type: 2}
+  - {fileID: 7400000, guid: 687adcb5407a946c18bed7df640849e5, type: 2}
+  - {fileID: 7400000, guid: 86003ff905f4d45afa32e4e665f10983, type: 2}
+  - {fileID: 7400000, guid: 7804308b9883d4b8a84ab4748172e5bf, type: 2}
+  - {fileID: 7400000, guid: b6083cb7c4a9f4c018c3d5e3be08797b, type: 2}
+  - {fileID: 7400000, guid: 3515e932a5c7c47f6b41636fc59a8ff2, type: 2}
+  - {fileID: 7400000, guid: 33458ff66d6d34880b513285f5b26d56, type: 2}
+  - {fileID: 7400000, guid: 1baf1fba5747f44caa53e03388e1dff6, type: 2}
+  - {fileID: 7400000, guid: d60c0ee7dc51e4863966eca64fbdd80d, type: 2}
+  - {fileID: 7400000, guid: 755cfe9cd0c3944f3aec68a578978a17, type: 2}
+  - {fileID: 7400000, guid: 5a9137ef27e2d4ffabed1d4f70382a48, type: 2}
+  - {fileID: 7400000, guid: c33f69fb90ab24a6c94168d0f3f9a804, type: 2}
+  - {fileID: 7400000, guid: b4be994c99d8b41f4ad9c725a62b3564, type: 2}
+  - {fileID: 7400000, guid: 59b6c71de07764720854d954579d9897, type: 2}
+  - {fileID: 7400000, guid: ad3b3ebe97f4f42579fb0d1d4f2f45c5, type: 2}
+  - {fileID: 7400000, guid: 76bf78f1981224887ae756b20222ce02, type: 2}
+  - {fileID: 7400000, guid: 6b0855a7a6ff84439bad4038d898defc, type: 2}
+  - {fileID: 7400000, guid: c2bde3ce73ef045fd92f0105dbce9c27, type: 2}
+  - {fileID: 7400000, guid: f390cf768c07448098fd75451371f8c2, type: 2}
+  - {fileID: 7400000, guid: 663485083f3044363b44a7e6ddaba1a5, type: 2}
+  - {fileID: 7400000, guid: cd7d11958e42b471096beb9dacf13bce, type: 2}
+  - {fileID: 7400000, guid: cba40cc5e5e1a492799a8bd4d2467a8f, type: 2}
+  - {fileID: 7400000, guid: 1024ea6536d4c414db7cf52050ed3fae, type: 2}
+  - {fileID: 7400000, guid: 750a4f9e2a7364b6c8913aa87bb09f83, type: 2}
+  - {fileID: 7400000, guid: 35cf5f966ab0d4490a5ac2166aceb964, type: 2}
+  - {fileID: 7400000, guid: 8506bccc2e43b4e94b84fc6f84e38ad0, type: 2}
+  - {fileID: 7400000, guid: 9ed81911a7a6945a3b777516b3bfd920, type: 2}
+  - {fileID: 7400000, guid: 4e6c2cf170056486495165153c78c3e5, type: 2}
+  - {fileID: 7400000, guid: f89562d9a4cb346cd92bcca1d622ffb3, type: 2}
+  - {fileID: 7400000, guid: 35d09660d51d644af94eb2d7a53e5c5b, type: 2}
+  - {fileID: 7400000, guid: 3f5c87fa11c29494f85e2a77aaaa670a, type: 2}
+  - {fileID: 7400000, guid: 999e55f10c9a14711b716f9673951150, type: 2}
+  - {fileID: 7400000, guid: 5f601003f6e59435e8c774096ccae6da, type: 2}
+  - {fileID: 7400000, guid: 30c348b5ee6cc4311b4f0400ed249275, type: 2}
+  - {fileID: 7400000, guid: 3d77d583053b44bbb9ec1d2875631e49, type: 2}
   gameFramesPerSecond: 48
 --- !u!4 &776340631
 Transform:
@@ -2152,9 +2160,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1232927032}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -348.1, y: 229.2}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 37.5, y: -10}
   m_SizeDelta: {x: 75, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1948276408

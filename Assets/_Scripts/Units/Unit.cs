@@ -23,7 +23,7 @@ public class Unit : MonoBehaviour
     private Direction _currentDirection;
     public void Start()
     {
-        
+        GameManager.OnUnitHurt += OnUnitHurt;
     }
 
     public int CurrentHP { get { return _currentHP; } }
@@ -100,7 +100,16 @@ public class Unit : MonoBehaviour
     }
     public void PlayAnimation(string animationName, bool loop = true)
     {
+        Debug.Log("Playing animation: " + animationName);
         _model.PlayAnimation(animationName, _currentDirection);
+    }
+
+    public void OnUnitHurt(Unit unit, ScriptableMove move, Vector2Int originTile)
+    {
+        if(unit == this)
+        {
+            Hurt(move.power);
+        }
     }
 
     public void Hurt(int damage)
@@ -121,7 +130,7 @@ public class Unit : MonoBehaviour
 
     public void Faint()
     {
-        //PlayAnimation("Faint");
+        PlayAnimation("Walk");
         _state = UnitState.Fainted;
         GameManager.Instance.UnhandledFaint = true;
         Debug.Log("Unit Fainted");
