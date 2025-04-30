@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class WalkSelectedState : GameBaseState
 {
+    private bool _isWalking = false;
     public override void EnterState(GameStateManager gameStateManager)
     {
         
@@ -15,7 +16,7 @@ public class WalkSelectedState : GameBaseState
     public override void HandleHoverTile(Vector2Int mouseTile)
     {
         Unit selectedUnit = GameManager.Instance.SelectedUnit;
-        if(selectedUnit == null) return;
+        if(selectedUnit == null || selectedUnit.State == Unit.UnitState.Moving) return;
         Unit.Direction direction = MovementUtility.GetDirection(selectedUnit.GetGridPosition(), mouseTile);
         selectedUnit.SetCurrentDirection(direction);
         selectedUnit.PlayAnimation("Idle", direction); //temporary bullshit?

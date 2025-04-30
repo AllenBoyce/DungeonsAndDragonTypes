@@ -33,7 +33,7 @@ public class ExecuteMoveState : GameBaseState
         _attackingUnit.ConsumeAP(_move.apCost);
         Debug.Log("GameManager HandleAttack: " + _attackingUnit.CurrentAP);
         
-        // Set up the next state transition but don't execute it immediately
+        // Set up the next state transition but don't execute it immediately 
         if(_attackingUnit.CurrentAP <= 0) { //No more AP
             _shouldTransition = true;
             _nextState = gameStateManager.playerNeutralState;
