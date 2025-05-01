@@ -59,4 +59,10 @@ public class Tile : MonoBehaviour
     {
         _highlight.SetActive(highlight);
     }
+
+    public void SetHighlightColor(Color color)
+    {
+        Color transparentColor = new Color(color.r, color.g, color.b, 90/255f);
+        _highlight.GetComponent<SpriteRenderer>().color = transparentColor;
+    }
 }

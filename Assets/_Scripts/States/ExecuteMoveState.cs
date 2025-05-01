@@ -26,6 +26,8 @@ public class ExecuteMoveState : GameBaseState
 
         _affectedTiles = GameManager.Instance.GetTargetedTiles(_move);
         _defendingUnits = GameManager.Instance.GetTargetedUnits(_move);
+        _defendingUnits.RemoveAll(unit => unit.State == Unit.UnitState.Fainted);
+        _defendingUnits.Remove(_attackingUnit); //I think this works
         
         GameManager.Instance.AlertHurtUnits(_defendingUnits, _move, _originTile);
 

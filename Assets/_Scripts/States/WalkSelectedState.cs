@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class WalkSelectedState : GameBaseState
 {
-    private bool _isWalking = false;
     public override void EnterState(GameStateManager gameStateManager)
     {
         

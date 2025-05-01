@@ -59,11 +59,12 @@ public class UIController : MonoBehaviour
         //Debug.Log(hoveredTile);
         switch (GameManager.Instance.CurrentState.GetType().Name) { //Ugly and lame but works
             case "PlayerNeutralState":
+
                 break;
             case "UnitSelectedState":
                 break;
             case "MoveSelectedState":
-                HighlightTargetedTiles(GameManager.Instance.SelectedMove, hoveredTile, GameManager.Instance.SelectedUnit.GetCurrentDirection(), GameManager.Instance.Grid);
+                HighlightTargetedTiles(GameManager.Instance.SelectedMove, hoveredTile, GameManager.Instance.SelectedUnit, GameManager.Instance.Grid);
                 break;
             case "ExecuteMoveState":
                 break;
@@ -336,16 +337,21 @@ public class UIController : MonoBehaviour
 
     public void ClearHighlightedTiles(Dictionary<Vector2Int, Tile> grid)
     {
-        foreach (Tile tile in grid.Values) tile.SetHighLight(false);
+        foreach (Tile tile in grid.Values)
+        {
+            tile.SetHighLight(false);
+            tile.SetHighlightColor(Color.white);
+        }
     }
 
-    public void HighlightTargetedTiles(ScriptableMove move, Vector2Int origin, Unit.Direction direction, Dictionary<Vector2Int, Tile> grid)
+    public void HighlightTargetedTiles(ScriptableMove move, Vector2Int origin, Unit unit, Dictionary<Vector2Int, Tile> grid)
     {
         //sooo rudimentary and please pelase remove later
         ClearHighlightedTiles(grid);
-        List<Tile> targetedTiles = TargetingUtility.GetTiles(grid, origin, direction, move);
+        List<Tile> targetedTiles = TargetingUtility.GetTiles(grid, origin, unit, move);
         foreach (Tile tile in targetedTiles)
         {
+            tile.SetHighlightColor(Color.red);
             tile.SetHighLight(true);
         }
     }

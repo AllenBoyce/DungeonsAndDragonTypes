@@ -11,41 +11,43 @@ public static class TargetingUtility
      * <param name="grid">The grid of tiles that will be retrieved</param>
      * <param name="origin">The Tile that this method begins its retrieval process on, and is included in the retrieval process.</param>
      * <param name="shape">The shape of tiles on the grid that will be retrieved. Can be Circle, Rectangle, Cone, Line.</param>
-     * <param name="direction">The cardinal direction that orients the shape targeting property. Uses enum Unit.Direction. Can be North, NorthEast, East, SouthEast, South, SouthWest, West, NorthWest.</param>
+     * <param name="unit">The unit performing the move, used to get current direction and grid position</param>
      * <param name="primaryRange">The main factor in determining the size of the shape targeting property. Determines the diameter of a Circle, the side length of a Square, the altitude of a Cone, the length of a Line.</param>
      * <param name="secondaryRange">Allows the shape to vary in other factors. Optional parameter that defaults to -1. If the shape is a Circle, determines the radius of the inner circle that is not retrieved. If the shape is a Cone, determines the width of the cone.</param>
      */
-    public static List<Tile> GetTiles(Dictionary<Vector2Int, Tile> grid, Vector2Int origin, Shape shape, Unit.Direction direction, int primaryRange, int secondaryRange = -1)
-{
-    List<Tile> targetedTiles = new List<Tile>();
-    
-    // Validate primary range
-    if (primaryRange < 0)
-        return targetedTiles;
+    public static List<Tile> GetTiles(Dictionary<Vector2Int, Tile> grid, Vector2Int origin, Shape shape, Unit unit, int primaryRange, int secondaryRange = -1)
+    {
+        List<Tile> targetedTiles = new List<Tile>();
         
-    // Select the appropriate targeting method based on shape
-    switch (shape)
-    {
-        case Shape.Circle:
-            targetedTiles = GetCircleTiles(grid, origin, primaryRange, secondaryRange);
-            break;
-        case Shape.Square:
-            targetedTiles = GetSquareTiles(grid, origin, primaryRange, direction);
-            break;
-        case Shape.Cone:
-            targetedTiles = GetConeTiles(grid, origin, primaryRange, secondaryRange, direction);
-            break;
-        case Shape.Line:
-            targetedTiles = GetLineTiles(grid, origin, primaryRange, direction);
-            break;
+        // Validate primary range
+        if (primaryRange < 0)
+            return targetedTiles;
+            
+        // Select the appropriate targeting method based on shape
+        switch (shape)
+        {
+            case Shape.Circle:
+                targetedTiles = GetCircleTiles(grid, origin, primaryRange, secondaryRange);
+                break;
+            case Shape.Square:
+                targetedTiles = GetSquareTiles(grid, origin, primaryRange, unit.GetCurrentDirection());
+                break;
+            case Shape.Cone:
+                targetedTiles = GetConeTiles(grid, origin, primaryRange, secondaryRange, unit.GetCurrentDirection());
+                break;
+            case Shape.Line:
+                targetedTiles = GetLineTiles(grid, origin, primaryRange, unit.GetCurrentDirection());
+                break;
+        }
+        
+        return targetedTiles;
     }
-    
-    return targetedTiles;
-}
 
-    public static List<Tile> GetTiles(Dictionary<Vector2Int, Tile> grid, Vector2Int origin, Unit.Direction direction, ScriptableMove move)
+    public static List<Tile> GetTiles(Dictionary<Vector2Int, Tile> grid, Vector2Int origin, Unit unit, ScriptableMove move)
     {
-        return GetTiles(grid, origin, move.shape, direction, move.primaryRange, move.secondaryRange);
+        // Determine the actual origin based on the move's origin type
+        Vector2Int actualOrigin = move.originType == ScriptableMove.OriginType.Self ? unit.GetGridPosition() : origin;
+        return GetTiles(grid, actualOrigin, move.shape, unit, move.primaryRange, move.secondaryRange);
     }
 
 
@@ -64,9 +66,9 @@ private static List<Tile> GetCircleTiles(Dictionary<Vector2Int, Tile> grid, Vect
             // Calculate distance from origin
             int distanceSquared = (x - origin.x) * (x - origin.x) + (y - origin.y) * (y - origin.y);
             
-            // Add tile if it's within the circle and outside the inner circle (if specified)
+            // Add tile if it's within the outer circle and outside the inner circle
             bool withinOuterCircle = distanceSquared <= radius * radius;
-            bool outsideInnerCircle = innerRadius <= 0 || distanceSquared > innerRadius * innerRadius;
+            bool outsideInnerCircle = innerRadius <= 0 || distanceSquared > (innerRadius - 1) * (innerRadius - 1);
             
             if (withinOuterCircle && outsideInnerCircle)
             {

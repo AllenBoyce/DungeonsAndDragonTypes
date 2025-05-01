@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d666f12be6e434aaa8e52212e5d50755, type: 3}
-  m_Name: Earthquake
+  m_Name: Flamethrower
   m_EditorClassIdentifier: 
-  moveName: Earthquake
-  power: 100
+  moveName: Flamethrower
+  power: 70
   originType: 0
-  primaryRange: 2
-  secondaryRange: 1
-  shape: 1
-  moveType: 8
+  primaryRange: 4
+  secondaryRange: -1
+  shape: 3
+  moveType: 3
   animationKey: Attack
-  apCost: 3
+  apCost: 2

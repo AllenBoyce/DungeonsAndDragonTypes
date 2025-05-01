@@ -130,7 +130,9 @@ public class Unit : MonoBehaviour
 
     public void Faint()
     {
-        PlayAnimation("Walk");
+        //The sleep animation only has south direction, so we need to set the direction to south
+        _currentDirection = Direction.South;
+        PlayAnimation("Sleep");
         _state = UnitState.Fainted;
         GameManager.Instance.UnhandledFaint = true;
         Debug.Log("Unit Fainted");
@@ -158,7 +160,7 @@ public class Unit : MonoBehaviour
     }
     
     private UnitState _state = UnitState.Idle; 
-    public UnitState State { get; }
+    public UnitState State { get { return _state; } }
 
     public void UpdateState(UnitState newState)
     {

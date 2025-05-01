@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Garchomp
   m_EditorClassIdentifier: 
   prefab: {fileID: 8109128916114450586, guid: 46f7e71ff91c948f9ab2917dc5d84460, type: 3}
-  pokemonName: Garchomp
+  species: 0
   _stats:
     hp: 108
     atk: 130
@@ -26,3 +26,4 @@ MonoBehaviour:
   portrait: {fileID: 76431737926954757, guid: df2e25b31cc964c5e91d18400928c710, type: 3}
   learnableMoves:
   - {fileID: 11400000, guid: 1e82ecc76dcd643fc85863302485635b, type: 2}
+  - {fileID: 11400000, guid: 5f9571d65b4874a80b4008fb151ad55a, type: 2}

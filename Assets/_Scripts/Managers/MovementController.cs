@@ -18,7 +18,7 @@ public class MovementController : MonoBehaviour
 
     public async Task WalkUnit(Unit u, MovementPath path) {
         OnUnitMoving?.Invoke(u, path);
-        u.UpdateState(Unit.UnitState.Moving);
+        //u.UpdateState(Unit.UnitState.Moving);
         if(path.Pivots.Count <= 0){
             Debug.LogError("MovementPath has no pivots");
             return;
@@ -36,7 +36,7 @@ public class MovementController : MonoBehaviour
             u.SetGridPosition(point);
         }
         u.PlayAnimation("Idle");
-        u.UpdateState(Unit.UnitState.Idle);
+        //u.UpdateState(Unit.UnitState.Idle);
         OnUnitStoppedMoving?.Invoke(u, path);
     }
 

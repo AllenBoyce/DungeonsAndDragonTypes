@@ -275,7 +275,7 @@ public class GameManager : MonoBehaviour
     }
 
     public List<Tile> GetTargetedTiles(ScriptableMove move) {
-        return TargetingUtility.GetTiles(_gridManager.Grid, _hoveredTile, _selectedUnit.GetCurrentDirection(), move);
+        return TargetingUtility.GetTiles(_gridManager.Grid, _hoveredTile, _selectedUnit, move);
     }
 
     // TO BE USED IN EXECUTE MOVE STATE
@@ -301,10 +301,12 @@ public class GameManager : MonoBehaviour
 
     public void OnUnitMoving(Unit u, MovementPath path) {
         Debug.Log("GameManager OnUnitMoving: " + u.name + " with path: " + path.Pivots.Count);
+        u.UpdateState(Unit.UnitState.Moving);
     }
 
     public void OnUnitStoppedMoving(Unit u, MovementPath path) {
         Debug.Log("GameManager OnUnitStoppedMoving: " + u.name + " with path: " + path.Pivots.Count);
+        u.UpdateState(Unit.UnitState.Idle);
         TransitionState(_stateManager.unitSelectedState);
     }
     
@@ -316,17 +318,6 @@ public class GameManager : MonoBehaviour
         OnUnitAttack?.Invoke(attacker, move, mouseTile);
 
         TransitionState(_stateManager.executeMoveState);
-
-        // List<Tile> targetedTiles =
-        //     TargetingUtility.GetTiles(_gridManager.Grid, mouseTile, attacker.GetCurrentDirection(), move);
-        // foreach (Tile tile in targetedTiles)
-        // {
-        //     Unit target = _levelManager.GetUnitAt(new Vector2Int(tile.x, tile.y));
-        //     if (target == null) continue;
-        //     OnUnitHurt?.Invoke(target, move, mouseTile);
-        // }
-
-        
     }
 
     public void HandleHurt(Unit attacker, ScriptableMove move, Unit target) {
