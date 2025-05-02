@@ -19,6 +19,9 @@ public class WalkSelectedState : GameBaseState
         Unit.Direction direction = MovementUtility.GetDirection(selectedUnit.GetGridPosition(), mouseTile);
         selectedUnit.SetCurrentDirection(direction);
         selectedUnit.PlayAnimation("Idle", direction); //temporary bullshit?
+
+        MovementPath path = MovementUtility.GenerateMovementPath(GameManager.Instance.Grid, selectedUnit.GetGridPosition(), mouseTile);
+        GameManager.Instance.SetPathPreview(path);
     }
 
     public override void HandleLeftClickTile(Vector2Int mouseTile)  //TODO: Later we'll put this in it's own state

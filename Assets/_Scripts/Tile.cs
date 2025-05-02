@@ -13,6 +13,7 @@ public class Tile : MonoBehaviour
 {
     [SerializeField] private GridManager _gridManager;
     [SerializeField] private GameObject _highlight;
+    [SerializeField] private GameObject _pathPreview;
     [SerializeField] private LevelManager _levelManager;
     public List<string> tags = new List<string>();
     [SerializeField] private SpriteRenderer _spriteRenderer;
@@ -39,6 +40,7 @@ public class Tile : MonoBehaviour
         {
             Debug.LogError("SpriteRenderer not found in the scene.");
         }
+        SetHighlight(false);
     }
 
     public void SetSprite(Sprite sprite)
@@ -55,9 +57,14 @@ public class Tile : MonoBehaviour
         _highlight.SetActive(false);
     }
 
-    public void SetHighLight(bool highlight)
+    public void SetHighlight(bool highlight)
     {
         _highlight.SetActive(highlight);
+    }
+
+    public void SetPathPreview(bool preview)
+    {
+        _pathPreview.SetActive(preview);
     }
 
     public void SetHighlightColor(Color color)

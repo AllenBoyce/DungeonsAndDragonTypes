@@ -339,7 +339,7 @@ public class UIController : MonoBehaviour
     {
         foreach (Tile tile in grid.Values)
         {
-            tile.SetHighLight(false);
+            tile.SetHighlight(false);
             tile.SetHighlightColor(Color.white);
         }
     }
@@ -352,7 +352,7 @@ public class UIController : MonoBehaviour
         foreach (Tile tile in targetedTiles)
         {
             tile.SetHighlightColor(Color.red);
-            tile.SetHighLight(true);
+            tile.SetHighlight(true);
         }
     }
 }

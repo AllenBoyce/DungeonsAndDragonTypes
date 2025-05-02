@@ -26,7 +26,7 @@ public class PlayerNeutralState : GameBaseState
     {
         Unit u = GameManager.Instance.GetUnitAt(mouseTile);
         if(u == null) return;
-        if(GameManager.Instance.DoesUnitBelongToActivePlayer(u)) {
+        if(GameManager.Instance.DoesUnitBelongToActivePlayer(u) && u.State != Unit.UnitState.Fainted) {
             GameManager.Instance.SelectUnit(u);
             return;
         }

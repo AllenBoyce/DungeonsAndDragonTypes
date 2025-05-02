@@ -232,6 +232,7 @@ public class GameManager : MonoBehaviour
 
     public void DeselectMove() {
         _selectedMove = null;
+        ClearPathPreview();
         TransitionState(_stateManager.unitSelectedState);
     }
 
@@ -307,6 +308,7 @@ public class GameManager : MonoBehaviour
     public void OnUnitStoppedMoving(Unit u, MovementPath path) {
         Debug.Log("GameManager OnUnitStoppedMoving: " + u.name + " with path: " + path.Pivots.Count);
         u.UpdateState(Unit.UnitState.Idle);
+        ClearPathPreview();
         TransitionState(_stateManager.unitSelectedState);
     }
     
@@ -331,6 +333,63 @@ public class GameManager : MonoBehaviour
         _selectedMove = null;
         OnActivePlayerChanged?.Invoke(_activePlayer);
         TransitionState(_stateManager.playerNeutralState);
+    }
+
+    public void UpdatePathPreview(MovementPath path) {
+        ClearPathPreview();
+        foreach(Vector2Int tile in path.Pivots) {
+            Tile t = _gridManager.Grid[tile];
+            t.SetPathPreview(true);
+        }
+    }
+
+    public void SetPathPreview(MovementPath path) {
+        ClearPathPreview();
+        if (path == null || path.Pivots.Count < 2) return;
+
+        // Iterate through each segment of the path
+        for (int i = 0; i < path.Pivots.Count - 1; i++) {
+            Vector2Int start = path.Pivots[i];
+            Vector2Int end = path.Pivots[i + 1];
+
+            // Get all tiles between start and end points
+            List<Vector2Int> lineTiles = GetLineTiles(start, end);
+            foreach (Vector2Int tile in lineTiles) {
+                if (_gridManager.Grid.TryGetValue(tile, out Tile t)) {
+                    t.SetPathPreview(true);
+                }
+            }
+        }
+    }
+
+    private List<Vector2Int> GetLineTiles(Vector2Int start, Vector2Int end) {
+        List<Vector2Int> lineTiles = new List<Vector2Int>();
+        int dx = Mathf.Abs(end.x - start.x);
+        int dy = Mathf.Abs(end.y - start.y);
+        int sx = start.x < end.x ? 1 : -1;
+        int sy = start.y < end.y ? 1 : -1;
+        int err = dx - dy;
+
+        while (true) {
+            lineTiles.Add(new Vector2Int(start.x, start.y));
+            if (start.x == end.x && start.y == end.y) break;
+            int e2 = 2 * err;
+            if (e2 > -dy) {
+                err -= dy;
+                start.x += sx;
+            }
+            if (e2 < dx) {
+                err += dx;
+                start.y += sy;
+            }
+        }
+        return lineTiles;
+    }
+
+    public void ClearPathPreview() {
+        foreach(Tile t in _gridManager.Grid.Values) {
+            t.SetPathPreview(false);
+        }
     }
 
     #region Getters and Setters
