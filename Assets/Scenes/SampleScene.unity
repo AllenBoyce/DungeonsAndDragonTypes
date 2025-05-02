@@ -163,6 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c7d7963660a6134dbbeb495a73cbaf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _cellGapPercentage: 0.0055
   _width: 16
   _height: 9
   _tilePrefab: {fileID: 2184331104025316676, guid: 849b9c98cc2e0694f81a4bd9790261ab, type: 3}

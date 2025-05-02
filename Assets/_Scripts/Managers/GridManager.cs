@@ -18,7 +18,8 @@ public class GridManager : MonoBehaviour
      * 1: distance between tiles is equivalent to the length/width of one cell
      * 0: no distance between tiles
      */
-    private float _cellGap = 0.015f;
+    [SerializeField] private float _cellGapPercentage = 0.05f; // 5% of tile size
+    private float _cellGap;
 
     [SerializeField] private int _width, _height;
 
@@ -46,6 +47,14 @@ public class GridManager : MonoBehaviour
     [SerializeField] private GameObject _player;
     void Start()
     {
+        // Calculate cell gap based on screen size
+        float screenHeight = Screen.height;
+        float screenWidth = Screen.width;
+        float screenAspect = screenWidth / screenHeight;
+        
+        // Use the smaller dimension to ensure consistent gaps
+        float baseSize = Mathf.Min(screenWidth, screenHeight);
+        _cellGap = baseSize * _cellGapPercentage / 100f;
         
         _tileSpriteMap.Add("-", 4);
         _tileSpriteMap.Add("X", 6);
@@ -183,20 +192,26 @@ public class GridManager : MonoBehaviour
         float gridHeight = _height * (1 + _cellGap);
 
         // Calculate the aspect ratio of the camera
-        float aspectRatio = (float)Screen.width / Screen.height;
+        float aspectRatio = 16f / 9f;
 
         // Set the camera's orthographic size based on the larger dimension of the grid
+        float orthographicSize;
         if (gridWidth / aspectRatio > gridHeight)
         {
-            Camera.main.orthographicSize = gridWidth / (2 * aspectRatio);
+            orthographicSize = gridWidth / (2 * aspectRatio) * 1.1f;
         }
         else
         {
-            Camera.main.orthographicSize = gridHeight / 2;
+            orthographicSize = gridHeight / 2 * 1.1f;
         }
-
-        // Center the camera on the grid
-        _camera.position = new Vector3(0, 0, Constants.CAMERA_LAYER);
+        Camera.main.orthographicSize = orthographicSize;
+        Camera.main.aspect = aspectRatio;
+        
+        // Calculate the extra space added by the 1.1f multiplier
+        float extraSpace = orthographicSize * 0.1f;
+        
+        // Center the camera on the grid horizontally, but offset vertically to align with top
+        _camera.position = new Vector3(0, -extraSpace, Constants.CAMERA_LAYER);
     }
 
 }
