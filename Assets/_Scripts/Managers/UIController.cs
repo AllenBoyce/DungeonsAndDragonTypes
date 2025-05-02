@@ -15,18 +15,20 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameManager _gameManager;
     [SerializeField] private GameObject _actionButtonPrefab;
     [SerializeField] private GameObject _endTurnButton;
-
+    [SerializeField] private GameObject _endGameDisplay;
     void Awake()
     {
         GameManager.OnGameStateChanged += OnGameStateChanged;
         GameManager.OnHoveredTileChanged += OnHoveredTileChanged;
         GameManager.OnUnitSelected += OnUnitSelected;
+        GameManager.OnEndGame += OnEndGame;
     }
 
     void OnDestroy() {
         GameManager.OnGameStateChanged -= OnGameStateChanged;
         GameManager.OnHoveredTileChanged -= OnHoveredTileChanged;
         GameManager.OnUnitSelected -= OnUnitSelected;
+        GameManager.OnEndGame -= OnEndGame;
     }
 
     #region Event Listeners
@@ -354,5 +356,16 @@ public class UIController : MonoBehaviour
             tile.SetHighlightColor(Color.red);
             tile.SetHighlight(true);
         }
+    }
+
+    public void OnEndGame(int winner) {
+        DisplayEndGame(winner);
+    }
+
+    public void DisplayEndGame(int winner) {
+        _endTurnButton.SetActive(false);
+        _endGameDisplay.SetActive(true);
+        _endGameDisplay.transform.Find("EndGameText").GetComponent<TextMeshProUGUI>().text = winner == 0 ? "Player 1 Wins!" : "Player 2 Wins!";
+        _endGameDisplay.transform.Find("MenuBtn").gameObject.SetActive(true);
     }
 }

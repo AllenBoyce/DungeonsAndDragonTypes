@@ -60,6 +60,7 @@ public class GameManager : MonoBehaviour
     public static event Action<Unit, ScriptableMove, Vector2Int> OnUnitAttack;
     public static event Action<Unit, ScriptableMove, Vector2Int> OnUnitHurt; //Unit getting Hurt, Move that damages it, Tile attack originates from
     public static event Action<int> OnActivePlayerChanged;
+    public static event Action<int> OnEndGame;
     #endregion
     
     #region Private Variables
@@ -86,6 +87,9 @@ public class GameManager : MonoBehaviour
                 Debug.Log("Current State: " + _stateManager.CurrentState.ToString());
                 Debug.Log("Current State: " + CurrentState.ToString());
                 Debug.Log("Selected Unit: " + _selectedUnit);
+            }
+            if (Input.GetKeyDown(KeyCode.Escape)) {
+                OnEndGame?.Invoke(0);
             }
         }
     }
@@ -392,6 +396,29 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void CheckEndGame() {
+        if(IsGameOver()) {
+            OnEndGame?.Invoke(GetWinningPlayer());
+        }
+    }
+
+    private bool IsGameOver() {
+        if(GetWinningPlayer() != -1) return true;
+        return false;
+    }
+    private int GetWinningPlayer() {
+        bool playerOneTeamAlive = false;
+        bool playerTwoTeamAlive = false;
+        foreach(Unit u in _levelManager.Units) {
+            if(u.State == Unit.UnitState.Fainted) continue;
+            if(u.PlayerOwner == 0) playerOneTeamAlive = true;
+            else playerTwoTeamAlive = true;
+        }
+        if(!playerOneTeamAlive) return 1;
+        if(!playerTwoTeamAlive) return 0;
+        return -1;
+    }
+
     #region Getters and Setters
     public Unit SelectedUnit { get { return _selectedUnit; } }
     public ScriptableMove SelectedMove { get { return _selectedMove; } }
@@ -416,4 +443,5 @@ public class GameManager : MonoBehaviour
         return u.PlayerOwner == _activePlayer;
     }
     #endregion
+
 }
