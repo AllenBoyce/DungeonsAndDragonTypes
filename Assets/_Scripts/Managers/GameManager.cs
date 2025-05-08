@@ -158,6 +158,7 @@ public class GameManager : MonoBehaviour
         Vector2 mousePosition = MousePosition();
         Vector2Int mouseTile = new Vector2Int(_gridManager.GetGridX(mousePosition.x), _gridManager.GetGridY(mousePosition.y));
         if(_hoveredTile != mouseTile) {
+            Debug.Log("GameManager HoverCheck: " + _hoveredTile + " " + mouseTile);
             _hoveredTile = mouseTile;
             OnHoveredTileChanged?.Invoke(_hoveredTile);
         }
@@ -280,6 +281,7 @@ public class GameManager : MonoBehaviour
     }
 
     public List<Tile> GetTargetedTiles(ScriptableMove move) {
+        Debug.Log("GameManager GetTargetedTiles: " + _hoveredTile + " " + _selectedUnit + " " + move);
         return TargetingUtility.GetTiles(_gridManager.Grid, _hoveredTile, _selectedUnit, move);
     }
 

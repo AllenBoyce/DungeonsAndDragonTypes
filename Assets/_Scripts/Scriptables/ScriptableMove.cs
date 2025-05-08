@@ -5,7 +5,7 @@ public class ScriptableMove : ScriptableObject
 {
     [SerializeField] public string moveName;
     [SerializeField] public int power;
-    [SerializeField] public OriginType originType;
+    [SerializeField] public TargetType targetType;
     [SerializeField] public int primaryRange;
     [SerializeField] public int secondaryRange = -1;
     [SerializeField] public TargetingUtility.Shape shape;
@@ -34,7 +34,7 @@ public class ScriptableMove : ScriptableObject
         Fairy
     }
 
-    public enum OriginType
+    public enum TargetType
     {
         Self,
         Sight,

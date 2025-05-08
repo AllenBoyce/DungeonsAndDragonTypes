@@ -67,6 +67,7 @@ public class UIController : MonoBehaviour
             case "UnitSelectedState":
                 break;
             case "MoveSelectedState":
+                Debug.Log("UIController OnHoveredTileChanged: " + hoveredTile);
                 HighlightTargetedTiles(GameManager.Instance.SelectedMove, hoveredTile, GameManager.Instance.SelectedUnit, GameManager.Instance.Grid);
                 break;
             case "ExecuteMoveState":
@@ -374,11 +375,12 @@ public class UIController : MonoBehaviour
         }
     }
 
-    public void HighlightTargetedTiles(ScriptableMove move, Vector2Int origin, Unit unit, Dictionary<Vector2Int, Tile> grid)
+    public void HighlightTargetedTiles(ScriptableMove move, Vector2Int targeted, Unit unit, Dictionary<Vector2Int, Tile> grid)
     {
         //sooo rudimentary and please pelase remove later
         ClearHighlightedTiles(grid);
-        List<Tile> targetedTiles = TargetingUtility.GetTiles(grid, origin, unit, move);
+        Debug.Log("UIController HighlightTargetedTiles: " + targeted + " " + unit + " " + move);
+        List<Tile> targetedTiles = TargetingUtility.GetTiles(grid, targeted, unit, move);
         foreach (Tile tile in targetedTiles)
         {
             tile.SetHighlightColor(Color.red);
