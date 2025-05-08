@@ -16,6 +16,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject _actionButtonPrefab;
     [SerializeField] private GameObject _endTurnButton;
     [SerializeField] private GameObject _endGameDisplay;
+    [SerializeField] private APParent _apParent;
     void Awake()
     {
         GameManager.OnGameStateChanged += OnGameStateChanged;
@@ -83,10 +84,10 @@ public class UIController : MonoBehaviour
         
     }
 
-    // void Start()
-    // {
-    //     Initialize();
-    // }
+    void Start()
+    {
+        
+    } 
 
     public void Initialize()
     {
@@ -112,13 +113,16 @@ public class UIController : MonoBehaviour
         //Debug.Log(u.name);
         Debug.Log("Displaying Unit Controls");
         DisplayUnitControls(u);
-
+        _apParent.UpdateAP(u);
+        DisplayAP();
         _unitActionButtons[u].ForEach(button => button.SetActive(true));
     }
 
     private void OnMoveSelected() {
         Unit u = GameManager.Instance.SelectedUnit;
         ScriptableMove move = GameManager.Instance.SelectedMove;
+        _apParent.SetTempAP(move.apCost);
+        _apParent.ShowAP();
     }
 
     public void Wipe()
@@ -130,6 +134,28 @@ public class UIController : MonoBehaviour
     private void WipeUnitControls()
     {
         WipeActionButtons();
+        WipeAP();
+    }
+
+    private void WipeAP()
+    {
+        _apParent.ClearAP();
+    }
+
+    private void DisplayAP(int fullAP, int tempAP)
+    {
+        _apParent.SetAP(fullAP, tempAP);
+        _apParent.ShowAP();
+    }
+
+    private void DisplayAP(int fullAP)
+    {
+        _apParent.SetAP(fullAP);
+        _apParent.ShowAP();
+    }
+    private void DisplayAP()
+    {
+        _apParent.ShowAP();
     }
 
     private void WipeActionButtons()
@@ -158,6 +184,7 @@ public class UIController : MonoBehaviour
         DisplayUnitPortrait(data.portrait);
         List<ScriptableMove> learnedMoves = new List<ScriptableMove>();
         DisplayActionButtons(u);
+       // DisplayAP(u.GetAP());
         
         _endTurnButton.SetActive(true);
     }
@@ -216,16 +243,17 @@ public class UIController : MonoBehaviour
         if (buttonText != null)
         {
             buttonText.text = actionName;
-            Debug.Log("71");
+            //Debug.Log("71");
             Debug.Log(buttonText.text);
         }
             
         // Add onClick listener that will execute the action when clicked
         button.onClick.AddListener(() => {
-            Debug.Log($"CLICK {actionName} BTN");
-            Debug.Log(_gameManager.name);
+            //Debug.Log($"CLICK {actionName} BTN");
+            //Debug.Log(_gameManager.name);
             _gameManager.SelectMove(u, actionName);
         });
+        //I would really love to add a mouse over event to this button, but I can't figure out how to do it. If I had it it would preview the AP loss for the move.
         actionButton.SetActive(false);
         return actionButton;
     }
@@ -272,7 +300,7 @@ public class UIController : MonoBehaviour
         float currentX = startX;
     
         // Set position near bottom of screen with padding
-        float bottomPadding = 50f;
+        float bottomPadding = 20f;
         
         // Position each button
         for (int i = 0; i < actionButtons.Count; i++)
