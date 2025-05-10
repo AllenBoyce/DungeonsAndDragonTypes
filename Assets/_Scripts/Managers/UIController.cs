@@ -53,10 +53,18 @@ public class UIController : MonoBehaviour
             case "MoveSelectedState":
                 OnMoveSelected();
                 break;
+            case "WalkSelectedState":
+                OnWalkSelected();
+                break;
             case "ExecuteMoveState":
                 OnUnitAttacking();
                 break;
         }
+    }
+
+    void OnWalkSelected() {
+        ClearHighlightedTiles(GameManager.Instance.Grid);
+        DisplayAP();
     }
 
     void OnUnitAttacking() {
@@ -88,7 +96,17 @@ public class UIController : MonoBehaviour
      * The path is displayed as a series of PathPreview sprites above each tile in the path.
      */
     public void PreviewMovementPath(MovementPath path) {
+        if (path == null || path.Pivots == null || path.Pivots.Count == 0) return;
         
+        // Clear any existing path previews
+        ClearHighlightedTiles(GameManager.Instance.Grid);
+        
+        // Show path preview for each tile in the path
+        foreach (Vector2Int pivot in path.Pivots) {
+            if (GameManager.Instance.Grid.TryGetValue(pivot, out Tile tile)) {
+                tile.SetPathPreview(true);
+            }
+        }
     }
 
     void Start()

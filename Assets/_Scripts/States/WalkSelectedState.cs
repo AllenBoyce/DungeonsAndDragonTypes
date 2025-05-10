@@ -22,6 +22,7 @@ public class WalkSelectedState : GameBaseState
 
         MovementPath path = MovementUtility.GenerateMovementPath(GameManager.Instance.Grid, selectedUnit.GetGridPosition(), mouseTile);
         GameManager.Instance.SetPathPreview(path);
+        Debug.Log("WalkSelectedState HandleHoverTile: " + path.Pivots.Count);
     }
 
     public override void HandleLeftClickTile(Vector2Int mouseTile)  //TODO: Later we'll put this in it's own state

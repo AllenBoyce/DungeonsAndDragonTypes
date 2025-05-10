@@ -5,12 +5,15 @@ public static class MovementUtility
 {
     public static MovementPath GenerateMovementPath(Dictionary<Vector2Int, Tile> grid, Vector2Int origin, Vector2Int destination)
     {
+        Debug.Log("MovementUtility GenerateMovementPath: " + origin + " " + destination);
         var path = FindPath(grid, origin, destination);
+        Debug.Log("MovementUtility GenerateMovementPath: " + path);
         if (path == null) return null;
 
         var pivots = GetPivotPoints(path);
 
         var movementPath = new MovementPath(pivots);
+        Debug.Log("MovementUtility GenerateMovementPath: " + movementPath);
         //movementPath.Pivots = pivots;
         return movementPath;
     }
