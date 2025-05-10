@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d666f12be6e434aaa8e52212e5d50755, type: 3}
   m_Name: Slash
   m_EditorClassIdentifier: 
-  moveName: 
-  power: 0
-  targetType: 0
-  primaryRange: 0
+  moveName: Slash
+  power: 70
+  targetType: 1
+  primaryRange: 1
   secondaryRange: -1
-  shape: 0
+  shape: 3
   moveType: 0
   animationKey: Attack
-  apCost: 0
-  sfx: {fileID: 0}
+  apCost: 2
+  sfx: {fileID: 8300000, guid: c27e8cd23e6bb48368b806100a1ae9e0, type: 3}

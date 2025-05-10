@@ -52,6 +52,8 @@ public class WalkSelectedState : GameBaseState
                 
         //Target tile is empty so MOVE OUR GUY OVER THERE
         MovementPath path = MovementUtility.GenerateMovementPath(GameManager.Instance.Grid, selectedUnit.GetGridPosition(), mouseTile);
+        int maxDistance = selectedUnit.CurrentAP * selectedUnit.PokemonData.BaseStats.moveSpeed;
+        path = MovementUtility.TruncatePath(path, maxDistance);
         if (path != null && path.Pivots != null && path.Pivots.Count > 0)
         {
             //Ignore warning

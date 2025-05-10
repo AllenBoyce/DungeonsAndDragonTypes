@@ -13,6 +13,8 @@ public class ScriptablePokemon : ScriptableObject
 
     public Sprite sprite;
     public Sprite portrait;
+    public AudioClip moveSFX;
+    public AudioClip cry;
 
     public List<ScriptableMove> learnableMoves;
     
