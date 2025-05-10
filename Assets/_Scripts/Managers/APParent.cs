@@ -24,6 +24,24 @@ public class APParent : MonoBehaviour
         UpdateAPDisplays();
     }
 
+    public void DisplayTempAP(int tempAP)
+    {
+        int emptyAP = _apDisplayCount - _currentFullAP - _currentTempAP;
+        int fullAP = _apDisplayCount - emptyAP - tempAP;
+        for(int i = 0; i < fullAP; i++)
+        {
+            _apDisplays[i].SetAP(2);
+        }
+        for(int i = fullAP; i < fullAP + tempAP; i++)
+        {
+            _apDisplays[i].SetAP(1);
+        }
+        for(int i = fullAP + tempAP; i < _apDisplayCount; i++)
+        {
+            _apDisplays[i].SetAP(0);
+        }
+    }
+
     public void SetAP(int fullAP, int tempAP)
     {
         SetAP(fullAP);

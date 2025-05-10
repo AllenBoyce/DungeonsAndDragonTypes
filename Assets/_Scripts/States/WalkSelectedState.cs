@@ -34,7 +34,7 @@ public class WalkSelectedState : GameBaseState
             Debug.Log("AP Cost: " + APCost);
             path = truncatedPath;
         
-        //UIController.Instance.SetTempAP(APCost);
+        UIController.Instance.DisplayTempAP(APCost);
 
         GameManager.Instance.SetPathPreview(path);
         //Debug.Log("WalkSelectedState HandleHoverTile: " + path.Pivots.Count);

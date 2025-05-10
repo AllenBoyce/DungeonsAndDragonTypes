@@ -184,6 +184,12 @@ public class UIController : MonoBehaviour
         _apParent.SetAP(fullAP);
         _apParent.ShowAP();
     }
+
+    public void DisplayTempAP(int tempAP)
+    {
+        _apParent.DisplayTempAP(tempAP);
+    }
+
     private void DisplayAP()
     {
         _apParent.ShowAP();
