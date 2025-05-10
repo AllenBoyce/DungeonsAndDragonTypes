@@ -21,9 +21,12 @@ public class Unit : MonoBehaviour
     private PokemonModel _model;
 
     private Direction _currentDirection;
+    private Material _greyscaleMaterial;
     public void Start()
     {
         GameManager.OnUnitHurt += OnUnitHurt;
+        _greyscaleMaterial = Resources.Load<Material>("Materials/GreyscaleMat");
+        Debug.Log("Greyscale Material: " + _greyscaleMaterial);
     }
 
     #region Getters and Setters and other functions
@@ -136,9 +139,11 @@ public class Unit : MonoBehaviour
         //The sleep animation only has south direction, so we need to set the direction to south
         _currentDirection = Direction.South;
         PlayAnimation("Sleep");
+        _model.GetComponent<SpriteRenderer>().material = _greyscaleMaterial;
         _state = UnitState.Fainted;
         GameManager.Instance.UnhandledFaint = true;
         Debug.Log("Unit Fainted");
+        
     }
 
     public enum UnitState
