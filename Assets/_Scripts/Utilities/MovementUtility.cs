@@ -18,6 +18,20 @@ public static class MovementUtility
         return movementPath;
     }
 
+    public static MovementPath TruncatePath(MovementPath path, int maxDistance) {
+        if (path == null || path.Pivots == null || path.Pivots.Count == 0) return null;
+
+        int distance = path.Distance();
+        if (distance <= maxDistance) return path;
+
+        List<Vector2Int> newPivots = new List<Vector2Int>();
+        for (int i = 0; i < maxDistance; i++) {
+            newPivots.Add(path.Pivots[i]);
+        }
+
+        return new MovementPath(newPivots);
+    }
+
     private static List<Vector2Int> FindPath(Dictionary<Vector2Int, Tile> grid, Vector2Int start, Vector2Int end)
     {
         var openSet = new List<Vector2Int>();

@@ -32,6 +32,7 @@ public class Unit : MonoBehaviour
     public int CurrentAP { get { return _currentAP; } }
     public int MaxAP { get { return _maxAP; } }
     public void SetCurrentAP(int ap) { _currentAP = ap; }
+    public ScriptablePokemon PokemonData { get { return pokemonData; } }
     public void ConsumeAP(int ap) { _currentAP = Math.Max(0, _currentAP - ap); }
     public List<ScriptableMove> GetLearnedMoves() { return _learnedMoves;}
     public Direction GetCurrentDirection() { return _currentDirection; }

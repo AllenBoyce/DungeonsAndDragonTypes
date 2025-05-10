@@ -1,3 +1,5 @@
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class WalkSelectedState : GameBaseState
@@ -16,13 +18,31 @@ public class WalkSelectedState : GameBaseState
     {
         Unit selectedUnit = GameManager.Instance.SelectedUnit;
         if(selectedUnit == null || selectedUnit.State == Unit.UnitState.Moving) return;
+        
         Unit.Direction direction = MovementUtility.GetDirection(selectedUnit.GetGridPosition(), mouseTile);
         selectedUnit.SetCurrentDirection(direction);
         selectedUnit.PlayAnimation("Idle", direction); //temporary bullshit?
 
         MovementPath path = MovementUtility.GenerateMovementPath(GameManager.Instance.Grid, selectedUnit.GetGridPosition(), mouseTile);
+        int distance = path.Distance();
+        int APCost =  CalculateAPCost(distance, selectedUnit.PokemonData.BaseStats.moveSpeed);
+        
+            int maxDistance = selectedUnit.CurrentAP * selectedUnit.PokemonData.BaseStats.moveSpeed;
+            MovementPath truncatedPath = MovementUtility.TruncatePath(path, maxDistance);
+            Debug.Log("Max Distance: " + maxDistance);
+            Debug.Log("Truncated path: " + truncatedPath.Pivots.Count);
+            Debug.Log("AP Cost: " + APCost);
+            path = truncatedPath;
+        
+        //UIController.Instance.SetTempAP(APCost);
+
         GameManager.Instance.SetPathPreview(path);
-        Debug.Log("WalkSelectedState HandleHoverTile: " + path.Pivots.Count);
+        //Debug.Log("WalkSelectedState HandleHoverTile: " + path.Pivots.Count);
+    }
+
+    private int CalculateAPCost(int distance, int moveSpeed) {
+        int APCost =  (distance - 1)/moveSpeed + 1;
+        return APCost;
     }
 
     public override void HandleLeftClickTile(Vector2Int mouseTile)  //TODO: Later we'll put this in it's own state

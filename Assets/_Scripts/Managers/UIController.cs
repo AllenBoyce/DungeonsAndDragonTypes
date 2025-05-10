@@ -147,7 +147,11 @@ public class UIController : MonoBehaviour
     private void OnMoveSelected() {
         Unit u = GameManager.Instance.SelectedUnit;
         ScriptableMove move = GameManager.Instance.SelectedMove;
-        _apParent.SetTempAP(move.apCost);
+        SetTempAP(move.apCost);
+    }
+
+    public void SetTempAP(int apCost) {
+        _apParent.SetTempAP(apCost);
         _apParent.ShowAP();
     }
 
