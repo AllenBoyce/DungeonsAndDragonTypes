@@ -26,13 +26,17 @@ public class Unit : MonoBehaviour
         GameManager.OnUnitHurt += OnUnitHurt;
     }
 
+    #region Getters and Setters and other functions
     public int CurrentHP { get { return _currentHP; } }
     public int MaxHP { get { return _maxHP; } }
     public int CurrentAP { get { return _currentAP; } }
     public int MaxAP { get { return _maxAP; } }
     public void SetCurrentAP(int ap) { _currentAP = ap; }
     public void ConsumeAP(int ap) { _currentAP = Math.Max(0, _currentAP - ap); }
-
+    public List<ScriptableMove> GetLearnedMoves() { return _learnedMoves;}
+    public Direction GetCurrentDirection() { return _currentDirection; }
+    public void SetCurrentDirection(Direction direction) { _currentDirection = direction; }
+    #endregion
     public void Initialize(ScriptablePokemon pokemon, Vector3 position, int player)
     {
         pokemonData = pokemon;
@@ -52,9 +56,7 @@ public class Unit : MonoBehaviour
         _learnedMoves = pokemonData.learnableMoves;
     }
     
-    public List<ScriptableMove> GetLearnedMoves() { return _learnedMoves;}
-    public Direction GetCurrentDirection() { return _currentDirection; }
-    public void SetCurrentDirection(Direction direction) { _currentDirection = direction; }
+    
 
     public ScriptablePokemon GetPokemonData()
     {

@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveName: Flamethrower
   power: 70
-  originType: 0
+  targetType: 0
   primaryRange: 4
   secondaryRange: -1
   shape: 3
   moveType: 3
   animationKey: Attack
   apCost: 2
+  sfx: {fileID: 8300000, guid: c0e4865472c7c406e9914b6127806a38, type: 3}

@@ -17,8 +17,13 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject _endTurnButton;
     [SerializeField] private GameObject _endGameDisplay;
     [SerializeField] private APParent _apParent;
+    [SerializeField] private GameObject _selectedUnitIndicator;
+
+    public static UIController Instance;
+
     void Awake()
     {
+        Instance = this;
         GameManager.OnGameStateChanged += OnGameStateChanged;
         GameManager.OnHoveredTileChanged += OnHoveredTileChanged;
         GameManager.OnUnitSelected += OnUnitSelected;
@@ -31,6 +36,7 @@ public class UIController : MonoBehaviour
         GameManager.OnUnitSelected -= OnUnitSelected;
         GameManager.OnEndGame -= OnEndGame;
     }
+
 
     #region Event Listeners
     void OnGameStateChanged(GameBaseState newState) {
@@ -67,7 +73,7 @@ public class UIController : MonoBehaviour
             case "UnitSelectedState":
                 break;
             case "MoveSelectedState":
-                Debug.Log("UIController OnHoveredTileChanged: " + hoveredTile);
+                //Debug.Log("UIController OnHoveredTileChanged: " + hoveredTile);
                 HighlightTargetedTiles(GameManager.Instance.SelectedMove, hoveredTile, GameManager.Instance.SelectedUnit, GameManager.Instance.Grid);
                 break;
             case "ExecuteMoveState":
@@ -117,6 +123,7 @@ public class UIController : MonoBehaviour
         _apParent.UpdateAP(u);
         DisplayAP();
         _unitActionButtons[u].ForEach(button => button.SetActive(true));
+        DisplayUnitIndicator();
     }
 
     private void OnMoveSelected() {
@@ -130,6 +137,7 @@ public class UIController : MonoBehaviour
     {
         WipeUnitControls();
         ClearHighlightedTiles(GameManager.Instance.Grid);
+        HideSelectedUnitIndicator();
     }
 
     private void WipeUnitControls()
@@ -157,6 +165,18 @@ public class UIController : MonoBehaviour
     private void DisplayAP()
     {
         _apParent.ShowAP();
+    }
+    public void DisplayUnitIndicator()
+    {
+        DisplaySelectedUnitIndicator(GameManager.Instance.SelectedUnit);
+    }
+    private void DisplaySelectedUnitIndicator(Unit u) {
+        _selectedUnitIndicator.SetActive(true);
+        _selectedUnitIndicator.transform.position = new Vector3(u.transform.position.x, u.transform.position.y + 1.35f , Constants.UNIT_INDICATOR_LAYER);
+        Debug.Log("UIController DisplaySelectedUnitIndicator: " + u.name);
+    }
+    private void HideSelectedUnitIndicator() {
+        _selectedUnitIndicator.SetActive(false);
     }
 
     private void WipeActionButtons()

@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveName: Earthquake
   power: 100
-  originType: 0
+  targetType: 0
   primaryRange: 2
   secondaryRange: 1
   shape: 1
   moveType: 8
   animationKey: Attack
   apCost: 3
+  sfx: {fileID: 8300000, guid: 825f2315578e54a6e8a80a65ed200e9a, type: 3}

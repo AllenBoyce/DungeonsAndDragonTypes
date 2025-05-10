@@ -12,6 +12,7 @@ public class ScriptableMove : ScriptableObject
     [SerializeField] public MoveType moveType;
     [SerializeField] public string animationKey = "Attack"; //Later on this will change to keys
     [SerializeField] public int apCost;
+    [SerializeField] public AudioClip sfx;
     public enum MoveType
     {
         Normal,

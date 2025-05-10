@@ -30,6 +30,7 @@ public class ExecuteMoveState : GameBaseState
         _defendingUnits.Remove(_attackingUnit); //I think this works
         
         GameManager.Instance.AlertHurtUnits(_defendingUnits, _move, _originTile);
+        GameManager.Instance.PlaySound(_move.sfx);
 
         //Handle AP Changes
         _attackingUnit.ConsumeAP(_move.apCost);

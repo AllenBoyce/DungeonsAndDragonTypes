@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     private UIController _uiController;
 
     private GameStateManager _stateManager;
+    private AudioController _audioController;
     // private GameBaseState _currentGameState;
     #endregion
     
@@ -104,6 +105,7 @@ public class GameManager : MonoBehaviour
         _movementController = FindFirstObjectByType<MovementController>();
         _uiController = FindFirstObjectByType<UIController>();
         _stateManager = GetComponent<GameStateManager>();
+        _audioController = FindFirstObjectByType<AudioController>();
 
         MovementController.OnUnitMoving += OnUnitMoving;
         MovementController.OnUnitStoppedMoving += OnUnitStoppedMoving;
@@ -158,7 +160,7 @@ public class GameManager : MonoBehaviour
         Vector2 mousePosition = MousePosition();
         Vector2Int mouseTile = new Vector2Int(_gridManager.GetGridX(mousePosition.x), _gridManager.GetGridY(mousePosition.y));
         if(_hoveredTile != mouseTile) {
-            Debug.Log("GameManager HoverCheck: " + _hoveredTile + " " + mouseTile);
+            //Debug.Log("GameManager HoverCheck: " + _hoveredTile + " " + mouseTile);
             _hoveredTile = mouseTile;
             OnHoveredTileChanged?.Invoke(_hoveredTile);
         }
@@ -281,7 +283,7 @@ public class GameManager : MonoBehaviour
     }
 
     public List<Tile> GetTargetedTiles(ScriptableMove move) {
-        Debug.Log("GameManager GetTargetedTiles: " + _hoveredTile + " " + _selectedUnit + " " + move);
+        //Debug.Log("GameManager GetTargetedTiles: " + _hoveredTile + " " + _selectedUnit + " " + move);
         return TargetingUtility.GetTiles(_gridManager.Grid, _hoveredTile, _selectedUnit, move);
     }
 
@@ -312,7 +314,7 @@ public class GameManager : MonoBehaviour
     }
 
     public void OnUnitStoppedMoving(Unit u, MovementPath path) {
-        Debug.Log("GameManager OnUnitStoppedMoving: " + u.name + " with path: " + path.Pivots.Count);
+        //Debug.Log("GameManager OnUnitStoppedMoving: " + u.name + " with path: " + path.Pivots.Count);
         u.UpdateState(Unit.UnitState.Idle);
         ClearPathPreview();
         TransitionState(_stateManager.unitSelectedState);
@@ -419,6 +421,10 @@ public class GameManager : MonoBehaviour
         if(!playerOneTeamAlive) return 1;
         if(!playerTwoTeamAlive) return 0;
         return -1;
+    }
+
+    public void PlaySound(AudioClip sound) {
+        _audioController.PlaySound(sound);
     }
 
     #region Getters and Setters
