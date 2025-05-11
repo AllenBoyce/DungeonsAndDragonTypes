@@ -21,9 +21,24 @@ public class SelectionManager : MonoBehaviour
 
     public static SelectionManager Instance;
 
+    
+
     void Awake()
     {
         Instance = this;
+        DontDestroyOnLoad(this);
+    }
+
+    void OnDestroy() {
+        Instance = null;
+    }
+
+    public List<Constants.PokemonSpecies> GetPlayerOnePokemon() {
+        return _playerOnePokemon;
+    }
+
+    public List<Constants.PokemonSpecies> GetPlayerTwoPokemon() {
+        return _playerTwoPokemon;
     }
 
     void Start()
@@ -51,7 +66,7 @@ public class SelectionManager : MonoBehaviour
     }
 
     void OnStartGame() {
-        Debug.Log("Starting game");
+        
     }
 
     void OnUndo() {

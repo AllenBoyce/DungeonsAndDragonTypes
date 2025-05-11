@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
 
     private GameStateManager _stateManager;
     private AudioController _audioController;
+    private SelectionManager _selectionManager;
     // private GameBaseState _currentGameState;
     #endregion
     
@@ -106,17 +107,40 @@ public class GameManager : MonoBehaviour
         _uiController = FindFirstObjectByType<UIController>();
         _stateManager = GetComponent<GameStateManager>();
         _audioController = FindFirstObjectByType<AudioController>();
-
-        MovementController.OnUnitMoving += OnUnitMoving;
-        MovementController.OnUnitStoppedMoving += OnUnitStoppedMoving;
-        if (DEMO)
-        {
+        _selectionManager = FindFirstObjectByType<SelectionManager>();
+        if(_selectionManager == null) {
+            Debug.Log("SelectionManager not found so going to default mons");
             Unit u = _unitManager.GenerateUnit(Constants.PokemonSpecies.Garchomp, 0);
             _levelManager.PutUnit(u, 5, 5);
             Unit u2 = _unitManager.GenerateUnit(Constants.PokemonSpecies.Flapple, 1);
             _levelManager.PutUnit(u2, 8, 5);
+        }
+        else {
+            LoadPokemon();
+        }
 
             _uiController.Initialize(); //SLOPPY AND TEMPORARY
+        
+    }
+
+    //LATER: CHANGE PLACING CODE
+    private void LoadPokemon() {
+        List<Constants.PokemonSpecies> playerOnePokemon = _selectionManager.GetPlayerOnePokemon();
+        List<Constants.PokemonSpecies> playerTwoPokemon = _selectionManager.GetPlayerTwoPokemon();
+        int x1 = 5;
+        int x2 = 5;
+        foreach(Constants.PokemonSpecies pokemon in playerOnePokemon) {
+            Unit u = _unitManager.GenerateUnit(pokemon, 0);
+             _levelManager.PutUnit(u, x1, x2);
+             x2 = 3;
+        }
+        x1 = 8;
+        x2 = 5;
+        
+        foreach(Constants.PokemonSpecies pokemon in playerTwoPokemon) {
+            Unit u = _unitManager.GenerateUnit(pokemon, 1);
+            _levelManager.PutUnit(u, x1, x2);
+            x2 = 3;
         }
     }
 
@@ -335,6 +359,10 @@ public class GameManager : MonoBehaviour
         target.Hurt(damage);
     }
 
+    public void StartGame() {
+        TransitionState(_stateManager.playerNeutralState);
+    }
+
     public void SwitchPlayer() {
         _activePlayer = 1 - _activePlayer;
         _selectedUnit = null;
@@ -352,6 +380,7 @@ public class GameManager : MonoBehaviour
     }
 
     public void SetPathPreview(MovementPath path) {
+        //Debug.Log("GameManager SetPathPreview: " + path);
         ClearPathPreview();
         if (path == null || path.Pivots.Count < 2) return;
 

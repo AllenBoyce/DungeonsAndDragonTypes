@@ -42,7 +42,7 @@ public class LevelManager: MonoBehaviour
         foreach (Unit u in _units)
         {
             Vector2Int upos = u.GetGridPosition();
-            Debug.Log(upos);
+            //Debug.Log(upos);
             if (upos.x == position.x && upos.y == position.y) return u;
         }
 

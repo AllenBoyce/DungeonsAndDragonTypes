@@ -8,6 +8,7 @@ public class GameStateManager : MonoBehaviour
     public WalkSelectedState walkSelectedState = new WalkSelectedState();
     public MoveSelectedState moveSelectedState = new MoveSelectedState();
     public ExecuteMoveState executeMoveState = new ExecuteMoveState();
+    public InitializeGameState initializeGameState = new InitializeGameState();
     // public MoveCheckupState moveCheckupState = new MoveCheckupState();
     // public GameOverState gameOverState = new GameOverState();
 
@@ -43,7 +44,7 @@ public class GameStateManager : MonoBehaviour
         GameManager.OnTileLeftClicked += OnTileLeftClicked;
         GameManager.OnTileRightClicked += OnTileRightClicked;
 
-        CurrentState = playerNeutralState;
+        CurrentState = initializeGameState;
         CurrentState.EnterState(this);
     }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -26,7 +27,6 @@ public class Unit : MonoBehaviour
     {
         GameManager.OnUnitHurt += OnUnitHurt;
         _greyscaleMaterial = Resources.Load<Material>("Materials/GreyscaleMat");
-        Debug.Log("Greyscale Material: " + _greyscaleMaterial);
     }
 
     #region Getters and Setters and other functions
@@ -110,6 +110,70 @@ public class Unit : MonoBehaviour
         _model.PlayAnimation(animationName, _currentDirection);
     }
 
+    public async Task PlayAnimationAsync(string animationName)
+    {
+        Debug.Log($"Playing async animation: {animationName}");
+        PlayAnimation(animationName, _currentDirection);
+        
+        // Get the animation clip length
+        float clipLength = GetAnimationClipLength(animationName, _currentDirection);
+        int waitTime = Mathf.RoundToInt(clipLength * 1000); // Convert to milliseconds
+        
+        // Wait for the animation to complete
+        await Task.Delay(waitTime);
+        
+        Debug.Log($"Animation {animationName} completed");
+    }
+    
+    public async Task PlayAnimationAsync(string animationName, Direction direction)
+    {
+        _currentDirection = direction;
+        Debug.Log($"Playing async animation: {animationName} in direction: {direction}");
+        PlayAnimation(animationName, direction);
+        
+        // Get the animation clip length
+        float clipLength = GetAnimationClipLength(animationName, direction);
+        int waitTime = Mathf.RoundToInt(clipLength * 1000); // Convert to milliseconds
+        
+        // Wait for the animation to complete
+        await Task.Delay(waitTime);
+        
+        Debug.Log($"Animation {animationName} in direction {direction} completed");
+    }
+    
+    private float GetAnimationClipLength(string animationName, Direction direction)
+    {
+        Animator animator = _model.GetComponent<Animator>();
+        if (animator == null)
+        {
+            Debug.LogWarning("Animator not found, using default animation length");
+            return 1.0f; // Default 1 second
+        }
+        
+        // Get the runtime animator controller
+        RuntimeAnimatorController controller = animator.runtimeAnimatorController;
+        if (controller == null)
+        {
+            Debug.LogWarning("RuntimeAnimatorController not found, using default animation length");
+            return 1.0f;
+        }
+        
+        // Find the animation clip with the expected name format: PokemonName_AnimationName_Direction
+        string clipName = $"{pokemonData.name}_{animationName}_{direction.ToString()}";
+        
+        foreach (AnimationClip clip in controller.animationClips)
+        {
+            if (clip.name == clipName)
+            {
+                return clip.length;
+            }
+        }
+        
+        // Clip not found, use default
+        Debug.LogWarning($"Animation clip '{clipName}' not found, using default animation length");
+        return 1.0f;
+    }
+
     public void OnUnitHurt(Unit unit, ScriptableMove move, Vector2Int originTile)
     {
         if(unit == this)
@@ -128,6 +192,7 @@ public class Unit : MonoBehaviour
     private void takeDamage(int damage)
     {
         _currentHP = Math.Max(0, _currentHP - damage);
+        //UIController.Instance.UpdateHealthBar(this);
         if (_currentHP <= 0)
         {
             Faint();
@@ -139,7 +204,11 @@ public class Unit : MonoBehaviour
         //The sleep animation only has south direction, so we need to set the direction to south
         _currentDirection = Direction.South;
         PlayAnimation("Sleep");
-        _model.GetComponent<SpriteRenderer>().material = _greyscaleMaterial;
+        SpriteRenderer renderer = _model.GetComponent<SpriteRenderer>();
+        Material instanceMaterial = new Material(_greyscaleMaterial);
+        instanceMaterial.mainTexture = renderer.material.mainTexture;
+        renderer.material = instanceMaterial;
+
         _state = UnitState.Fainted;
         GameManager.Instance.UnhandledFaint = true;
         Debug.Log("Unit Fainted");
