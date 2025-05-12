@@ -184,8 +184,8 @@ public class Unit : MonoBehaviour
 
     public void Hurt(int damage)
     {
-        _state = UnitState.Hurting;
-        PlayAnimation("Hurt");
+        //_state = UnitState.Hurting;
+        //PlayAnimation("Hurt");
         takeDamage(damage);
     }
 

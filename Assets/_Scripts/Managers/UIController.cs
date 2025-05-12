@@ -161,6 +161,7 @@ public class UIController : MonoBehaviour
         DisplayAP();
         _unitActionButtons[u].ForEach(button => button.SetActive(true));
         DisplayUnitIndicator();
+        Debug.Log("UIController OnUnitSelected: " + u.name);
     }
 
     private void OnMoveSelected() {

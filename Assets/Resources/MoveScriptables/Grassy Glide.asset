@@ -21,4 +21,4 @@ MonoBehaviour:
   moveType: 0
   animationKey: Attack
   apCost: 1
-  sfx: {fileID: 0}
+  sfx: {fileID: 8300000, guid: 777da5b0971d94709bc90a7b9448a1ec, type: 3}

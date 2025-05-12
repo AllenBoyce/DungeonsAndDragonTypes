@@ -4,7 +4,7 @@ public class AnimationController : MonoBehaviour
 {
     void Awake()
     {
-        GameManager.OnUnitAttack += OnUnitAttack;
+        //GameManager.OnUnitAttack += OnUnitAttack;
         GameManager.OnUnitHurt += OnUnitHurt;
     }
 

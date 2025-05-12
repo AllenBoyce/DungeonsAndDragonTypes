@@ -3,7 +3,8 @@ using TMPro;
 using System.Collections.Generic;
 using System;
 using UnityEngine.UI;
-public class SelectionManager : MonoBehaviour
+using UnityEngine.SceneManagement;
+public class SelectionManager : PersistentSingleton<SelectionManager>
 {
     private int _teamSize = Constants.TEAM_SIZE;
     private int _playerCount = Constants.PLAYER_COUNT;
@@ -13,25 +14,12 @@ public class SelectionManager : MonoBehaviour
     private List<Constants.PokemonSpecies> _playerTwoPokemon = new List<Constants.PokemonSpecies>();
     private int _currentPlayer = 0; //0-indexed.
 
-    private Button _startGameBtn;
-    private Button _undoBtn;
+    [SerializeField] public Button _startGameBtn;
+    [SerializeField] public Button _undoBtn;
 
     private TextMeshProUGUI _instructionsText;
     private TextMeshProUGUI _unitCountText;
 
-    public static SelectionManager Instance;
-
-    
-
-    void Awake()
-    {
-        Instance = this;
-        DontDestroyOnLoad(this);
-    }
-
-    void OnDestroy() {
-        Instance = null;
-    }
 
     public List<Constants.PokemonSpecies> GetPlayerOnePokemon() {
         return _playerOnePokemon;
@@ -41,18 +29,38 @@ public class SelectionManager : MonoBehaviour
         return _playerTwoPokemon;
     }
 
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if(scene.name == "CharacterSelect") {
+            Debug.Log("Scene loaded: CharacterSelect");
+             _startGameBtn = GameObject.Find("StartGameBtn").GetComponent<Button>();
+            _undoBtn = GameObject.Find("UndoBtn").GetComponent<Button>();
+            _startGameBtn = GameObject.Find("StartGameBtn").GetComponent<Button>();
+            _undoBtn = GameObject.Find("UndoBtn").GetComponent<Button>();
+            _unitCountText = GameObject.Find("Count").GetComponent<TextMeshProUGUI>();
+            _instructionsText = GameObject.Find("InstructionsText").GetComponent<TextMeshProUGUI>();
+
+        }
+    }
+
     void Start()
     {
-        _unitCountText = GameObject.Find("Count").GetComponent<TextMeshProUGUI>();
-        _unitCountText.text = "(0/" + _teamSize + ")";
         _startGameBtn = GameObject.Find("StartGameBtn").GetComponent<Button>();
         _undoBtn = GameObject.Find("UndoBtn").GetComponent<Button>();
+        _unitCountText = GameObject.Find("Count").GetComponent<TextMeshProUGUI>();
+        _unitCountText.text = "(0/" + _teamSize + ")";
         _startGameBtn.onClick.AddListener(OnStartGame);
         _undoBtn.onClick.AddListener(OnUndo);
         _startGameBtn.interactable = false;
         _undoBtn.interactable = false;
         _instructionsText = GameObject.Find("InstructionsText").GetComponent<TextMeshProUGUI>();
         _instructionsText.text = "Select Player 1's Pokemon";
+        _currentPlayer = 0;
     }
 
 
@@ -69,6 +77,13 @@ public class SelectionManager : MonoBehaviour
         
     }
 
+    public void Reset() {
+        _playerOnePokemon.Clear();
+        _playerTwoPokemon.Clear();
+        _currentSelectedUnits = 0;
+        _currentPlayer = 0;
+        _instructionsText.text = "Select Player 1's Pokemon";
+    }
     void OnUndo() {
         Debug.Log("Undoing");
         _startGameBtn.interactable = false;
@@ -160,5 +175,6 @@ public class SelectionManager : MonoBehaviour
 
     }
 
+    
 
 }

@@ -9,7 +9,8 @@ public class GameStateManager : MonoBehaviour
     public MoveSelectedState moveSelectedState = new MoveSelectedState();
     public ExecuteMoveState executeMoveState = new ExecuteMoveState();
     public InitializeGameState initializeGameState = new InitializeGameState();
-    // public MoveCheckupState moveCheckupState = new MoveCheckupState();
+    public ImpactTargetState impactTargetState = new ImpactTargetState();
+    public CheckupState checkupState = new CheckupState();
     // public GameOverState gameOverState = new GameOverState();
 
     /// <summary>

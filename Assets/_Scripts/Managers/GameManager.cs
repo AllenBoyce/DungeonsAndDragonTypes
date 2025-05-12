@@ -117,16 +117,20 @@ public class GameManager : MonoBehaviour
         }
         else {
             LoadPokemon();
+            _selectionManager.Reset();
         }
+        
 
-            _uiController.Initialize(); //SLOPPY AND TEMPORARY
+        _uiController.Initialize(); //SLOPPY AND TEMPORARY
         
     }
 
     //LATER: CHANGE PLACING CODE
     private void LoadPokemon() {
         List<Constants.PokemonSpecies> playerOnePokemon = _selectionManager.GetPlayerOnePokemon();
+        Debug.Log("GameManager LoadPokemon: " + playerOnePokemon.Count);
         List<Constants.PokemonSpecies> playerTwoPokemon = _selectionManager.GetPlayerTwoPokemon();
+        Debug.Log("GameManager LoadPokemon: " + playerTwoPokemon.Count);
         int x1 = 5;
         int x2 = 5;
         foreach(Constants.PokemonSpecies pokemon in playerOnePokemon) {
@@ -435,7 +439,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private bool IsGameOver() {
+    public bool IsGameOver() {
         if(GetWinningPlayer() != -1) return true;
         return false;
     }

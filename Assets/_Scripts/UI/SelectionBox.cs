@@ -10,6 +10,8 @@ public class SelectionBox : MonoBehaviour
     private GameObject _playerTwoSelectionBox;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
+    private SelectionManager _selectionManager;
+
     void Start()
     {
         _button = GetComponent<Button>();
@@ -18,9 +20,11 @@ public class SelectionBox : MonoBehaviour
         _playerOneSelectionBox = GameObject.Find("Player1SelectionBox");
         _playerTwoSelectionBox = GameObject.Find("Player2SelectionBox");
 
+
+
         // _playerOneSelectionBox.SetActive(false);
         // _playerTwoSelectionBox.SetActive(false);
-
+        _selectionManager = FindFirstObjectByType<SelectionManager>();
     }
 
 
@@ -32,6 +36,6 @@ public class SelectionBox : MonoBehaviour
 
     void OnClick()
     {
-        SelectionManager.Instance.OnPokemonSelected(_pokemonSpecies);
+        _selectionManager.OnPokemonSelected(_pokemonSpecies);
     }
 }
