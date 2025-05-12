@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1ecc5ad5ec83c4d3789ad1514ff6d82d, type: 3}
-  m_Name: Flapple
+  m_Name: Flygon
   m_EditorClassIdentifier: 
-  prefab: {fileID: 484404740667683852, guid: 5549db985fe7e42cbb28646a93a5ee5b, type: 3}
-  species: 1
+  prefab: {fileID: 0}
+  species: 2
   _stats:
-    hp: 125
-    atk: 101
-    def: 74
-    spatk: 88
-    spdef: 66
-    speed: 35
+    hp: 80
+    atk: 0
+    def: 0
+    spatk: 0
+    spdef: 0
+    speed: 0
     moveSpeed: 4
-  sprite: {fileID: 21300000, guid: 9281491782e3f45c1aed093c0d6c76cb, type: 3}
-  portrait: {fileID: 6482626380986690402, guid: ecbc57af9422c4913b104647d01a21bb, type: 3}
+  sprite: {fileID: 0}
+  portrait: {fileID: 0}
   moveSFX: {fileID: 8300000, guid: 2ca78d454a3794574b50b07a96cb8480, type: 3}
-  cry: {fileID: 8300000, guid: ef0ff2b4a877840468799d4ac27daf91, type: 3}
+  cry: {fileID: 8300000, guid: 6a0467bde0d044a248396189fc6eeeee, type: 3}
   learnableMoves:
+  - {fileID: 11400000, guid: bd76ea86c67cc44aa95c77c16d70c14c, type: 2}
   - {fileID: 11400000, guid: 1e82ecc76dcd643fc85863302485635b, type: 2}
-  - {fileID: 11400000, guid: f6448c59f29004b4f8168be3055bdc60, type: 2}

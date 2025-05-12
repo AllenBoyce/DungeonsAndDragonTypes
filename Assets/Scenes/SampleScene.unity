@@ -2966,6 +2966,7 @@ MonoBehaviour:
   _scriptablePokemon:
   - {fileID: 11400000, guid: 874701f935809405caa56a7dafab71cb, type: 2}
   - {fileID: 11400000, guid: 578873e985e834a6eb7470a1d0528416, type: 2}
+  - {fileID: 11400000, guid: 967d1fc1ec6a24827b6453da344be0ce, type: 2}
 --- !u!1 &1659619383
 GameObject:
   m_ObjectHideFlags: 0

@@ -28,5 +28,4 @@ MonoBehaviour:
   cry: {fileID: 8300000, guid: 020b2b93b88cb470a92b7f2162a016a0, type: 3}
   learnableMoves:
   - {fileID: 11400000, guid: 1e82ecc76dcd643fc85863302485635b, type: 2}
-  - {fileID: 11400000, guid: 5f9571d65b4874a80b4008fb151ad55a, type: 2}
   - {fileID: 11400000, guid: 6ecd2de1a835f4225ba297a89d9832e2, type: 2}
