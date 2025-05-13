@@ -280,8 +280,8 @@ public class GameManager : MonoBehaviour
 
     public void EndTurn()
     {
-        //_uiController.Wipe();
-        //TransitionState(_stateManager.checkupState);
+        _selectedUnit.SetCurrentAP(0);
+        TransitionState(_stateManager.checkupState);
     }
 
     public void SelectMove(Unit u, string moveName)
