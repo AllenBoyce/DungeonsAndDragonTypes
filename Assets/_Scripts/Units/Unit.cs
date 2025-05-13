@@ -18,6 +18,7 @@ public class Unit : MonoBehaviour
     private Vector2Int _gridPosition;
     [SerializeField]private int _playerOwner;
     private UnitShadow _shadow;
+    private HealthBar _healthBar;
     [SerializeField] private ScriptablePokemon pokemonData;
     private List<ScriptableMove> _learnedMoves;
     private PokemonModel _model;
@@ -65,6 +66,11 @@ public class Unit : MonoBehaviour
         _shadow = shadow.GetComponent<UnitShadow>();
         Debug.Log("Unit Shadow: " + _shadow.GetType());
         _shadow.SetShadow(player);
+        GameObject healthBar = _model.transform.Find("HealthBar").gameObject;
+        _healthBar = healthBar.GetComponent<HealthBar>();
+        Debug.Log("Unit HealthBar: " + _healthBar.GetType());
+        _healthBar.Initialize(this);
+        Debug.Log("Unit HealthBar Initialized");
     }
     
     public void SetShadow(int player) {
@@ -201,8 +207,11 @@ public class Unit : MonoBehaviour
 
     private void takeDamage(int damage)
     {
+        Debug.Log("Unit takeDamage: " + damage);
         _currentHP = Math.Max(0, _currentHP - damage);
-        //UIController.Instance.UpdateHealthBar(this);
+        Debug.Log("Unit currentHP: " + _currentHP);
+        _healthBar.UpdateHealth(this);
+        Debug.Log("Unit healthBar updated");
         if (_currentHP <= 0)
         {
             Faint();

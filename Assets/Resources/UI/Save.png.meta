@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d7f9e4162fb7f4714a4cc6a849c6c05a
+guid: ad0418a21865440d7a5b6fa21207ebba
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4187096515809382392
-    second: StartGameBtn_0
+      213: -522367714226421056
+    second: Save_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -73,9 +73,9 @@ TextureImporter:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
-    resizeAlgorithm: 0
+    resizeAlgorithm: 1
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: StartGameBtn_0
+      name: Save_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 172
-        height: 56
+        width: 256
+        height: 83
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 800f7ee27e174e5c0800000000000000
-      internalID: -4187096515809382392
+      spriteID: 0c2c66fd45d20c8f0800000000000000
+      internalID: -522367714226421056
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      StartGameBtn_0: -4187096515809382392
+      Save_0: -522367714226421056
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

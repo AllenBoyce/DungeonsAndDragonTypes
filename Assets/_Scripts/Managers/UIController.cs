@@ -18,8 +18,6 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject _endGameDisplay;
     [SerializeField] private APParent _apParent;
     [SerializeField] private GameObject _selectedUnitIndicator;
-    [SerializeField] private GameObject _healthBarPrefab;
-    //private Dictionary<Unit, GameObject> _healthBars;
     public static UIController Instance;
 
     void Awake()
@@ -93,17 +91,6 @@ public class UIController : MonoBehaviour
 
     #endregion
 
-    // public void AddHealthBar(Unit unit) {
-    //     Debug.Log("UIController AddHealthBar: " + unit.name);
-    //     GameObject healthBar = Instantiate(_healthBarPrefab, _gameCanvas.transform.Find("HealthBars"));
-    //     healthBar.GetComponent<HealthBar>().Initialize(unit);
-    //     Debug.Log("UIController AddHealthBar: " + unit.name + " " + healthBar.name);
-    //     _healthBars[unit] = healthBar;
-    // }
-    // public void UpdateHealthBar(Unit unit) {
-    //     Debug.Log("UIController UpdateHealthBar: " + _healthBars.Count);
-    //     _healthBars[unit].GetComponent<HealthBar>().UpdateHealth(unit);
-    // }
 
     /**
      * Displays a preview of the movement path for the selected unit.
@@ -144,14 +131,6 @@ public class UIController : MonoBehaviour
     private void InitializeUnitActionButtons(List<Unit> units) {
         _unitActionButtons = GenerateActionButtons(units);
     }
-
-    // private void InitializeHealthBars(List<Unit> units) {
-    //     foreach (Unit u in units) {
-    //         Debug.Log("UIController InitializingHealthBars: " + u.name);
-    //         AddHealthBar(u);
-    //         Debug.Log("UIController InitializedHealthBars: " + u.name);
-    //     }
-    // }
 
     private void OnPlayerNeutral() {
         Wipe();
