@@ -31,8 +31,7 @@ public class GridManager : MonoBehaviour
 
     //Format: <(x,y), Tile>
     public Dictionary<Vector2Int, Tile> _grid = new Dictionary<Vector2Int, Tile>();
-
-    private string _gridMap = "TL T T T T T T T T T T T T T T TR " +
+    private string gridMap1 = "TL T T T T T T T T T T T T T T TR " +
                                "SL - - - - - - - - - - - - X - SR " +
                                "SL - - - X - - - - - - - - - - SR " +
                                "SL - - - - - - - - - - - X - - SR " +
@@ -41,6 +40,27 @@ public class GridManager : MonoBehaviour
                                "SL - - - X - - - - X - - - - - SR " +
                                "SL - - - - - - - - X - - - - - SR " +
                                "BL B B B B B B B B B B B B B B BR";
+    private string gridMap2 = "TL T T T T T T T T T T T T T T TR " +
+                               "SL - - - - - - - X - - - - - - SR " +
+                               "SL - - - - - - - X - - - - - - SR " +
+                               "SL - - - - - - - - - - - - - - SR " +
+                               "SL - - - - - - - - - - - - - - SR " +
+                               "SL - - - - - - - - - - - - - - SR " +
+                               "SL - - - - - - - X - - - - - - SR " +
+                               "SL - - - - - - - X - - - - - - SR " +
+                               "BL B B B B B B B B B B B B B B BR";
+    private string gridMap3 = "TL T T T T T T T T T T T T T T TR " +
+                               "SL - - - - - - - - - - - - - - SR " +
+                               "SL - - - X - - - - - - X - - - SR " +
+                               "SL - - - - - - - - - - - - - - SR " +
+                               "SL - X - - - - - X - - - - X - SR " +
+                               "SL - - - - - - - - - - - - - - SR " +
+                               "SL - - - X - - - - - - X - - - SR " +
+                               "SL - - - - - - - - - - - - - - SR " +
+                               "BL B B B B B B B B B B B B B B BR";
+
+    
+    private string _gridMap;
     private Dictionary<string, int> _tileSpriteMap = new Dictionary<string, int>();
 
 
@@ -54,8 +74,8 @@ public class GridManager : MonoBehaviour
         
         // Use the smaller dimension to ensure consistent gaps
         float baseSize = Mathf.Min(screenWidth, screenHeight);
-        _cellGap = baseSize * _cellGapPercentage / 100f;
-        
+        //_cellGap = baseSize * _cellGapPercentage / 100f;
+        _cellGap = 0.025f;
         _tileSpriteMap.Add("-", 4);
         _tileSpriteMap.Add("X", 6);
         _tileSpriteMap.Add("TL", 0);
@@ -67,7 +87,8 @@ public class GridManager : MonoBehaviour
         _tileSpriteMap.Add("SL", 3);
         _tileSpriteMap.Add("SR", 5);
 
-
+        List<string> gridMaps = new List<string> { gridMap1, gridMap2, gridMap3 };
+        _gridMap = gridMaps[Random.Range(0, gridMaps.Count)];
 
         GenerateGrid();
 
