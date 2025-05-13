@@ -28,6 +28,11 @@ public class MoveSelectedState : GameBaseState
         ScriptableMove move = GameManager.Instance.SelectedMove;
         if(selectedUnit == null) return;
         
+        if(move.apCost > selectedUnit.CurrentAP) {
+            AudioController.Instance.PlaySound(Resources.Load<AudioClip>("Audio/SFX/MiscSFX/UIDeny"));
+            return;
+        }
+
         GameManager.Instance.HandleAttack(selectedUnit, move, mouseTile);
 
     }

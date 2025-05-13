@@ -10,8 +10,6 @@ public class HealthBar : MonoBehaviour
 
     void Start()
     {
-        _healthBar = transform.Find("Health").GetComponent<RectTransform>();
-        _healthText = transform.Find("HealthText").GetComponent<TextMeshProUGUI>();
         _healthText.enabled = false;
     }
 

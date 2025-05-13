@@ -18,7 +18,7 @@ public class GridManager : MonoBehaviour
      * 1: distance between tiles is equivalent to the length/width of one cell
      * 0: no distance between tiles
      */
-    [SerializeField] private float _cellGapPercentage = 0.05f; // 5% of tile size
+    [SerializeField] private float _cellGapPercentage = 0.025f; // 5% of tile size
     private float _cellGap;
 
     [SerializeField] private int _width, _height;

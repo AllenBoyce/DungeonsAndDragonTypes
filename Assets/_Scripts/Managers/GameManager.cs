@@ -305,7 +305,11 @@ public class GameManager : MonoBehaviour
         
         ScriptableMove move = moveDict[moveName];
         _selectedMove = move;
-
+        if(u.CurrentAP < _selectedMove.apCost) {
+            Debug.LogWarning("Selected move has more AP cost than the unit has");
+            AudioController.Instance.PlaySound(Resources.Load<AudioClip>("Audio/SFX/MiscSFX/UIDeny"));
+            return;
+        }
         TransitionState(GameStateManager.moveSelectedState);
         OnMoveSelected?.Invoke(u, move);
         

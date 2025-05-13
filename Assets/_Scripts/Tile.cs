@@ -3,7 +3,7 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEditor.UI;
+using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.PlayerLoop;
 using Object = UnityEngine.Object;

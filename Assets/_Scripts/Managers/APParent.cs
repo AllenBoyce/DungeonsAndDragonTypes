@@ -30,17 +30,18 @@ public class APParent : MonoBehaviour
         int fullAP = _apDisplayCount - emptyAP - tempAP;
         for(int i = 0; i < fullAP; i++)
         {
-            _apDisplays[i].SetAP(2);
+            _apDisplays[i].SetAP(2); //full AP
         }
         for(int i = fullAP; i < fullAP + tempAP; i++)
         {
-            _apDisplays[i].SetAP(1);
+            _apDisplays[i].SetAP(1); //temp AP
         }
         for(int i = fullAP + tempAP; i < _apDisplayCount; i++)
         {
-            _apDisplays[i].SetAP(0);
+            _apDisplays[i].SetAP(0); //empty AP
         }
     }
+
 
     public void SetAP(int fullAP, int tempAP)
     {

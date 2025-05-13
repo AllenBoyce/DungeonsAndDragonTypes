@@ -174,6 +174,7 @@ public class UIController : MonoBehaviour
         Unit u = GameManager.Instance.SelectedUnit;
         ScriptableMove move = GameManager.Instance.SelectedMove;
         SetTempAP(move.apCost);
+        DisplayAP();
     }
 
     public void SetTempAP(int apCost) {
@@ -292,8 +293,8 @@ public class UIController : MonoBehaviour
             {
                 Debug.Log(action.name);
                 // Instantiate a button prefab from the UI resources
-                
-                GameObject actionButton = GenerateActionButton(u, action.name);
+                int apCost = action.apCost;
+                GameObject actionButton = GenerateActionButton(u, action.name, apCost);
                 actionButton.name = $"{u.name}{action.name} Button";
             
                 // Add the button to our list
@@ -318,6 +319,34 @@ public class UIController : MonoBehaviour
         if (buttonText != null)
         {
             buttonText.text = actionName;
+            //Debug.Log("71");
+            Debug.Log(buttonText.text);
+        }
+            
+        // Add onClick listener that will execute the action when clicked
+        button.onClick.AddListener(() => {
+            //Debug.Log($"CLICK {actionName} BTN");
+            //Debug.Log(_gameManager.name);
+            _gameManager.SelectMove(u, actionName);
+        });
+        //I would really love to add a mouse over event to this button, but I can't figure out how to do it. If I had it it would preview the AP loss for the move.
+        actionButton.SetActive(false);
+        return actionButton;
+    }
+
+    private GameObject GenerateActionButton(Unit u, string actionName, int apCost)
+    {
+        GameObject actionButton = Instantiate(_actionButtonPrefab, _gameCanvas.transform.Find("ActionButtons"));
+        actionButton.SetActive(false);
+        actionButton.name = $"{actionName} Button";
+        // Get the button component
+        Button button = actionButton.GetComponent<Button>();
+            
+        // Set button text to action name
+        TMPro.TextMeshProUGUI buttonText = actionButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
+        if (buttonText != null)
+        {
+            buttonText.text = $"{actionName} ({apCost})";
             //Debug.Log("71");
             Debug.Log(buttonText.text);
         }

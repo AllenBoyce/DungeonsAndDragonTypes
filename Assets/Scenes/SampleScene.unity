@@ -692,7 +692,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -83.535, y: 25.440002}
+  m_AnchoredPosition: {x: -83.53497, y: 25.440002}
   m_SizeDelta: {x: 167.07, y: 50.880005}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &428090109
@@ -1138,50 +1138,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19de16ece8bb840e1a9af68773fc745a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteFolderPath: Resources/Sprites/Pokemon/
-  species: 3
-  generatedAnimClips:
-  - {fileID: 7400000, guid: b47edee99b6a945c785a278a7b9292ed, type: 2}
-  - {fileID: 7400000, guid: c9042a236fcf34e50b0600be4bd19f35, type: 2}
-  - {fileID: 7400000, guid: 26f97c33e871b4ecbb55a44e923a1b23, type: 2}
-  - {fileID: 7400000, guid: a1d7b64b5a6bd4cdfbcbc69751ebd523, type: 2}
-  - {fileID: 7400000, guid: 9a2679fb6f6d741ef930ecea912f9b8c, type: 2}
-  - {fileID: 7400000, guid: ebe519ba29f7d455e9f707b3c32b9f1b, type: 2}
-  - {fileID: 7400000, guid: d861e416d7cae41bd9f00ccb96f9e616, type: 2}
-  - {fileID: 7400000, guid: ae742af8e307840a1ab16e1dcc17912c, type: 2}
-  - {fileID: 7400000, guid: 295f60e5d74ff49659c3ff75cbd6d7e6, type: 2}
-  - {fileID: 7400000, guid: 131f7502d6f4d4f5691dd877a0fe0c00, type: 2}
-  - {fileID: 7400000, guid: a01d9772eadcf465a95006470c0184c8, type: 2}
-  - {fileID: 7400000, guid: 0310de16da0b34360b01a6a36d580120, type: 2}
-  - {fileID: 7400000, guid: c5ccf4dbf2e0d439f82fbbd298ed583e, type: 2}
-  - {fileID: 7400000, guid: 862dc57c5dfcf4af1bd01b75358aee73, type: 2}
-  - {fileID: 7400000, guid: 52afcc110efec40c9bd0cfea777c1123, type: 2}
-  - {fileID: 7400000, guid: b31367c9761b64c80bf6268d279cf463, type: 2}
-  - {fileID: 7400000, guid: 45051ef5187994e1f80835860b5f6b3a, type: 2}
-  - {fileID: 7400000, guid: f0a6441c45d984befb4b1fe9425604a8, type: 2}
-  - {fileID: 7400000, guid: f43836fdf5e1d4bda860fcbdb668f549, type: 2}
-  - {fileID: 7400000, guid: 206df8df46d63426cbcdecde41503059, type: 2}
-  - {fileID: 7400000, guid: d579dcb2215774fd6b9dded86c870bef, type: 2}
-  - {fileID: 7400000, guid: 82aef9774de494f64b1ff32e6bb98f9a, type: 2}
-  - {fileID: 7400000, guid: b023a33aacfcc4e7bac69ecc5a96e457, type: 2}
-  - {fileID: 7400000, guid: 275885276a06c414984bb9a2096d6657, type: 2}
-  - {fileID: 7400000, guid: d44cf5a6d341b44ba8d360bcc610975d, type: 2}
-  - {fileID: 7400000, guid: 7bea78fc59275487e947106f9e20f62c, type: 2}
-  - {fileID: 7400000, guid: 29857cb950f8b4646a5b8f695b62d3ea, type: 2}
-  - {fileID: 7400000, guid: ee60e85b6141b443e90d6fc22537d664, type: 2}
-  - {fileID: 7400000, guid: c8eb61d1dfd464780a9f595789383ab3, type: 2}
-  - {fileID: 7400000, guid: e3c0bd184d4af4aa6891199d7aae2d99, type: 2}
-  - {fileID: 7400000, guid: eec3efe62ecc14623960dde59f748d3e, type: 2}
-  - {fileID: 7400000, guid: 43a2f73b7025c4dec8ac7af93d521827, type: 2}
-  - {fileID: 7400000, guid: 50f6d1bcbcaef462eb8dbcd481af871f, type: 2}
-  - {fileID: 7400000, guid: bc0f2e00d729f46d69ab013cb3bbdcfc, type: 2}
-  - {fileID: 7400000, guid: b5892ac86601e48a2be3f451a8d3eac0, type: 2}
-  - {fileID: 7400000, guid: 2a364281ab99f49389cbdf392a6574c7, type: 2}
-  - {fileID: 7400000, guid: 1a6401c5dac3f478dbcd3c967ab62fb1, type: 2}
-  - {fileID: 7400000, guid: 748ab0cb358aa40d7946c52114c7fe04, type: 2}
-  - {fileID: 7400000, guid: 29069fa8406a14d288f5e9d45943c3ee, type: 2}
-  - {fileID: 7400000, guid: 62ab046a39cff415fa3ff506534474a9, type: 2}
-  gameFramesPerSecond: 36
 --- !u!4 &776340631
 Transform:
   m_ObjectHideFlags: 0
@@ -1234,7 +1190,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -41.5}
+  m_AnchoredPosition: {x: 0, y: -70}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &829780960
@@ -1861,7 +1817,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1232927032
 RectTransform:
   m_ObjectHideFlags: 0
