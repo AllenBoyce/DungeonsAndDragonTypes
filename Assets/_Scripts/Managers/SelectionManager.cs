@@ -61,6 +61,7 @@ public class SelectionManager : PersistentSingleton<SelectionManager>
         _instructionsText = GameObject.Find("InstructionsText").GetComponent<TextMeshProUGUI>();
         _instructionsText.text = "Select Player 1's Pokemon";
         _currentPlayer = 0;
+        CursorManager.Instance.SetCursor(0);
     }
 
 
@@ -159,6 +160,11 @@ public class SelectionManager : PersistentSingleton<SelectionManager>
 
     void SwitchPlayer(int nextPlayer) {
         Debug.Log("Switching to player: " + nextPlayer);
+        if(nextPlayer == 0) {
+            CursorManager.Instance.SetCursor(0);
+        } else {
+            CursorManager.Instance.SetCursor(1);
+        }
         _currentPlayer = nextPlayer;
         switch (nextPlayer) {
             case 0:

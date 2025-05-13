@@ -122,6 +122,7 @@ public class GameManager : MonoBehaviour
         
 
         _uiController.Initialize(); //SLOPPY AND TEMPORARY
+        CursorManager.Instance.UpdatePlayerCursor();
         
     }
 
@@ -371,6 +372,7 @@ public class GameManager : MonoBehaviour
         _activePlayer = 1 - _activePlayer;
         _selectedUnit = null;
         _selectedMove = null;
+        CursorManager.Instance.UpdatePlayerCursor();
         OnActivePlayerChanged?.Invoke(_activePlayer);
         TransitionState(_stateManager.playerNeutralState);
     }
