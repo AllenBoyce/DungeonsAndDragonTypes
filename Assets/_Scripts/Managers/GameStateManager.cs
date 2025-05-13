@@ -11,7 +11,7 @@ public class GameStateManager : MonoBehaviour
     public InitializeGameState initializeGameState = new InitializeGameState();
     public ImpactTargetState impactTargetState = new ImpactTargetState();
     public CheckupState checkupState = new CheckupState();
-    // public GameOverState gameOverState = new GameOverState();
+    public GameOverState gameOverState = new GameOverState();
 
     /// <summary>
     /// Invokes the CurrentState's HandleHoverTile method whenever the mouse hovers over a new tile

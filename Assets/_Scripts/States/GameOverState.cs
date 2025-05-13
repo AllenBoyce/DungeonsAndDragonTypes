@@ -4,7 +4,8 @@ public class GameOverState : GameBaseState
 {
     public override void EnterState(GameStateManager gameStateManager)
     {
-
+        AudioController.Instance.PlaySFX(Resources.Load<AudioClip>("Audio/SFX/MiscSFX/Victory"));
+        AudioController.Instance.StopMusic();
     }
 
     public override void UpdateState(GameStateManager gameStateManager)

@@ -126,6 +126,8 @@ public class GameManager : MonoBehaviour
         
     }
 
+    public AudioController AudioController { get { return _audioController; } }
+
     private void LoadPokemon() {
         List<Constants.PokemonSpecies> playerOnePokemon = _selectionManager.GetPlayerOnePokemon();
         Debug.Log("GameManager LoadPokemon: " + playerOnePokemon.Count);
@@ -307,7 +309,7 @@ public class GameManager : MonoBehaviour
         _selectedMove = move;
         if(u.CurrentAP < _selectedMove.apCost) {
             Debug.LogWarning("Selected move has more AP cost than the unit has");
-            AudioController.Instance.PlaySound(Resources.Load<AudioClip>("Audio/SFX/MiscSFX/UIDeny"));
+            AudioController.Instance.PlaySFX(Resources.Load<AudioClip>("Audio/SFX/MiscSFX/UIDeny"));
             return;
         }
         TransitionState(GameStateManager.moveSelectedState);
@@ -441,6 +443,7 @@ public class GameManager : MonoBehaviour
 
     public void CheckEndGame() {
         if(IsGameOver()) {
+            TransitionState(_stateManager.gameOverState);
             OnEndGame?.Invoke(GetWinningPlayer());
         }
     }
@@ -462,8 +465,8 @@ public class GameManager : MonoBehaviour
         return -1;
     }
 
-    public void PlaySound(AudioClip sound) {
-        _audioController.PlaySound(sound);
+    public void PlaySFX(AudioClip sound) {
+        _audioController.PlaySFX(sound);
     }
 
     #region Getters and Setters

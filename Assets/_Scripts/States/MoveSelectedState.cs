@@ -29,7 +29,7 @@ public class MoveSelectedState : GameBaseState
         if(selectedUnit == null) return;
         
         if(move.apCost > selectedUnit.CurrentAP) {
-            AudioController.Instance.PlaySound(Resources.Load<AudioClip>("Audio/SFX/MiscSFX/UIDeny"));
+            AudioController.Instance.PlaySFX(Resources.Load<AudioClip>("Audio/SFX/MiscSFX/UIDeny"));
             return;
         }
 

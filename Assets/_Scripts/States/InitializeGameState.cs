@@ -6,11 +6,12 @@ public class InitializeGameState : GameBaseState
 {
     public override async void EnterState(GameStateManager gameStateManager)
     {
+        AudioController.Instance.PlayMusic(Resources.Load<AudioClip>("Audio/Music/CombatMusic/FRLGVs"));
         // TODO: Spawn the units
         // Animations and cries
         foreach (Unit unit in GameManager.Instance.Units) {
             GameManager.Instance.StartCoroutine(Pause(1f));
-            AudioController.Instance.PlaySound(unit.PokemonData.cry);
+            AudioController.Instance.PlaySFX(unit.PokemonData.cry);
             unit.SetCurrentDirection(Unit.Direction.South);
             await unit.PlayAnimationAsync("Charge");
             unit.PlayAnimation("Idle");
