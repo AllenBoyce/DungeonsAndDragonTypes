@@ -44,7 +44,7 @@ public class SelectionManager : PersistentSingleton<SelectionManager>
             _undoBtn = GameObject.Find("UndoBtn").GetComponent<Button>();
             _unitCountText = GameObject.Find("Count").GetComponent<TextMeshProUGUI>();
             _instructionsText = GameObject.Find("InstructionsText").GetComponent<TextMeshProUGUI>();
-
+            CursorManager.Instance.SetCursor(0);
         }
     }
 
@@ -84,6 +84,7 @@ public class SelectionManager : PersistentSingleton<SelectionManager>
         _currentSelectedUnits = 0;
         _currentPlayer = 0;
         _instructionsText.text = "Select Player 1's Pokemon";
+        CursorManager.Instance.SetCursor(0);
     }
     void OnUndo() {
         Debug.Log("Undoing");
