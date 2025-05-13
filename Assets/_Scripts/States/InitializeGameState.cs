@@ -9,10 +9,12 @@ public class InitializeGameState : GameBaseState
         // TODO: Spawn the units
         // Animations and cries
         foreach (Unit unit in GameManager.Instance.Units) {
-            AudioController.Instance.PlaySound(unit.PokemonData.cry);
-            await unit.PlayAnimationAsync("Charge");
-            unit.PlayAnimation("Idle", Unit.Direction.South);
             GameManager.Instance.StartCoroutine(Pause(1f));
+            AudioController.Instance.PlaySound(unit.PokemonData.cry);
+            unit.SetCurrentDirection(Unit.Direction.South);
+            await unit.PlayAnimationAsync("Charge");
+            unit.PlayAnimation("Idle");
+            //GameManager.Instance.StartCoroutine(Pause(1f));
         }
         // Decide who goes first
         // TODO: Move to playerneutral state

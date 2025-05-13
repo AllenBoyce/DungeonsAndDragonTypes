@@ -16,7 +16,8 @@ public static class Constants
     public enum PokemonSpecies {
         Garchomp,
         Flapple,
-        Flygon
+        Flygon,
+        Haxorus
     }
 
     public static List<Color> PLAYER_COLORS {

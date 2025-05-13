@@ -43,13 +43,15 @@ public class Unit : MonoBehaviour
     #endregion
     public void Initialize(ScriptablePokemon pokemon, Vector3 position, int player)
     {
+        Debug.Log("Unit Initialize: " + pokemon.GetName() + " for player " + player);
         pokemonData = pokemon;
         _transform = transform;
         //Hiding model behind camera
         //Vector3 spawnPosition = new Vector3(transform.position.x, transform.position.y, -500);
         _transform.position = position;
         _model = Instantiate(pokemon.prefab, position, Quaternion.identity, transform);
-        _model.name = "Model";
+        Debug.Log("Unit Model: " + _model.name);
+        _model.name = $"{pokemon.GetName()}_Model";
         _maxHP = pokemonData.BaseStats.hp;
         _currentHP = _maxHP;
         _maxAP = 5; //TEMPORARILY HARDCODING MAX AP TO 5 FOR ALL MONS. FOR NOW.

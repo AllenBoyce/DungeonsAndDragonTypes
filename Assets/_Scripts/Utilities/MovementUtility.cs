@@ -88,7 +88,7 @@ public static class MovementUtility
         foreach (var dir in directions)
         {
             var neighbor = pos + dir;
-            if (grid.ContainsKey(neighbor) && !grid[neighbor].blocksMovement)
+            if (grid.ContainsKey(neighbor) && !grid[neighbor].blocksMovement && !grid[neighbor].IsOccupied())
             {
                 neighbors.Add(neighbor);
             }

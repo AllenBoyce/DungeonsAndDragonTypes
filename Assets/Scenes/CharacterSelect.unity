@@ -229,6 +229,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HaxorusSelection
       objectReference: {fileID: 0}
+    - target: {fileID: 3855900779783797485, guid: 272d2ee520773426691558883db19e85, type: 3}
+      propertyPath: _pokemonSpecies
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -263,6 +267,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae1f9ef3274fc47348eabe99b92e666d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _startGameBtn: {fileID: 1075886157}
+  _undoBtn: {fileID: 1611779202}
 --- !u!4 &439676851
 Transform:
   m_ObjectHideFlags: 0

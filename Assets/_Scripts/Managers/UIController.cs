@@ -123,6 +123,12 @@ public class UIController : MonoBehaviour
         }
     }
 
+    public void ClearMovementPath() {
+        foreach (Tile tile in GameManager.Instance.Grid.Values) {
+            tile.SetPathPreview(false);
+        }
+    }
+
     void Start()
     {
         
@@ -153,7 +159,7 @@ public class UIController : MonoBehaviour
 
     private void OnUnitSelected(Unit u) {
         Debug.Log("UI Controller receives OnUnitSelected");
-        
+
         //Debug.Log(u.name);
         Debug.Log("Displaying Unit Controls");
         DisplayUnitControls(u);

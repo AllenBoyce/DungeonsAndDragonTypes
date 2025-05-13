@@ -1,12 +1,14 @@
 using System;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class WalkSelectedState : GameBaseState
 {
+    private GameStateManager _gameStateManager;
     public override void EnterState(GameStateManager gameStateManager)
     {
-        
+        _gameStateManager = gameStateManager;
     }
 
     public override void UpdateState(GameStateManager gameStateManager)
@@ -45,15 +47,23 @@ public class WalkSelectedState : GameBaseState
         return APCost;
     }
 
-    public override void HandleLeftClickTile(Vector2Int mouseTile)  //TODO: Later we'll put this in it's own state
+    public override async void HandleLeftClickTile(Vector2Int mouseTile)  //TODO: Later we'll put this in it's own state
     {
         Unit selectedUnit = GameManager.Instance.SelectedUnit;
         if (selectedUnit == null) return;
                 
         //Target tile is empty so MOVE OUR GUY OVER THERE
+        
         MovementPath path = MovementUtility.GenerateMovementPath(GameManager.Instance.Grid, selectedUnit.GetGridPosition(), mouseTile);
         int maxDistance = selectedUnit.CurrentAP * selectedUnit.PokemonData.BaseStats.moveSpeed;
         path = MovementUtility.TruncatePath(path, maxDistance);
+        int cost = CalculateAPCost(path.Distance(), selectedUnit.PokemonData.BaseStats.moveSpeed);
+        if(cost > selectedUnit.CurrentAP) {
+            Debug.LogWarning("Not enough AP to move");
+            return;
+        }
+        selectedUnit.ConsumeAP(cost);
+        selectedUnit.UpdateState(Unit.UnitState.Moving);
         if (path != null && path.Pivots != null && path.Pivots.Count > 0)
         {
             //Ignore warning
@@ -64,8 +74,15 @@ public class WalkSelectedState : GameBaseState
         {
             Debug.LogWarning("Cannot generate a valid path to the destination");
         }
-        //Ignore warning
-        GameManager.Instance.MovementController.WalkUnit(selectedUnit, path);
+        await GameManager.Instance.MovementController.WalkUnit(selectedUnit, path);
+        selectedUnit.UpdateState(Unit.UnitState.Idle);
+        if(selectedUnit.CurrentAP <= 0) {
+            GameManager.Instance.TransitionState(_gameStateManager.checkupState);
+        }
+        else {
+            GameManager.Instance.TransitionState(_gameStateManager.unitSelectedState);
+        }
+        UIController.Instance.ClearMovementPath();
     }
     public override void HandleRightClickTile(Vector2Int mouseTile)
     {   

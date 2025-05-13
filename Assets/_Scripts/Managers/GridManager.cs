@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-
+using Random = UnityEngine.Random;
 /**
  * GridManager is responsible for the Grid the Units exist on.
  * It generates a Grid of Tile objects, and positions the camera.
@@ -212,6 +212,30 @@ public class GridManager : MonoBehaviour
         
         // Center the camera on the grid horizontally, but offset vertically to align with top
         _camera.position = new Vector3(0, -extraSpace, Constants.CAMERA_LAYER);
+    }
+
+    public Vector2Int GetSpawnPosition(int player) {
+        //If player is 0, spawn in the left side of the grid. If player is 1, spawn in the right side of the grid.
+        //Find a random tile in the proper side of the grid, that does not yet have a unit on it, nor does it block movement.
+        if(player == 0) {
+            List<Vector2Int> possibleSpawns = new List<Vector2Int>();
+            foreach (Vector2Int position in _grid.Keys) {
+                Debug.Log("GridManager GetSpawnPosition: " + position + " " + _grid[position].name + " " + _grid[position].blocksMovement);
+                if (position.x < _width / 2 && !GameManager.Instance.IsTileOccupied(position) && !_grid[position].blocksMovement) {
+                    possibleSpawns.Add(position);
+                }
+            }
+            return possibleSpawns[Random.Range(0, possibleSpawns.Count)];
+        }
+        else {
+            List<Vector2Int> possibleSpawns = new List<Vector2Int>();
+            foreach (Vector2Int position in _grid.Keys) {
+                if (position.x >= _width / 2 && !GameManager.Instance.IsTileOccupied(position) && !_grid[position].blocksMovement) {
+                    possibleSpawns.Add(position);
+                }
+            }
+            return possibleSpawns[Random.Range(0, possibleSpawns.Count)];
+        }
     }
 
 }

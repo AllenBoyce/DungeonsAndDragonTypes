@@ -12,18 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ecc5ad5ec83c4d3789ad1514ff6d82d, type: 3}
   m_Name: Haxorus
   m_EditorClassIdentifier: 
-  prefab: {fileID: 0}
-  species: 0
+  prefab: {fileID: 2773814111142688681, guid: d6acc58532454460aa0742d279fd2c98, type: 3}
+  species: 3
   _stats:
-    hp: 0
-    atk: 0
-    def: 0
-    spatk: 0
-    spdef: 0
-    speed: 0
-    moveSpeed: 0
+    hp: 76
+    atk: 147
+    def: 90
+    spatk: 60
+    spdef: 70
+    speed: 97
+    moveSpeed: 3
   sprite: {fileID: 0}
   portrait: {fileID: 0}
   moveSFX: {fileID: 0}
-  cry: {fileID: 0}
-  learnableMoves: []
+  cry: {fileID: 8300000, guid: 51066f5d577064965831004b0f8080ff, type: 3}
+  learnableMoves:
+  - {fileID: 11400000, guid: 5f9571d65b4874a80b4008fb151ad55a, type: 2}
+  - {fileID: 11400000, guid: 6ecd2de1a835f4225ba297a89d9832e2, type: 2}

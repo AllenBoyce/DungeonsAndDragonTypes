@@ -32,7 +32,7 @@ public class UnitManager : Singleton<UnitManager>
      */
     public Unit GenerateUnit(ScriptablePokemon pokemon, int player)
     {
-        Debug.Log("UnitManager GenerateUnit: " + pokemon.GetName() + " for player " + player);
+        //Debug.Log("UnitManager GenerateUnit: " + pokemon.GetName() + " for player " + player);
         // Create a new GameObject for the unit
         GameObject unitObject = new GameObject($"Unit_{pokemon.GetName()}_{player}");
     
@@ -41,6 +41,7 @@ public class UnitManager : Singleton<UnitManager>
     
         // Initialize the unit
         Vector3 offScreen = new Vector3(-1, -1, -500);
+        Debug.Log("UnitManager GenerateUnit: " + pokemon.GetName() + " for player " + player);
         unit.Initialize(pokemon, offScreen, player);
     
         // Set parent to _units if needed
@@ -62,7 +63,6 @@ public class UnitManager : Singleton<UnitManager>
     public Unit GenerateUnit(Constants.PokemonSpecies species, int player)
     {
         ScriptablePokemon pokemon = FindScriptablePokemon(species);
-        
         return GenerateUnit(pokemon, player);
     }
 

@@ -57,6 +57,11 @@ public class Tile : MonoBehaviour
         _highlight.SetActive(false);
     }
 
+    public bool IsOccupied() {
+        Debug.Log("Tile IsOccupied: " + x + " " + y + " " + _levelManager.name);
+        return _levelManager.GetUnitAt(new Vector2Int(x, y)) != null;
+    }
+
     public void SetHighlight(bool highlight)
     {
         _highlight.SetActive(highlight);

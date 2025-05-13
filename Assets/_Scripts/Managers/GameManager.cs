@@ -125,27 +125,26 @@ public class GameManager : MonoBehaviour
         
     }
 
-    //LATER: CHANGE PLACING CODE
     private void LoadPokemon() {
         List<Constants.PokemonSpecies> playerOnePokemon = _selectionManager.GetPlayerOnePokemon();
         Debug.Log("GameManager LoadPokemon: " + playerOnePokemon.Count);
         List<Constants.PokemonSpecies> playerTwoPokemon = _selectionManager.GetPlayerTwoPokemon();
         Debug.Log("GameManager LoadPokemon: " + playerTwoPokemon.Count);
-        int x1 = 5;
-        int x2 = 5;
         foreach(Constants.PokemonSpecies pokemon in playerOnePokemon) {
+            Vector2Int spawnPosition = _gridManager.GetSpawnPosition(0);
             Unit u = _unitManager.GenerateUnit(pokemon, 0);
-             _levelManager.PutUnit(u, x1, x2);
-             x2 = 3;
+             _levelManager.PutUnit(u, spawnPosition.x, spawnPosition.y);
         }
-        x1 = 8;
-        x2 = 5;
         
         foreach(Constants.PokemonSpecies pokemon in playerTwoPokemon) {
             Unit u = _unitManager.GenerateUnit(pokemon, 1);
-            _levelManager.PutUnit(u, x1, x2);
-            x2 = 3;
+            Vector2Int spawnPosition = _gridManager.GetSpawnPosition(1);
+            _levelManager.PutUnit(u, spawnPosition.x, spawnPosition.y);
         }
+    }
+
+    public bool IsTileOccupied(Vector2Int tile) {
+        return _levelManager.GetUnitAt(tile) != null;
     }
 
     // Update is called once per frame
@@ -253,6 +252,7 @@ public class GameManager : MonoBehaviour
     public void SelectUnit(Unit u) {
         //if(_selectedUnit == u) return;
         _selectedUnit = u;
+        _selectedUnit.SetCurrentAP(_selectedUnit.MaxAP);
         OnUnitSelected?.Invoke(_selectedUnit);
         TransitionState(_stateManager.unitSelectedState);
     }
@@ -277,8 +277,8 @@ public class GameManager : MonoBehaviour
 
     public void EndTurn()
     {
-        _uiController.Wipe();
-        //TransitionState(GameState.PlayerNeutral);
+        //_uiController.Wipe();
+        //TransitionState(_stateManager.checkupState);
     }
 
     public void SelectMove(Unit u, string moveName)
