@@ -5,6 +5,7 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
+using UnityEngine.UI;
 
 public class Unit : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class Unit : MonoBehaviour
     private int _maxAP;
     private Vector2Int _gridPosition;
     [SerializeField]private int _playerOwner;
-    
+    private UnitShadow _shadow;
     [SerializeField] private ScriptablePokemon pokemonData;
     private List<ScriptableMove> _learnedMoves;
     private PokemonModel _model;
@@ -60,8 +61,15 @@ public class Unit : MonoBehaviour
         
         //Temporary:
         _learnedMoves = pokemonData.learnableMoves;
+        GameObject shadow = _model.transform.Find("ColorShadow").gameObject;
+        _shadow = shadow.GetComponent<UnitShadow>();
+        Debug.Log("Unit Shadow: " + _shadow.GetType());
+        _shadow.SetShadow(player);
     }
     
+    public void SetShadow(int player) {
+        _shadow.SetShadow(player);
+    }
     
 
     public ScriptablePokemon GetPokemonData()
