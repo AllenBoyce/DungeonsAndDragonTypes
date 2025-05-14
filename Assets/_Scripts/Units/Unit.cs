@@ -143,6 +143,7 @@ public class Unit : MonoBehaviour
     
     public async Task PlayAnimationAsync(string animationName, Direction direction)
     {
+        float waitModifier = 0f;
         _currentDirection = direction;
         Debug.Log($"Playing async animation: {animationName} in direction: {direction}");
         PlayAnimation(animationName, direction);
@@ -152,7 +153,7 @@ public class Unit : MonoBehaviour
         int waitTime = Mathf.RoundToInt(clipLength * 1000); // Convert to milliseconds
         
         // Wait for the animation to complete
-        await Task.Delay(waitTime);
+        await Task.Delay(Mathf.RoundToInt(waitTime * waitModifier));
         
         Debug.Log($"Animation {animationName} in direction {direction} completed");
     }

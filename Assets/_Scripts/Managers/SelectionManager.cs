@@ -44,7 +44,16 @@ public class SelectionManager : PersistentSingleton<SelectionManager>
             _undoBtn = GameObject.Find("UndoBtn").GetComponent<Button>();
             _unitCountText = GameObject.Find("Count").GetComponent<TextMeshProUGUI>();
             _instructionsText = GameObject.Find("InstructionsText").GetComponent<TextMeshProUGUI>();
+            _instructionsText.text = "Select Player 1's Pokemon";
+            _unitCountText.text = "(0/" + _teamSize + ")";
+            _startGameBtn.interactable = false;
+            _undoBtn.interactable = false;
+            _undoBtn.onClick.AddListener(OnUndo);
             CursorManager.Instance.SetCursor(0);
+            _playerOnePokemon.Clear();
+            _playerTwoPokemon.Clear();
+            _currentSelectedUnits = 0;
+            _currentPlayer = 0;
         }
     }
 

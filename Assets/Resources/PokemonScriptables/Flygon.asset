@@ -24,7 +24,7 @@ MonoBehaviour:
     moveSpeed: 4
   sprite: {fileID: 0}
   portrait: {fileID: 0}
-  moveSFX: {fileID: 8300000, guid: 2ca78d454a3794574b50b07a96cb8480, type: 3}
+  moveSFX: {fileID: 8300000, guid: 767794da9fdde4f2ea860e38b834d0db, type: 3}
   cry: {fileID: 8300000, guid: 6a0467bde0d044a248396189fc6eeeee, type: 3}
   learnableMoves:
   - {fileID: 11400000, guid: bd76ea86c67cc44aa95c77c16d70c14c, type: 2}

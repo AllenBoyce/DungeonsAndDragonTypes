@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Grassy Glide
   m_EditorClassIdentifier: 
   moveName: Grassy Glide
-  power: 55
+  power: 20
   targetType: 1
   primaryRange: 2
   secondaryRange: -1

@@ -45,6 +45,25 @@ public class AudioController : MonoBehaviour
     public void SetMusicSource(AudioSource source) {
         _musicSource = source;
     }
+    public void SetSFXSourceClip(AudioClip clip) {
+        Debug.Log("Setting SFX source clip to: " + clip.name);
+        UpdateSFXVolume();
+        _sfxSource.clip = clip;
+        
+    }
+    public void SetSFXLoop(bool loop) {
+        _sfxSource.loop = loop;
+    }
+    public void UpdateSFXVolume() {
+        _sfxSource.volume = PlayerPrefs.GetFloat("SFXVolume");
+    }
+    public void PlaySFXSource() {
+        _sfxSource.Play();
+    }
+    public void StopSFXSource() {
+        _sfxSource.Stop();
+    }
+    
     
     
 }

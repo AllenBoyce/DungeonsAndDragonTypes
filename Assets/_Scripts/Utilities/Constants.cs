@@ -29,5 +29,5 @@ public static class Constants
         }
     }
 
-    public const bool DebugMode = true;
+    public const bool DebugMode = false;
 }

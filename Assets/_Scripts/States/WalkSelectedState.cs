@@ -64,6 +64,9 @@ public class WalkSelectedState : GameBaseState
         }
         selectedUnit.ConsumeAP(cost);
         selectedUnit.UpdateState(Unit.UnitState.Moving);
+        AudioController.Instance.SetSFXSourceClip(selectedUnit.PokemonData.moveSFX);
+        AudioController.Instance.PlaySFXSource();
+        AudioController.Instance.SetSFXLoop(true);
         if (path != null && path.Pivots != null && path.Pivots.Count > 0)
         {
             //Ignore warning
@@ -76,12 +79,14 @@ public class WalkSelectedState : GameBaseState
         }
         await GameManager.Instance.MovementController.WalkUnit(selectedUnit, path);
         selectedUnit.UpdateState(Unit.UnitState.Idle);
+        AudioController.Instance.StopSFXSource();
         if(selectedUnit.CurrentAP <= 0) {
             GameManager.Instance.TransitionState(_gameStateManager.checkupState);
         }
         else {
             GameManager.Instance.TransitionState(_gameStateManager.unitSelectedState);
         }
+        
         UIController.Instance.ClearMovementPath();
     }
     public override void HandleRightClickTile(Vector2Int mouseTile)

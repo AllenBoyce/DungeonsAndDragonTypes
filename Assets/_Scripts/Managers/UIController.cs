@@ -410,6 +410,7 @@ public class UIController : MonoBehaviour
 
     private void InitializeEndTurnButton()
     {
+        _endTurnButton.SetActive(true);
         _endTurnButton.GetComponent<Button>().onClick.AddListener(() =>
         {
             Debug.Log("End Turn Button Clicked");

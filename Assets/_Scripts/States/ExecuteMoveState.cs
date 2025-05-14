@@ -13,7 +13,7 @@ public class ExecuteMoveState : GameBaseState
     private List<Unit> _defendingUnits;
     private List<Tile> _affectedTiles;
     private ScriptableMove _move;
-    private Vector2Int _originTile;
+    private Vector2Int _targetedTile;
     private bool _shouldTransition = false;
     private GameBaseState _nextState;
 
@@ -23,14 +23,13 @@ public class ExecuteMoveState : GameBaseState
 
         _attackingUnit = GameManager.Instance.SelectedUnit;
         _move = GameManager.Instance.SelectedMove;
-        _originTile = GameManager.Instance.HoveredTile;
+        _targetedTile = GameManager.Instance.TargetedTile;
 
-        _affectedTiles = GameManager.Instance.GetTargetedTiles(_move);
-        _defendingUnits = GameManager.Instance.GetTargetedUnits(_move);
+        _affectedTiles = GameManager.Instance.GetTargetedTiles(_move, _targetedTile);
+        _defendingUnits = GameManager.Instance.GetTargetedUnits(_move, _targetedTile);
         _defendingUnits.RemoveAll(unit => unit.State == Unit.UnitState.Fainted);
         _defendingUnits.Remove(_attackingUnit); //I think this works
         
-        //GameManager.Instance.AlertHurtUnits(_defendingUnits, _move, _originTile);
         GameManager.Instance.PlaySFX(_move.sfx);
 
         //Handle AP Changes

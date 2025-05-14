@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Flamethrower
   m_EditorClassIdentifier: 
   moveName: Flamethrower
-  power: 70
+  power: 35
   targetType: 0
   primaryRange: 4
   secondaryRange: -1

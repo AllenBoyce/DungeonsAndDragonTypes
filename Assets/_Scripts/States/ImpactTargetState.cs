@@ -8,21 +8,22 @@ public class ImpactTargetState : GameBaseState
     private List<Unit> _defendingUnits;
     private List<Tile> _affectedTiles;
     private ScriptableMove _move;
-    private Vector2Int _originTile;
+    private Vector2Int _targetedTile;
     public override async void EnterState(GameStateManager gameStateManager)
     {
         _attackingUnit = GameManager.Instance.SelectedUnit;
         _move = GameManager.Instance.SelectedMove;
-        _originTile = GameManager.Instance.HoveredTile;
+        _targetedTile = GameManager.Instance.TargetedTile;
 
-        _affectedTiles = GameManager.Instance.GetTargetedTiles(_move);
-        _defendingUnits = GameManager.Instance.GetTargetedUnits(_move);
+        _affectedTiles = GameManager.Instance.GetTargetedTiles(_move, _targetedTile);
+        _defendingUnits = GameManager.Instance.GetTargetedUnits(_move, _targetedTile);
         _defendingUnits.RemoveAll(unit => unit.State == Unit.UnitState.Fainted);
         _defendingUnits.Remove(_attackingUnit);
 
+        
         await PlayHurtAnimations(_defendingUnits);
 
-        GameManager.Instance.AlertHurtUnits(_defendingUnits, _move, _originTile);
+        GameManager.Instance.AlertHurtUnits(_defendingUnits, _move, _targetedTile);
 
         GameManager.Instance.TransitionState(gameStateManager.checkupState);
     }
@@ -38,6 +39,7 @@ public class ImpactTargetState : GameBaseState
         
         // Wait for all animations to complete
         await Task.WhenAll(animationTasks);
+        AudioController.Instance.PlaySFX(Resources.Load<AudioClip>("Audio/SFX/MiscSFX/Damage"));
     }
 
     public override void UpdateState(GameStateManager gameStateManager)

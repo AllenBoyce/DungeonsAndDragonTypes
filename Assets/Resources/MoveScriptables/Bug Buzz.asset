@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Bug Buzz
   m_EditorClassIdentifier: 
   moveName: Bug Buzz
-  power: 60
+  power: 45
   targetType: 0
   primaryRange: 3
   secondaryRange: -1

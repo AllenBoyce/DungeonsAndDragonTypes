@@ -18,7 +18,6 @@ public class HealthBar : MonoBehaviour
     }
 
     public void Initialize(Unit unit) {
-        Debug.Log("HealthBar Initialize: " + unit.GetType());
         maxHealth = unit.MaxHP;
         currentHealth = unit.CurrentHP;
         UpdateHealth(currentHealth);
@@ -26,12 +25,12 @@ public class HealthBar : MonoBehaviour
 
     public void UpdateHealth(int newHealth)
     {
-        Debug.Log("HealthBar UpdateHealth: " + newHealth);
         int maxIndex = _healthBarSprites.Count - 1;
         float healthRatio = (float)(newHealth / (float)maxHealth);
-        Debug.Log("HealthBar healthRatio: " + healthRatio);
-        int currentIndex = (int) (healthRatio * maxIndex);
-        Debug.Log("HealthBar currentIndex: " + currentIndex);
+        int currentIndex = (int) (/*5 -*/ (healthRatio * 5));
+        if(currentIndex == 0 && healthRatio > 0) {
+            currentIndex = 1;
+        }
         _healthBarRenderer.sprite = _healthBarSprites[currentIndex];
     }
 

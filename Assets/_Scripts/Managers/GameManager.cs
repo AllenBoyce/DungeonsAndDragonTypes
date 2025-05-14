@@ -72,6 +72,7 @@ public class GameManager : MonoBehaviour
     private Vector2Int _hoveredTile;
     private bool _unhandledFaint; //Basically a flag to check if a pokemon has fainted but we haven't handled it yet. This would be used at the end of the state to decide whether we need to transition to checkup state or not.
     private bool _unitLockedIn; //Once a Unit has moved or attacked, it's locked in and can't be deselected until the end of the turn.
+    private Vector2Int _targetedTile;
     #endregion
 
     #region Debug Variables
@@ -280,8 +281,11 @@ public class GameManager : MonoBehaviour
 
     public void EndTurn()
     {
-        _selectedUnit.SetCurrentAP(0);
-        TransitionState(_stateManager.checkupState);
+        if(_selectedUnit != null) {
+            _selectedUnit.SetCurrentAP(0);
+        }
+        SwitchPlayer();
+        //TransitionState(_stateManager.checkupState);
     }
 
     public void SelectMove(Unit u, string moveName)
@@ -317,14 +321,14 @@ public class GameManager : MonoBehaviour
         
     }
 
-    public List<Tile> GetTargetedTiles(ScriptableMove move) {
+    public List<Tile> GetTargetedTiles(ScriptableMove move, Vector2Int targetedTile) {
         //Debug.Log("GameManager GetTargetedTiles: " + _hoveredTile + " " + _selectedUnit + " " + move);
-        return TargetingUtility.GetTiles(_gridManager.Grid, _hoveredTile, _selectedUnit, move);
+        return TargetingUtility.GetTiles(_gridManager.Grid, targetedTile, _selectedUnit, move);
     }
 
     // TO BE USED IN EXECUTE MOVE STATE
-    public List<Unit> GetTargetedUnits(ScriptableMove move) {
-        List<Tile> targetedTiles = GetTargetedTiles(move);
+    public List<Unit> GetTargetedUnits(ScriptableMove move, Vector2Int targetedTile) {
+        List<Tile> targetedTiles = GetTargetedTiles(move, targetedTile);
         List<Unit> targetedUnits = new List<Unit>();
         foreach (Tile tile in targetedTiles)
         {
@@ -359,10 +363,10 @@ public class GameManager : MonoBehaviour
 
     public void HandleAttack(Unit attacker, ScriptableMove move, Vector2Int mouseTile)
     {
-        //Ignoring Validation for now
-        OnUnitAttack?.Invoke(attacker, move, mouseTile);
-
+        _targetedTile = mouseTile;
+        OnUnitAttack?.Invoke(attacker, move, _targetedTile);
         TransitionState(_stateManager.executeMoveState);
+        
     }
 
     public void HandleHurt(Unit attacker, ScriptableMove move, Unit target) {
@@ -473,6 +477,7 @@ public class GameManager : MonoBehaviour
     public Unit SelectedUnit { get { return _selectedUnit; } }
     public ScriptableMove SelectedMove { get { return _selectedMove; } }
     public Vector2Int HoveredTile { get { return _hoveredTile; } }
+    public Vector2Int TargetedTile { get { return _targetedTile; } }
     public GameBaseState CurrentState { get {return _stateManager.CurrentState;} }
     public Dictionary<Vector2Int, Tile> Grid { get { return _gridManager.Grid; } }
     public GameStateManager GameStateManager { get { return _stateManager; } }
