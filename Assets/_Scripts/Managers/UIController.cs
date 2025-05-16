@@ -18,6 +18,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject _endGameDisplay;
     [SerializeField] private APParent _apParent;
     [SerializeField] private GameObject _selectedUnitIndicator;
+    [SerializeField] private TextMeshProUGUI _activePlayerDisplayText;
     public static UIController Instance;
 
     void Awake()
@@ -76,7 +77,6 @@ public class UIController : MonoBehaviour
         //Debug.Log(hoveredTile);
         switch (GameManager.Instance.CurrentState.GetType().Name) { //Ugly and lame but works
             case "PlayerNeutralState":
-
                 break;
             case "UnitSelectedState":
                 break;
@@ -118,7 +118,7 @@ public class UIController : MonoBehaviour
 
     void Start()
     {
-        
+
     } 
 
     public void Initialize()
@@ -134,6 +134,13 @@ public class UIController : MonoBehaviour
 
     private void OnPlayerNeutral() {
         Wipe();
+        UpdateActivePlayerDisplay();
+    }
+
+    private void UpdateActivePlayerDisplay() {
+        _activePlayerDisplayText.text = GameManager.Instance.ActivePlayer == 0 ? "1" : "2";
+        Debug.Log(Constants.PLAYER_COLORS[GameManager.Instance.ActivePlayer]);
+        _activePlayerDisplayText.color = Constants.PLAYER_COLORS[GameManager.Instance.ActivePlayer];
     }
 
     private void OnUnitSelected(Unit u) {

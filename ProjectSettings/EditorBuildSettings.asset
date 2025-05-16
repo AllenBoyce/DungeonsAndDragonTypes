@@ -23,6 +23,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/HelpScene.unity
     guid: 76225f86b40804598b94155c9a01dd76
+  - enabled: 1
+    path: Assets/Scenes/HelpScene-2.unity
+    guid: bbdb37e519ff9489ebfdc25f85ada73f
+  - enabled: 1
+    path: Assets/Scenes/HelpScene-3.unity
+    guid: c065113f04bc4483396badcb0a7482c4
+  - enabled: 1
+    path: Assets/Scenes/HelpScene-4.unity
+    guid: 679c65022762b4b2bb8c25a2d1ae774b
+  - enabled: 1
+    path: Assets/Scenes/Credits.unity
+    guid: f42f279f4ae454812ac9306358437e09
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
