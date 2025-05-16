@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+
+//This class is so messy and ugly and stupid and is a horrible example of a singleton but I did it last minute and it works.
 public class SelectionManager : PersistentSingleton<SelectionManager>
 {
     private int _teamSize = Constants.TEAM_SIZE;

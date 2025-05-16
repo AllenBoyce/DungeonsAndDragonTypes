@@ -126,6 +126,8 @@ public class Unit : MonoBehaviour
         _model.PlayAnimation(animationName, _currentDirection);
     }
 
+
+    //The Async Animation methods were done by Claude, since they weren't as related to the game logic as the other methods.
     public async Task PlayAnimationAsync(string animationName)
     {
         Debug.Log($"Playing async animation: {animationName}");

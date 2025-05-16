@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+//This class was also very math heavy so I relied on Claude for a lot of its code, but I decided on the logic of targeting.
+//The targeting code isn't super great, but it works well enough for a demo and I didn't have enough time to make something perfect.
+//Unfortunately a lot of the AI conversation I used to make this was done in Copilot, so I can't link a Claude chat history. But like I said, I know how all the methods are used to work together.
 public static class TargetingUtility
 {
     

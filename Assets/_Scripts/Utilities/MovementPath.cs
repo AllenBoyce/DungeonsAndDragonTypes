@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-
+//This was a very math heavy class so I relied on Claude for most of it's implementation.
+//The way that each of these methods were implemented was decided by me, so even though I'm not particularly familiar with the math, I know how it works.
 public class MovementPath
 {
     //List of all coordinate pairs where the path changes direction. To walk along a path, a unit moves in a straight line from one pivot coordinate to the next

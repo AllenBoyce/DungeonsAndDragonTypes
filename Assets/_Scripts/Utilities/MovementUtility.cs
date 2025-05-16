@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//This is a very math heavy class so I relied on Claude for most of it's implementation.
+//The way that each of these methods were implemented was decided by me, so even though I'm not particularly familiar with the math, I know how it works.
+//For the pathfinding, I used A* search with a heuristic of Manhattan distance.
 public static class MovementUtility
 {
     public static MovementPath GenerateMovementPath(Dictionary<Vector2Int, Tile> grid, Vector2Int origin, Vector2Int destination)

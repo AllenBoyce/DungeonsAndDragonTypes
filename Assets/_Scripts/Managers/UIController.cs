@@ -268,22 +268,17 @@ public class UIController : MonoBehaviour
      */
     private List<GameObject> GenerateUnitActionButtons(Unit u)
     {
-        // Create a new list to store the generated button GameObjects
         List<GameObject> actionButtons = new List<GameObject>();
         List<ScriptableMove> learnedMoves = u.GetLearnedMoves();
-        // Check if the unit has any actions
         if (learnedMoves != null && learnedMoves.Count > 0)
         {
-            // Iterate through each action the unit has
             foreach (var action in learnedMoves)
             {
                 Debug.Log(action.name);
-                // Instantiate a button prefab from the UI resources
                 int apCost = action.apCost;
                 GameObject actionButton = GenerateActionButton(u, action.name, apCost);
                 actionButton.name = $"{u.name}{action.name} Button";
             
-                // Add the button to our list
                 actionButtons.Add(actionButton);
             }
         }                
@@ -297,22 +292,16 @@ public class UIController : MonoBehaviour
         GameObject actionButton = Instantiate(_actionButtonPrefab, _gameCanvas.transform.Find("ActionButtons"));
         actionButton.SetActive(false);
         actionButton.name = $"{actionName} Button";
-        // Get the button component
         Button button = actionButton.GetComponent<Button>();
             
-        // Set button text to action name
         TMPro.TextMeshProUGUI buttonText = actionButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
         if (buttonText != null)
         {
             buttonText.text = actionName;
-            //Debug.Log("71");
             Debug.Log(buttonText.text);
         }
             
-        // Add onClick listener that will execute the action when clicked
         button.onClick.AddListener(() => {
-            //Debug.Log($"CLICK {actionName} BTN");
-            //Debug.Log(_gameManager.name);
             _gameManager.SelectMove(u, actionName);
         });
         //I would really love to add a mouse over event to this button, but I can't figure out how to do it. If I had it it would preview the AP loss for the move.
@@ -325,22 +314,16 @@ public class UIController : MonoBehaviour
         GameObject actionButton = Instantiate(_actionButtonPrefab, _gameCanvas.transform.Find("ActionButtons"));
         actionButton.SetActive(false);
         actionButton.name = $"{actionName} Button";
-        // Get the button component
         Button button = actionButton.GetComponent<Button>();
             
-        // Set button text to action name
         TMPro.TextMeshProUGUI buttonText = actionButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
         if (buttonText != null)
         {
             buttonText.text = $"{actionName} ({apCost})";
-            //Debug.Log("71");
             Debug.Log(buttonText.text);
         }
             
-        // Add onClick listener that will execute the action when clicked
         button.onClick.AddListener(() => {
-            //Debug.Log($"CLICK {actionName} BTN");
-            //Debug.Log(_gameManager.name);
             _gameManager.SelectMove(u, actionName);
         });
         //I would really love to add a mouse over event to this button, but I can't figure out how to do it. If I had it it would preview the AP loss for the move.
@@ -349,6 +332,7 @@ public class UIController : MonoBehaviour
     }
 
     
+    //The spacing portion of this was done by Claude since it involved math for positioning. This was when I had intended on implementing several action buttons, so I was anticipating needing complicated positioning stuff like this.
     private void DisplayActionButtons(Unit u)
     {
         Debug.Log("Displaying Action Buttons");

@@ -39,16 +39,6 @@ public class ExecuteMoveState : GameBaseState
         await _attackingUnit.PlayAnimationAsync(_move.animationKey, _attackingUnit.GetCurrentDirection());
         _attackingUnit.PlayAnimation("Idle", _attackingUnit.GetCurrentDirection());
         
-        // // Set up the next state transition but don't execute it immediately 
-        // if(_attackingUnit.CurrentAP <= 0) { //No more AP
-        //     _shouldTransition = true;
-        //     _nextState = gameStateManager.playerNeutralState;
-        //     Debug.Log("GameManager HandleAttack: Will switch player next frame");
-        // } else { //AP remains, go again
-        //     _shouldTransition = true;
-        //     _nextState = gameStateManager.impactTargetState;
-        //     Debug.Log("GameManager HandleAttack: Will transition to ImpactTargetState next frame");
-        // }
         if(_defendingUnits.Count > 0) {
             GameManager.Instance.TransitionState(gameStateManager.impactTargetState);
         }
@@ -59,20 +49,6 @@ public class ExecuteMoveState : GameBaseState
 
     public override void UpdateState(GameStateManager gameStateManager)
     {
-        // // Handle the actual state transition in the next frame
-        // if (_shouldTransition)
-        // {
-        //     _shouldTransition = false;
-            
-        //     if (_nextState == gameStateManager.playerNeutralState)
-        //     {
-        //         GameManager.Instance.SwitchPlayer();
-        //     }
-        //     else
-        //     {
-        //         GameManager.Instance.TransitionState(_nextState);
-        //     }
-        // }
     }
 
     public override void HandleHoverTile(Vector2Int mouseTile)
